@@ -26,130 +26,128 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(0),
-        child: SingleChildScrollView(
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: <Widget>[
-                // SizedBox(height: 50.0),
-                Container(
-                  padding: EdgeInsets.zero,
-                  // color: Colors.yellow,
-                  height: MediaQuery.of(context).size.width * 0.7,
-                  child: ClipPath(
-                    clipper: OvalBottomBorderClipper(),
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Image.asset(
-                            'assets/signup_illustration.jpg',
-                            fit: BoxFit.cover,
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.all(0),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  // SizedBox(height: 50.0),
+                  Container(
+                    padding: EdgeInsets.zero,
+                    // color: Colors.yellow,
+                    height: MediaQuery.of(context).size.width * 0.7,
+                    child: ClipPath(
+                      clipper: OvalBottomBorderClipper(),
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Image.asset(
+                              'assets/signup_illustration.jpg',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          // Add other widgets as necessary
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(height: 50.0),
+                  Text(
+                    'Sugam Krishi',
+                    style: TextStyle(
+                      fontFamily: 'Pacifico',
+                      fontSize: 36.0,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+
+                  SizedBox(height: 50.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Username',
+                        hintText: 'Enter your username',
+                        prefixIcon: Icon(Icons.person),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey[400]!,
                           ),
                         ),
-                        // Add other widgets as necessary
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 50.0),
-                // Image.asset(
-                //   'assets/signup_illustration.jpg',
-                //   height: 200.0,
-                // ),
-                Text(
-                  'Sugam Krishi',
-                  style: TextStyle(
-                    fontFamily: 'Pacifico',
-                    fontSize: 36.0,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-
-                SizedBox(height: 50.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Username',
-                      hintText: 'Enter your username',
-                      prefixIcon: Icon(Icons.person),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey[400]!,
-                        ),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey[400]!)),
                       ),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[400]!)),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a username';
+                        }
+                        // TODO: Add username validation
+                        return null;
+                      },
+                      onSaved: (value) => _username = value!,
                     ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a username';
-                      }
-                      // TODO: Add username validation
-                      return null;
-                    },
-                    onSaved: (value) => _username = value!,
                   ),
-                ),
-                SizedBox(height: 16.0),
+                  SizedBox(height: 16.0),
 
-                // SizedBox(height: 16.0),
+                  // SizedBox(height: 16.0),
 
-                SizedBox(height: 16.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      labelText: 'Phone Number',
-                      hintText: 'Enter your phone number',
-                      prefixIcon: Icon(Icons.phone),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.grey[400]!,
+                  SizedBox(height: 16.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        labelText: 'Phone Number',
+                        hintText: 'Enter your phone number',
+                        prefixIcon: Icon(Icons.phone),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Colors.grey[400]!,
+                          ),
                         ),
+                        border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey[400]!)),
                       ),
-                      border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey[400]!)),
+                      keyboardType: TextInputType.phone,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a phone number';
+                        }
+                        // TODO: Add phone number validation
+                        return null;
+                      },
+                      onSaved: (value) => _phoneNumber = value!,
                     ),
-                    keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a phone number';
-                      }
-                      // TODO: Add phone number validation
-                      return null;
-                    },
-                    onSaved: (value) => _phoneNumber = value!,
                   ),
-                ),
-                SizedBox(height: 32.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: ElevatedButton(
-                    child: Text('Signup'),
-                    onPressed: _submit,
+                  SizedBox(height: 32.0),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: ElevatedButton(
+                      child: Text('Signup'),
+                      onPressed: _submit,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                  child: OutlinedButton(
-                    child: Text('Already have an account? Login'),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage()),
-                      );
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                    child: OutlinedButton(
+                      child: Text('Already have an account? Login'),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginPage()),
+                        );
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

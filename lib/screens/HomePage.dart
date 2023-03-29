@@ -1,7 +1,7 @@
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:sugam_krishi/custom/fab_bottom_app_bar.dart';
 import 'package:sugam_krishi/screens/FeedPage.dart';
 import 'package:sugam_krishi/screens/MarketplacePage.dart';
 import 'package:sugam_krishi/screens/ProfilePage.dart';
@@ -14,7 +14,15 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   int _selectedDrawerIndex = 0;
+  int currentIndex = 0;
   List<MenuModel> bottomMenuItems = <MenuModel>[];
+
+  List listItems = [
+    FeedPage(),
+    MarketplacePage(),
+    UtilitiesPage(),
+    ProfilePage(),
+  ];
 
   _selectedTab(int pos) {
     setState(() {
@@ -58,8 +66,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: _selectedTab(_selectedDrawerIndex),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      body: listItems[currentIndex],
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       floatingActionButton: FloatingActionButton(
         tooltip: 'ChatBot',
         splashColor: Colors.teal,
@@ -67,29 +75,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: Center(child: Icon(FontAwesomeIcons.robot)),
         elevation: 4,
       ),
-      bottomNavigationBar: FABBottomAppBar(
-        color: Colors.grey[700]!,
-        selectedColor: Theme.of(context).colorScheme.secondary,
-        notchedShape: CircularNotchedRectangle(),
-        iconSize: 20.0,
-        onTabSelected: _selectedTab,
-        items: [
-          FABBottomAppBarItem(
-            iconData: FontAwesomeIcons.home,
-            text: 'Community',
-            iconSize: 20,
+      bottomNavigationBar: BottomNavyBar(
+        selectedIndex: currentIndex,
+        onItemSelected: (index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        items: <BottomNavyBarItem>[
+          BottomNavyBarItem(
+            icon: Icon(
+              Icons.home,
+              size: 24,
+            ),
+            title: Text('Community'),
+            activeColor: Colors.teal,
           ),
-          FABBottomAppBarItem(
-              iconData: FontAwesomeIcons.store,
-              text: 'Marketplace',
-              iconSize: 20),
-          FABBottomAppBarItem(
-              iconData: Icons.agriculture, text: 'Utilities', iconSize: 24),
-          FABBottomAppBarItem(
-              iconData: Icons.person, text: 'Profile', iconSize: 24),
+          BottomNavyBarItem(
+            icon: Icon(
+              FontAwesomeIcons.store,
+              size: 20,
+            ),
+            title: Text('Marketplace'),
+            activeColor: Colors.teal,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.agriculture, size: 24),
+            title: Text('Utilities'),
+            activeColor: Colors.teal,
+          ),
+          BottomNavyBarItem(
+            icon: Icon(Icons.person, size: 24),
+            title: Text('Profile'),
+            activeColor: Colors.teal,
+          ),
         ],
-        backgroundColor: Colors.white,
-        centerItemText: '',
       ),
     );
   }
@@ -117,7 +137,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             padding: EdgeInsets.all(8),
                             decoration: BoxDecoration(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(30)),
+                                  BorderRadius.all(Radius.circular(30)),
                               color: Colors.teal[100],
                             ),
                             child: Icon(
