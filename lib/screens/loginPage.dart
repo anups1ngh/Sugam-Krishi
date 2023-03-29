@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sugam_krishi/screens/FeedPage.dart';
+import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
+import '../weather/ui/detail_page.dart';
 import 'signupPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -254,7 +256,7 @@ class OtpPage extends StatelessWidget {
                 );
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FeedPage()),
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 );
               },
             ),
