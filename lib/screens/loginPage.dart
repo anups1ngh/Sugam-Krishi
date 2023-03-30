@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sugam_krishi/screens/FeedPage.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
+import 'package:sugam_krishi/weather/ui/dummy.dart';
 import '../weather/ui/detail_page.dart';
 import 'signupPage.dart';
 
@@ -87,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                   keyboardType: TextInputType.phone,
                   validator: (value) {
                     if (value!.isEmpty || value.length < 10) {
-                      return 'Please enter a valid phone number';
+                      // return 'Please enter a valid phone number';
                     }
                     // TODO: Add phone number validation
                     return null;

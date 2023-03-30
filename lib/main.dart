@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
 
 void main() {
@@ -17,8 +18,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Sugam Krishi',
       theme: ThemeData(
-        primarySwatch: Colors.green,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        primarySwatch: Colors.green,
       ),
       home: SignupPage(),
     );

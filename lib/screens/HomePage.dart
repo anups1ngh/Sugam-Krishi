@@ -67,14 +67,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       body: listItems[currentIndex],
-      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'ChatBot',
-        splashColor: Colors.teal,
-        onPressed: _modalBottomSheetMenu,
-        child: Center(child: Icon(FontAwesomeIcons.robot)),
-        elevation: 4,
-      ),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.teal,
+      //   tooltip: 'ChatBot',
+      //   splashColor: Colors.teal,
+      //   onPressed: _modalBottomSheetMenu,
+      //   child: Center(child: Icon(FontAwesomeIcons.robot,)),
+      //   elevation: 4,
+      // ),
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: currentIndex,
         onItemSelected: (index) {

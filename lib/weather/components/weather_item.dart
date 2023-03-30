@@ -17,18 +17,18 @@ class WeatherItem extends StatelessWidget {
     return Column(
       children: [
         Container(
-          padding: const EdgeInsets.all(10),
-          height: 60,
-          width: 60,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+          height: 50,
+          width: 50,
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Image.asset(imageUrl),
         ),
-        const SizedBox(
-          height: 8.0,
-        ),
+        // const SizedBox(
+        //   height: 2.0,
+        // ),
         Text(
           value.toString() + unit,
           style: const TextStyle(

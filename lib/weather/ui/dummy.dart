@@ -24,8 +24,9 @@ class _DummyState extends State<Dummy> {
 
   static String API_KEY = "6341f24a80484da9a1b43817232903";
 
-  String location = 'Mumbai';
-  String weatherIcon = 'heavycloudy.png';
+  String day_night = TimeOfDay.now().hour < 17?"day":"night";
+  String location = 'Bhubaneswar';
+  String weatherIcon = '116.png';
   int temperature = 0;
   int windSpeed = 0;
   int humidity = 0;
@@ -64,8 +65,11 @@ class _DummyState extends State<Dummy> {
 
         //updateWeather
         currentWeatherStatus = currentWeather["condition"]["text"];
-        weatherIcon =
-            currentWeatherStatus.replaceAll(' ', '').toLowerCase() + ".png";
+        day_night = TimeOfDay.now().period.toString()=="am"?"day":"night";
+        weatherIcon = currentWeather["condition"]["icon"].toString();
+        weatherIcon = weatherIcon.substring(weatherIcon.length - 7);
+        print(weatherIcon);
+            // day_night + "_" + currentWeatherStatus.replaceAll(' ', '').toLowerCase() + ".png";
         temperature = currentWeather["temp_c"].toInt();
         windSpeed = currentWeather["wind_kph"].toInt();
         humidity = currentWeather["humidity"].toInt();
@@ -112,8 +116,8 @@ class _DummyState extends State<Dummy> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Container(
-        width: size.width * 0.4,
-        height: size.height * 0.4,
+        width: size.width,
+        height: size.height,
         padding: const EdgeInsets.only(top: 70, left: 10, right: 10),
         color: _constants.primaryColor.withOpacity(.1),
         child: Column(
@@ -217,7 +221,7 @@ class _DummyState extends State<Dummy> {
                                                       ),
                                                     ),
                                                     hintText:
-                                                        'Search city e.g. Mumbai',
+                                                        'Search city e.g. Bhubaneswar',
                                                     focusedBorder:
                                                         OutlineInputBorder(
                                                       borderSide: BorderSide(
@@ -253,7 +257,7 @@ class _DummyState extends State<Dummy> {
                   ),
                   SizedBox(
                     height: 160,
-                    child: Image.asset("assets/" + weatherIcon),
+                    child: Image.asset("assets/$day_night/" + weatherIcon),
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -325,140 +329,140 @@ class _DummyState extends State<Dummy> {
                 ],
               ),
             ),
-            Container(
-              padding: const EdgeInsets.only(top: 10),
-              height: size.height * .20,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        'Today',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20.0,
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => DetailPage(
-                                      dailyForecastWeather:
-                                          dailyWeatherForecast,
-                                    ))), //this will open forecast screen
-                        child: Text(
-                          'Forecasts',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                            color: _constants.primaryColor,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  SizedBox(
-                    height: 110,
-                    child: ListView.builder(
-                      itemCount: hourlyWeatherForecast.length,
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      itemBuilder: (BuildContext context, int index) {
-                        String currentTime =
-                            DateFormat('HH:mm:ss').format(DateTime.now());
-                        String currentHour = currentTime.substring(0, 2);
-
-                        String forecastTime = hourlyWeatherForecast[index]
-                                ["time"]
-                            .substring(11, 16);
-                        String forecastHour = hourlyWeatherForecast[index]
-                                ["time"]
-                            .substring(11, 13);
-
-                        String forecastWeatherName =
-                            hourlyWeatherForecast[index]["condition"]["text"];
-                        String forecastWeatherIcon = forecastWeatherName
-                                .replaceAll(' ', '')
-                                .toLowerCase() +
-                            ".png";
-
-                        String forecastTemperature =
-                            hourlyWeatherForecast[index]["temp_c"]
-                                .round()
-                                .toString();
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          margin: const EdgeInsets.only(right: 20),
-                          width: 65,
-                          decoration: BoxDecoration(
-                              color: currentHour == forecastHour
-                                  ? Colors.white
-                                  : _constants.primaryColor,
-                              borderRadius:
-                                  const BorderRadius.all(Radius.circular(50)),
-                              boxShadow: [
-                                BoxShadow(
-                                  offset: const Offset(0, 1),
-                                  blurRadius: 5,
-                                  color:
-                                      _constants.primaryColor.withOpacity(.2),
-                                ),
-                              ]),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                forecastTime,
-                                style: TextStyle(
-                                  fontSize: 17,
-                                  color: _constants.greyColor,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Image.asset(
-                                'assets/' + forecastWeatherIcon,
-                                width: 20,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    forecastTemperature,
-                                    style: TextStyle(
-                                      color: _constants.greyColor,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  Text(
-                                    '°',
-                                    style: TextStyle(
-                                      color: _constants.greyColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 17,
-                                      fontFeatures: const [
-                                        FontFeature.enable('sups'),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Container(
+            //   padding: const EdgeInsets.only(top: 10),
+            //   height: size.height * .20,
+            //   child: Column(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: [
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: [
+            //           const Text(
+            //             'Today',
+            //             style: TextStyle(
+            //               fontWeight: FontWeight.bold,
+            //               fontSize: 20.0,
+            //             ),
+            //           ),
+            //           GestureDetector(
+            //             onTap: () => Navigator.push(
+            //                 context,
+            //                 MaterialPageRoute(
+            //                     builder: (_) => DetailPage(
+            //                           dailyForecastWeather:
+            //                               dailyWeatherForecast,
+            //                         ))), //this will open forecast screen
+            //             child: Text(
+            //               'Forecasts',
+            //               style: TextStyle(
+            //                 fontWeight: FontWeight.w600,
+            //                 fontSize: 16,
+            //                 color: _constants.primaryColor,
+            //               ),
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //       const SizedBox(
+            //         height: 8,
+            //       ),
+            //       SizedBox(
+            //         height: 110,
+            //         child: ListView.builder(
+            //           itemCount: hourlyWeatherForecast.length,
+            //           scrollDirection: Axis.horizontal,
+            //           physics: const BouncingScrollPhysics(),
+            //           itemBuilder: (BuildContext context, int index) {
+            //             String currentTime =
+            //                 DateFormat('HH:mm:ss').format(DateTime.now());
+            //             String currentHour = currentTime.substring(0, 2);
+            //
+            //             String forecastTime = hourlyWeatherForecast[index]
+            //                     ["time"]
+            //                 .substring(11, 16);
+            //             String forecastHour = hourlyWeatherForecast[index]
+            //                     ["time"]
+            //                 .substring(11, 13);
+            //
+            //             String forecastWeatherName =
+            //                 hourlyWeatherForecast[index]["condition"]["text"];
+            //             String forecastWeatherIcon = forecastWeatherName
+            //                     .replaceAll(' ', '')
+            //                     .toLowerCase() +
+            //                 ".png";
+            //
+            //             String forecastTemperature =
+            //                 hourlyWeatherForecast[index]["temp_c"]
+            //                     .round()
+            //                     .toString();
+            //             return Container(
+            //               padding: const EdgeInsets.symmetric(vertical: 15),
+            //               margin: const EdgeInsets.only(right: 20),
+            //               width: 65,
+            //               decoration: BoxDecoration(
+            //                   color: currentHour == forecastHour
+            //                       ? Colors.white
+            //                       : _constants.primaryColor,
+            //                   borderRadius:
+            //                       const BorderRadius.all(Radius.circular(50)),
+            //                   boxShadow: [
+            //                     BoxShadow(
+            //                       offset: const Offset(0, 1),
+            //                       blurRadius: 5,
+            //                       color:
+            //                           _constants.primaryColor.withOpacity(.2),
+            //                     ),
+            //                   ]),
+            //               child: Column(
+            //                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //                 children: [
+            //                   Text(
+            //                     forecastTime,
+            //                     style: TextStyle(
+            //                       fontSize: 17,
+            //                       color: _constants.greyColor,
+            //                       fontWeight: FontWeight.w500,
+            //                     ),
+            //                   ),
+            //                   Image.asset(
+            //                     'assets/' + forecastWeatherIcon,
+            //                     width: 20,
+            //                   ),
+            //                   Row(
+            //                     mainAxisAlignment: MainAxisAlignment.center,
+            //                     children: [
+            //                       Text(
+            //                         forecastTemperature,
+            //                         style: TextStyle(
+            //                           color: _constants.greyColor,
+            //                           fontSize: 17,
+            //                           fontWeight: FontWeight.w600,
+            //                         ),
+            //                       ),
+            //                       Text(
+            //                         '°',
+            //                         style: TextStyle(
+            //                           color: _constants.greyColor,
+            //                           fontWeight: FontWeight.w600,
+            //                           fontSize: 17,
+            //                           fontFeatures: const [
+            //                             FontFeature.enable('sups'),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                     ],
+            //                   ),
+            //                 ],
+            //               ),
+            //             );
+            //           },
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       ),
