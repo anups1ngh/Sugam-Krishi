@@ -15,14 +15,14 @@ class Constants {
     colors: <Color>[Color(0xff26A69A), Color(0xff009688)],
   ).createShader(const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
 
-  final linearGradientBlue = const LinearGradient(
+  final linearGradientTeal = const LinearGradient(
       begin: Alignment.bottomRight,
       end: Alignment.topLeft,
       colors: [Color(0xff80CBC4), Color(0xff00796B)],
       stops: [0.0, 1.0]);
-  final linearGradientPurple = const LinearGradient(
+  final linearGradientGreen = LinearGradient(
       begin: Alignment.bottomRight,
       end: Alignment.topLeft,
-      colors: [Color(0xff51087E), Color(0xff6C0BA9)],
+      colors: [Color(0xffB9F6CA), Color(0xff00E676)],
       stops: [0.0, 1.0]);
 }

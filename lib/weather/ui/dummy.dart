@@ -127,7 +127,7 @@ class _DummyState extends State<Dummy> {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               height: size.height * .7,
               decoration: BoxDecoration(
-                gradient: _constants.linearGradientBlue,
+                gradient: _constants.linearGradientTeal,
                 boxShadow: [
                   BoxShadow(
                     color: _constants.primaryColor.withOpacity(.5),

@@ -79,7 +79,7 @@ class _DetailPageState extends State<DetailPage> {
                           const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                           height: size.height * .3,
                           decoration: BoxDecoration(
-                            gradient: _constants.linearGradientBlue,
+                            gradient: _constants.linearGradientTeal,
                             boxShadow: [
                               BoxShadow(
                                 color: _constants.primaryColor.withOpacity(.2),

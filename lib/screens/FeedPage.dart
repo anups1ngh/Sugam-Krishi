@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
+import 'package:sugam_krishi/screens/postPage.dart';
 import 'package:sugam_krishi/weather/ui/detail_page.dart';
 import 'package:http/http.dart' as http;
 import '../weather/components/weather_item.dart';
@@ -127,7 +128,7 @@ class _FeedPageState extends State<FeedPage> {
       ),
       body: SafeArea(
         child: RefreshIndicator(
-          edgeOffset: 100,
+          edgeOffset: 40,
           strokeWidth: 2.5,
           color: Color(0xff0ba99b),
           onRefresh: () async {
@@ -148,7 +149,7 @@ class _FeedPageState extends State<FeedPage> {
                         const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                     height: size.height * .24,
                     decoration: BoxDecoration(
-                      gradient: _constants.linearGradientBlue,
+                      gradient: _constants.linearGradientTeal,
                       boxShadow: [
                         BoxShadow(
                           color: _constants.primaryColor.withOpacity(.2),
@@ -284,6 +285,7 @@ class _FeedPageState extends State<FeedPage> {
                             );
                           },
                           child: Row(
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -325,32 +327,33 @@ class _FeedPageState extends State<FeedPage> {
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10),
-                                      child: Text(
-                                        currentWeatherStatus,
-                                        textAlign: TextAlign.left,
-                                        style: const TextStyle(
-                                          color: Colors.white70,
-                                          fontSize: 20.0,
+                                      child: Expanded(
+                                        child: Text(
+                                          currentWeatherStatus,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.left,
+                                          style: const TextStyle(
+                                            color: Colors.white70,
+                                            fontSize: 20,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    //WEATHER ICON
-                                    SizedBox(
-                                      height: 100,
-                                      child: Image.asset(
-                                        "assets/$day_night/" + weatherIcon,
-                                        scale: 0.6,
-                                      ),
+                              Flexible(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 10),
+                                  child: //WEATHER ICON
+                                  SizedBox(
+                                    height: 100,
+                                    child: Image.asset(
+                                      "assets/$day_night/" + weatherIcon,
+                                      scale: 0.6,
                                     ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ],
@@ -405,27 +408,27 @@ class _FeedPageState extends State<FeedPage> {
           // backgroundColor: Color(0xff00897B),
           backgroundColor: Colors.greenAccent.shade700,
           icon: FaIcon(
-            FontAwesomeIcons.cameraRetro,
+            FontAwesomeIcons.penToSquare,
             size: 20,
             color: Colors.white,
           ),
           label: Text(
-            "Take a Picture",
+            "Share to the Community",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,
               color: Colors.white,
             ),
           ),
-          // child: FaIcon(
-          //   FontAwesomeIcons.cameraRetro,
-          //   size: 30,
-          //   color: Colors.white,
-          // ),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => cameraScreen()),
+            showModalBottomSheet<void>(
+              isScrollControlled: true,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
+              context: context,
+              builder: (BuildContext context) {
+                return postPage();
+              },
             );
           },
         ),
