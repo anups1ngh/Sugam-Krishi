@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../weather/constants.dart';
+import '../constants.dart';
 
 class postPage extends StatefulWidget {
   const postPage({Key? key}) : super(key: key);

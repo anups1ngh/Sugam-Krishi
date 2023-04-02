@@ -2,10 +2,27 @@ import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/screens/FeedPage.dart';
 import 'package:sugam_krishi/screens/MarketplacePage.dart';
 import 'package:sugam_krishi/screens/ProfilePage.dart';
 import 'package:sugam_krishi/screens/UtilitiesPage.dart';
+import 'package:sugam_krishi/constants.dart';
+
+class SharedPrefsHandler{
+  //The following functions save and retrieve bool data from shared preferences according to the given tag
+  static void saveData({required String tag, required String data}) async{
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString(tag, data);
+  }
+  static Future<dynamic> readData({required String tag}) async{
+    final prefs = await SharedPreferences.getInstance();
+    dynamic val = prefs.getString(tag);
+    return val;
+  }
+}
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,12 +30,25 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+
+  void refreshPage(){
+    setState(() {
+
+    });
+  }
   int _selectedDrawerIndex = 0;
   int currentIndex = 0;
   List<MenuModel> bottomMenuItems = <MenuModel>[];
 
   List listItems = [
-    FeedPage(),
+    FeedPage(
+  location: WeatherSystem.location,
+  currentDate: WeatherSystem.currentDate,
+  currentWeatherStatus: WeatherSystem.currentWeatherStatus,
+  temperature: WeatherSystem.temperature,
+  dailyWeatherForecast: WeatherSystem.dailyWeatherForecast,
+  weatherIcon: WeatherSystem.weatherIcon,
+  ),
     MarketplacePage(),
     UtilitiesPage(),
     ProfilePage(),
@@ -31,7 +61,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     switch (pos) {
       case 0:
-        return FeedPage();
+        return FeedPage(
+          location: WeatherSystem.location,
+          currentDate: WeatherSystem.currentDate,
+          currentWeatherStatus: WeatherSystem.currentWeatherStatus,
+          temperature: WeatherSystem.temperature,
+          dailyWeatherForecast: WeatherSystem.dailyWeatherForecast,
+          weatherIcon: WeatherSystem.weatherIcon,
+        );
       case 1:
         return MarketplacePage();
       case 2:
@@ -51,6 +88,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
+    LocationSystem.getPosition();
+    WeatherSystem.fetchWeatherData(LocationSystem.convertPositionToString(LocationSystem.currPos));
+
     _selectedTab(_selectedDrawerIndex);
     bottomMenuItems.add(new MenuModel('Create a post',
         'share your thoughts with the community', Icons.colorize));
@@ -67,15 +107,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return Scaffold(
       backgroundColor: Colors.white,
       body: listItems[currentIndex],
-      // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-      // floatingActionButton: FloatingActionButton(
-      //   backgroundColor: Colors.teal,
-      //   tooltip: 'ChatBot',
-      //   splashColor: Colors.teal,
-      //   onPressed: _modalBottomSheetMenu,
-      //   child: Center(child: Icon(FontAwesomeIcons.robot,)),
-      //   elevation: 4,
-      // ),
       bottomNavigationBar: BottomNavyBar(
         selectedIndex: currentIndex,
         onItemSelected: (index) {

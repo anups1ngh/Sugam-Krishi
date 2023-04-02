@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 
-import '../weather/constants.dart';
+import '../constants.dart';
 
 class UtilitiesPage extends StatefulWidget {
   const UtilitiesPage({Key? key}) : super(key: key);
