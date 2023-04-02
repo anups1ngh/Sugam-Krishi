@@ -145,7 +145,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                     ],
                                   ),
                                   Icon(
-                                    Icons.chevron_right,
+                                    Icons.chevron_right_rounded,
                                     size: 40,
                                     color: Colors.black38,
                                   ),
@@ -165,7 +165,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                     ],
                                   ),
                                   Icon(
-                                    Icons.chevron_right,
+                                    Icons.chevron_right_rounded,
                                     size: 40,
                                     color: Colors.black38,
                                   ),
@@ -189,6 +189,9 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 30),
                                 child: FilledButton(
+                                  // style: ButtonStyle(
+                                  //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
+                                  // ),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -272,6 +275,9 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 30),
                                   child: FilledButton(
+                                    // style: ButtonStyle(
+                                    //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
+                                    // ),
                                     onPressed: () {
 
                                     },

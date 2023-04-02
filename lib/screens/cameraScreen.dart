@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:better_open_file/better_open_file.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
+import 'package:camerawesome/pigeon.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -15,6 +16,9 @@ class _cameraScreenState extends State<cameraScreen> {
   @override
   Widget build(BuildContext context) {
     return CameraAwesomeBuilder.awesome(
+      exifPreferences: ExifPreferences(
+        saveGPSLocation: true,
+      ),
       saveConfig: SaveConfig.photo(
         pathBuilder: () async {
           final Directory extDir = await getTemporaryDirectory();

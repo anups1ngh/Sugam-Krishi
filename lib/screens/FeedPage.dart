@@ -285,7 +285,6 @@ class _FeedPageState extends State<FeedPage> {
                             );
                           },
                           child: Row(
-                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -323,40 +322,35 @@ class _FeedPageState extends State<FeedPage> {
                                         ),
                                       ],
                                     ),
-                                    //WEATHER SUMMARY
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Expanded(
-                                        child: Text(
-                                          currentWeatherStatus,
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.left,
-                                          style: const TextStyle(
-                                            color: Colors.white70,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
                                   ],
                                 ),
                               ),
-                              Flexible(
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: //WEATHER ICON
-                                  SizedBox(
-                                    height: 100,
-                                    child: Image.asset(
-                                      "assets/$day_night/" + weatherIcon,
-                                      scale: 0.6,
-                                    ),
+                              //WEATHER ICON
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child:
+                                SizedBox(
+                                  height: 100,
+                                  child: Image.asset(
+                                    "assets/$day_night/" + weatherIcon,
+                                    scale: 0.6,
                                   ),
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                        //WEATHER SUMMARY
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20),
+                          child: Text(
+                            currentWeatherStatus,
+                            textAlign: TextAlign.left,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 18,
+                            ),
                           ),
                         ),
                         //DIVIDER

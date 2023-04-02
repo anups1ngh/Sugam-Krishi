@@ -33,8 +33,6 @@ class _DetailPageState extends State<DetailPage> {
 
       String weatherName = weatherData[index]["day"]["condition"]["text"];
       print(weatherData);
-      // String weatherIcon =
-      //     weatherName.replaceAll(' ', '').toLowerCase() + ".png";
       day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
       String weatherIcon = weatherData[index]["day"]["condition"]["icon"];
       weatherIcon = weatherIcon.substring(weatherIcon.length - 7);
@@ -77,7 +75,7 @@ class _DetailPageState extends State<DetailPage> {
                         Container(
                           padding:
                           const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          height: size.height * .3,
+                          height: size.height * .30,
                           decoration: BoxDecoration(
                             gradient: _constants.linearGradientTeal,
                             boxShadow: [
@@ -159,19 +157,6 @@ class _DetailPageState extends State<DetailPage> {
                                             ),
                                           ],
                                         ),
-                                        //WEATHER SUMMARY
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10),
-                                          child: Text(
-                                            getForecastWeather(0)["weatherName"].toString(),
-                                            textAlign: TextAlign.left,
-                                            style: const TextStyle(
-                                              color: Colors.white70,
-                                              fontSize: 20.0,
-                                            ),
-                                          ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -182,7 +167,7 @@ class _DetailPageState extends State<DetailPage> {
                                       children: [
                                         //WEATHER ICON
                                         SizedBox(
-                                          height: 75,
+                                          height: 100,
                                           child: Image.asset(
                                             "assets/$day_night/" +
                                                 getForecastWeather(0)["weatherIcon"],
@@ -194,6 +179,20 @@ class _DetailPageState extends State<DetailPage> {
                                     ),
                                   ),
                                 ],
+                              ),
+                              //WEATHER SUMMARY
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10),
+                                child: Text(
+                                  // getForecastWeather(0)["weatherName"].toString(),
+                                  "Moderate or heavy rain with thunder",
+                                  textAlign: TextAlign.left,
+                                  style: const TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 18.5,
+                                  ),
+                                ),
                               ),
                               //DIVIDER
                               Container(
@@ -209,6 +208,7 @@ class _DetailPageState extends State<DetailPage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 40),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     WeatherItem(
                                       value: getForecastWeather(0)["maxWindSpeed"],

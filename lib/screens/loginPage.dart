@@ -32,91 +32,93 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                padding: EdgeInsets.zero,
-                // color: Colors.yellow,
-                height: MediaQuery.of(context).size.width * 0.7,
-                child: ClipPath(
-                  clipper: OvalBottomBorderClipper(),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(
-                          'assets/login_illustration.jpg',
-                          fit: BoxFit.cover,
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: EdgeInsets.all(0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.zero,
+                  // color: Colors.yellow,
+                  height: MediaQuery.of(context).size.width * 0.7,
+                  child: ClipPath(
+                    clipper: OvalBottomBorderClipper(),
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Image.asset(
+                            'assets/login_illustration.jpg',
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        // Add other widgets as necessary
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 50.0),
+                Text(
+                  'Login',
+                  style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 50.0),
+
+                // SizedBox(height: 16.0),
+
+                // SizedBox(height: 16.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Phone Number',
+                      hintText: 'Enter your phone number',
+                      prefixIcon: Icon(Icons.phone),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.grey[400]!,
                         ),
                       ),
-                      // Add other widgets as necessary
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 50.0),
-              Text(
-                'Login',
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 50.0),
-
-              // SizedBox(height: 16.0),
-
-              // SizedBox(height: 16.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Phone Number',
-                    hintText: 'Enter your phone number',
-                    prefixIcon: Icon(Icons.phone),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Colors.grey[400]!,
-                      ),
+                      border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey[400]!)),
                     ),
-                    border: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.grey[400]!)),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) {
+                      if (value!.isEmpty || value.length < 10) {
+                        // return 'Please enter a valid phone number';
+                      }
+                      // TODO: Add phone number validation
+                      return null;
+                    },
+                    onSaved: (value) => _phoneNumber = value!,
                   ),
-                  keyboardType: TextInputType.phone,
-                  validator: (value) {
-                    if (value!.isEmpty || value.length < 10) {
-                      // return 'Please enter a valid phone number';
-                    }
-                    // TODO: Add phone number validation
-                    return null;
-                  },
-                  onSaved: (value) => _phoneNumber = value!,
                 ),
-              ),
-              SizedBox(height: 32.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: ElevatedButton(
-                  child: Text('Login with OTP'),
-                  onPressed: _handleSubmit,
+                SizedBox(height: 32.0),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: ElevatedButton(
+                    child: Text('Login with OTP'),
+                    onPressed: _handleSubmit,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-                child: OutlinedButton(
-                  child: Text('Don\'t have an account? Signup'),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SignupPage()),
-                    );
-                  },
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                  child: OutlinedButton(
+                    child: Text('Don\'t have an account? Signup'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignupPage()),
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -196,73 +198,75 @@ class OtpPage extends StatelessWidget {
       // appBar: AppBar(
       //   title: Text('OTP Verification'),
       // ),
-      body: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.zero,
-            // color: Colors.yellow,
-            height: MediaQuery.of(context).size.width * 0.7,
-            child: ClipPath(
-              clipper: OvalBottomBorderClipper(),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      'assets/login_illustration.jpg',
-                      fit: BoxFit.cover,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.zero,
+              // color: Colors.yellow,
+              height: MediaQuery.of(context).size.width * 0.7,
+              child: ClipPath(
+                clipper: OvalBottomBorderClipper(),
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/login_illustration.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // Add other widgets as necessary
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 50.0),
+            Text(
+              'OTP Verification',
+              style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 50.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: TextFormField(
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Enter OTP',
+                  prefixIcon: Icon(Icons.lock),
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey[400]!,
                     ),
                   ),
-                  // Add other widgets as necessary
-                ],
-              ),
-            ),
-          ),
-          SizedBox(height: 50.0),
-          Text(
-            'OTP Verification',
-            style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 50.0),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: TextFormField(
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'Enter OTP',
-                prefixIcon: Icon(Icons.lock),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                    color: Colors.grey[400]!,
-                  ),
+                  border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey[400]!)),
                 ),
-                border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey[400]!)),
               ),
             ),
-          ),
-          SizedBox(height: 32.0),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: ElevatedButton(
-              child: Text('Let\'s go!'),
-              onPressed: () {
-                Fluttertoast.showToast(
-                  msg: "Login Successful !",
-                  toastLength: Toast.LENGTH_SHORT,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.black,
-                  textColor: Colors.white,
-                  fontSize: 16.0,
-                );
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
+            SizedBox(height: 32.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+              child: ElevatedButton(
+                child: Text('Let\'s go!'),
+                onPressed: () {
+                  Fluttertoast.showToast(
+                    msg: "Login Successful !",
+                    toastLength: Toast.LENGTH_SHORT,
+                    timeInSecForIosWeb: 1,
+                    backgroundColor: Colors.black,
+                    textColor: Colors.white,
+                    fontSize: 16.0,
+                  );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
