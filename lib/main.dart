@@ -1,11 +1,23 @@
 import 'dart:io';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  var email = preferences.getString("email");
+
+  await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    home: email == null ? RegisterScreen() : HomePage(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,7 +32,7 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         primarySwatch: Colors.green,
       ),
-      home: SignupPage(),
+      home: RegisterScreen(),
     );
   }
 }

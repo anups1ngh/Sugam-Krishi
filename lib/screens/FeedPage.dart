@@ -20,7 +20,14 @@ class FeedPage extends StatefulWidget {
   String currentDate;
   List dailyWeatherForecast;
   String currentWeatherStatus;
-  FeedPage({super.key, required this.location, required this.weatherIcon, required this.currentDate, required this.dailyWeatherForecast, required this.currentWeatherStatus, required this.temperature});
+  FeedPage(
+      {super.key,
+      required this.location,
+      required this.weatherIcon,
+      required this.currentDate,
+      required this.dailyWeatherForecast,
+      required this.currentWeatherStatus,
+      required this.temperature});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -30,18 +37,20 @@ class _FeedPageState extends State<FeedPage> {
   Constants _constants = Constants();
   String day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
 
-  void refreshVariables(){
-      LocationSystem.getPosition();
-      WeatherSystem.fetchWeatherData(LocationSystem.convertPositionToString(LocationSystem.currPos));
-      setState(() {
-        widget.location = WeatherSystem.location;
-        widget.currentWeatherStatus = WeatherSystem.currentWeatherStatus;
-        widget.dailyWeatherForecast = WeatherSystem.dailyWeatherForecast;
-        widget.currentDate = WeatherSystem.currentDate;
-        widget.temperature = WeatherSystem.temperature;
-        widget.weatherIcon = WeatherSystem.weatherIcon;
-      });
+  void refreshVariables() {
+    LocationSystem.getPosition();
+    WeatherSystem.fetchWeatherData(
+        LocationSystem.convertPositionToString(LocationSystem.currPos));
+    setState(() {
+      widget.location = WeatherSystem.location;
+      widget.currentWeatherStatus = WeatherSystem.currentWeatherStatus;
+      widget.dailyWeatherForecast = WeatherSystem.dailyWeatherForecast;
+      widget.currentDate = WeatherSystem.currentDate;
+      widget.temperature = WeatherSystem.temperature;
+      widget.weatherIcon = WeatherSystem.weatherIcon;
+    });
   }
+
   void initState() {
     day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
     super.initState();
@@ -58,9 +67,10 @@ class _FeedPageState extends State<FeedPage> {
         // leading: const BackButton(
         //   color: Colors.black,
         // ),
+
         automaticallyImplyLeading: false,
         title: Text(
-            "KrishiCommunity",
+          "KrishiCommunity",
           textAlign: TextAlign.left,
           style: GoogleFonts.openSans(
             color: Colors.black,
@@ -109,7 +119,8 @@ class _FeedPageState extends State<FeedPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
                                 widget.currentDate,
                                 style: const TextStyle(
@@ -135,7 +146,7 @@ class _FeedPageState extends State<FeedPage> {
                                   ),
                                 ),
                                 IconButton(
-                                  onPressed: (){
+                                  onPressed: () {
                                     refreshVariables();
                                     // widget.notifyParent();
                                   },
@@ -155,7 +166,8 @@ class _FeedPageState extends State<FeedPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailPage(
-                                        dailyForecastWeather: widget.dailyWeatherForecast,
+                                        dailyForecastWeather:
+                                            widget.dailyWeatherForecast,
                                       )),
                             );
                           },
@@ -164,18 +176,22 @@ class _FeedPageState extends State<FeedPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     //TEMPERATURE
                                     Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.only(top: 0),
+                                          padding:
+                                              const EdgeInsets.only(top: 0),
                                           child: Text(
                                             widget.temperature.toString(),
                                             style: TextStyle(
@@ -203,8 +219,7 @@ class _FeedPageState extends State<FeedPage> {
                               //WEATHER ICON
                               Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 10),
-                                child:
-                                SizedBox(
+                                child: SizedBox(
                                   height: 100,
                                   child: Image.asset(
                                     "assets/$day_night/" + widget.weatherIcon,
@@ -217,8 +232,7 @@ class _FeedPageState extends State<FeedPage> {
                         ),
                         //WEATHER SUMMARY
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Text(
                             widget.currentWeatherStatus,
                             textAlign: TextAlign.left,
@@ -293,7 +307,8 @@ class _FeedPageState extends State<FeedPage> {
             showModalBottomSheet<void>(
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(18))),
+                  borderRadius:
+                      BorderRadius.vertical(top: Radius.circular(18))),
               context: context,
               builder: (BuildContext context) {
                 return postPage();
