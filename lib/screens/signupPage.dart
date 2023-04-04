@@ -257,11 +257,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             signUpWithEmailPassword(
                                 _email, _password, _username, _contact);
                             Future.delayed(Duration(seconds: 2), () {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => HomePage()),
-                              );
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: ((context) => HomePage())));
                             });
                           }
                         },

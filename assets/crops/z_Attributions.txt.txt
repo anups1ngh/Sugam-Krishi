@@ -63,3 +63,6 @@
 <a href="https://www.flaticon.com/free-icons/horse" title="horse icons">Horse icons created by Enes Gozcu - Flaticon</a>
 
 <a href="https://www.flaticon.com/free-icons/pig" title="pig icons">Pig icons created by monkik - Flaticon</a>
+
+
+<a href="https://www.flaticon.com/free-icons/farmer" title="farmer icons">Farmer icons created by max.icons - Flaticon</a>

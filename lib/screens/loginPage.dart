@@ -41,12 +41,8 @@ class _LoginPageState extends State<LoginPage> {
         isLoading = false;
       });
       showToastText('Login Successful');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: ((context) => HomePage())));
     } on FirebaseAuthException catch (e) {
       // Handle sign in errors
       setState(() {

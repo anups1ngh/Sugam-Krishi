@@ -11,9 +11,6 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
-        // leading: const BackButton(
-        //   color: Colors.black,
-        // ),
         automaticallyImplyLeading: false,
         title: Text(
           "Profile",
@@ -25,8 +22,42 @@ class ProfilePage extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 15,
+              ),
 
+              // Profile Image with image picker
+              Center(
+                child: Stack(children: [
+                  //image picker
+                  Positioned(
+                    right: -2,
+                    top: -9,
+                    child: Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: AssetImage("assets/farmer.png"),
+                          fit: BoxFit.cover,
+                        ),
+                        border: Border.all(
+                          width: 4,
+                          color: Theme.of(context).scaffoldBackgroundColor,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.camera,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
+            ],
           ),
         ),
       ),
