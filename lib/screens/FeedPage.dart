@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -22,12 +23,12 @@ class FeedPage extends StatefulWidget {
   String currentWeatherStatus;
   FeedPage(
       {super.key,
-      required this.location,
-      required this.weatherIcon,
-      required this.currentDate,
-      required this.dailyWeatherForecast,
-      required this.currentWeatherStatus,
-      required this.temperature});
+        required this.location,
+        required this.weatherIcon,
+        required this.currentDate,
+        required this.dailyWeatherForecast,
+        required this.currentWeatherStatus,
+        required this.temperature});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -37,17 +38,23 @@ class _FeedPageState extends State<FeedPage> {
   Constants _constants = Constants();
   String day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
 
+  Future<void> getLocationText() async{
+    List<Placemark> placemarks = await placemarkFromCoordinates(LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
+    print(placemarks[0].subLocality);
+    widget.location = placemarks[0].subLocality.toString() + ", " + placemarks[0].locality.toString();
+  }
   void refreshVariables() {
     LocationSystem.getPosition();
     WeatherSystem.fetchWeatherData(
         LocationSystem.convertPositionToString(LocationSystem.currPos));
     setState(() {
-      widget.location = WeatherSystem.location;
+      // widget.location = WeatherSystem.location;
       widget.currentWeatherStatus = WeatherSystem.currentWeatherStatus;
       widget.dailyWeatherForecast = WeatherSystem.dailyWeatherForecast;
       widget.currentDate = WeatherSystem.currentDate;
       widget.temperature = WeatherSystem.temperature;
       widget.weatherIcon = WeatherSystem.weatherIcon;
+      getLocationText();
     });
   }
 
@@ -95,8 +102,8 @@ class _FeedPageState extends State<FeedPage> {
                 children: [
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                    height: size.height * .24,
+                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                    height: size.height * .22,
                     decoration: BoxDecoration(
                       gradient: _constants.linearGradientTeal,
                       boxShadow: [
@@ -111,7 +118,7 @@ class _FeedPageState extends State<FeedPage> {
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      // mainAxisAlignment: MainAxisAlignment.start,
+                      // mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         //DATE AND LOCATION
                         Row(
@@ -120,7 +127,7 @@ class _FeedPageState extends State<FeedPage> {
                           children: [
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 10),
+                              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                               child: Text(
                                 widget.currentDate,
                                 style: const TextStyle(
@@ -129,15 +136,16 @@ class _FeedPageState extends State<FeedPage> {
                               ),
                             ),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Image.asset(
-                                  "assets/pin.png",
-                                  width: 20,
-                                ),
-                                const SizedBox(
-                                  width: 2,
-                                ),
+                                // Image.asset(
+                                //   "assets/pin.png",
+                                //   width: 20,
+                                // ),
+                                // const SizedBox(
+                                //   width: 2,
+                                // ),
                                 Text(
                                   widget.location,
                                   style: const TextStyle(
@@ -145,14 +153,17 @@ class _FeedPageState extends State<FeedPage> {
                                     fontSize: 16.0,
                                   ),
                                 ),
-                                IconButton(
-                                  onPressed: () {
+                                GestureDetector(
+                                  onTap: () {
                                     refreshVariables();
                                     // widget.notifyParent();
                                   },
-                                  icon: const Icon(
-                                    Icons.refresh_rounded,
-                                    color: Colors.white,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    child: const Icon(
+                                      Icons.refresh_rounded,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -166,9 +177,10 @@ class _FeedPageState extends State<FeedPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailPage(
-                                        dailyForecastWeather:
-                                            widget.dailyWeatherForecast,
-                                      )),
+                                    dailyForecastWeather:
+                                    widget.dailyWeatherForecast,
+                                    location: widget.location,
+                                  )),
                             );
                           },
                           child: Row(
@@ -177,7 +189,7 @@ class _FeedPageState extends State<FeedPage> {
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 10),
+                                const EdgeInsets.symmetric(horizontal: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -185,13 +197,13 @@ class _FeedPageState extends State<FeedPage> {
                                     //TEMPERATURE
                                     Row(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(top: 0),
+                                          const EdgeInsets.only(top: 0),
                                           child: Text(
                                             widget.temperature.toString(),
                                             style: TextStyle(
@@ -308,7 +320,7 @@ class _FeedPageState extends State<FeedPage> {
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
                   borderRadius:
-                      BorderRadius.vertical(top: Radius.circular(18))),
+                  BorderRadius.vertical(top: Radius.circular(18))),
               context: context,
               builder: (BuildContext context) {
                 return postPage();

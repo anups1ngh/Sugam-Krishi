@@ -1,13 +1,15 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../components/weather_item.dart';
 import '../../constants.dart';
 
 class DetailPage extends StatefulWidget {
   final dailyForecastWeather;
+  final String location;
 
-  const DetailPage({Key? key, this.dailyForecastWeather}) : super(key: key);
+  const DetailPage({Key? key, this.dailyForecastWeather, required this.location}) : super(key: key);
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -56,14 +58,15 @@ class _DetailPageState extends State<DetailPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Forecasts'),
+        leadingWidth: 45,
+        title: Text('Forecasts for ${widget.location}', style: GoogleFonts.openSans(fontSize: 18), overflow: TextOverflow.fade,),
         centerTitle: true,
         backgroundColor: _constants.primaryColor,
         elevation: 1,
       ),
       body: ListView.builder(
               physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.symmetric(vertical: 20),
+              padding: EdgeInsets.symmetric(vertical: 5),
               itemCount: 7,
               itemBuilder: (context, index) {
                 if(index == 0)

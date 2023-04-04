@@ -1,10 +1,16 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
-
+import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
+import 'package:youtube_api/youtube_api.dart';
 import '../constants.dart';
+import '../keys.dart';
+
+List<int> schemesList = [1, 2, 3, 4, 5];
+List<Widget> videosList = [];
 
 class UtilitiesPage extends StatefulWidget {
   const UtilitiesPage({Key? key}) : super(key: key);
@@ -15,8 +21,31 @@ class UtilitiesPage extends StatefulWidget {
 
 class _UtilitiesPageState extends State<UtilitiesPage> {
   final Constants _constants = Constants();
+
+  YoutubeAPI youtube = YoutubeAPI(YT_API_KEY);
+  List<YouTubeVideo> videoResult = [];
+
+  Future<void> callAPI(String query) async {
+    videoResult = await youtube.search(
+      query,
+      order: 'relevance',
+      videoDuration: 'any',
+    );
+    videoResult = await youtube.nextPage();
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    callAPI("Modern farming techniques");
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return Scaffold(
       backgroundColor: Color(0xffE0F2F1),
       appBar: AppBar(
@@ -71,7 +100,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                       viewportFraction: 0.9,
                       autoPlay: true,
                     ),
-                    items: [1, 2, 3, 4, 5].map((i) {
+                    items: schemesList.map((i) {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
@@ -86,6 +115,36 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                 'text $i',
                                 style: TextStyle(fontSize: 16.0),
                               )));
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  //LEARN
+                  Padding(
+                    padding:
+                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Learn",
+                        style: GoogleFonts.poppins(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                  CarouselSlider(
+                    options: CarouselOptions(
+                      height: 300,
+                      viewportFraction: 0.9,
+                      autoPlay: false,
+                    ),
+                    items: videoResult.map<Widget>((video) {
+                      return Builder(
+                        builder: (BuildContext context){
+                          return listItem(video, context);
                         },
                       );
                     }).toList(),
@@ -319,4 +378,63 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
       ),
     );
   }
+}
+
+Widget listItem(YouTubeVideo video, BuildContext context) {
+  return GestureDetector(
+    onTap: (){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => ytPlayerScreen(videoID: video.id!)),
+      );
+    },
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 5),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white60,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: Image.network(
+                video.thumbnail.high.url ?? '',
+                width: 250,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Text(
+                video.title,
+                textAlign: TextAlign.center,
+                softWrap: true,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              Text(
+                video.channelTitle,
+                softWrap: true,
+                style: GoogleFonts.poppins(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          )
+        ],
+      ),
+    ),
+  );
 }
