@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sugam_krishi/screens/AI-Bot/chatScreen.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
@@ -11,7 +12,7 @@ import '../constants.dart';
 import '../keys.dart';
 
 List<int> schemesList = [1, 2, 3, 4, 5];
-List<Widget> videosList = [];
+List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
 class UtilitiesPage extends StatefulWidget {
   const UtilitiesPage({Key? key}) : super(key: key);
@@ -22,6 +23,8 @@ class UtilitiesPage extends StatefulWidget {
 
 class _UtilitiesPageState extends State<UtilitiesPage> {
   final Constants _constants = Constants();
+  bool _videosLoaded = false;
+  bool _schemesLoaded = false;
 
   YoutubeAPI youtube = YoutubeAPI(YT_API_KEY);
   List<YouTubeVideo> videoResult = [];
@@ -39,7 +42,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
   @override
   void initState() {
     // TODO: implement initState
-    callAPI("Modern farming techniques");
+    callAPI("Modern farming techniques").then((value) => _videosLoaded = true);
     super.initState();
   }
   @override
@@ -100,8 +103,10 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                       height: 200,
                       viewportFraction: 0.9,
                       autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 5),
                     ),
-                    items: schemesList.map((i) {
+                    items: _schemesLoaded
+                        ? schemesList.map((i) {
                       return Builder(
                         builder: (BuildContext context) {
                           return Container(
@@ -116,6 +121,13 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                 'text $i',
                                 style: TextStyle(fontSize: 16.0),
                               )));
+                        },
+                      );
+                    }).toList()
+                        : schemesList.map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return schemeShimmer();
                         },
                       );
                     }).toList(),
@@ -141,11 +153,20 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                       height: 300,
                       viewportFraction: 0.9,
                       autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 5),
                     ),
-                    items: videoResult.map<Widget>((video) {
+                    items: _videosLoaded
+                        ? videoResult.map<Widget>((video) {
                       return Builder(
                         builder: (BuildContext context){
                           return listItem(video, context);
+                        },
+                      );
+                    }).toList()
+                        : videosList.map((i) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return ytShimmer();
                         },
                       );
                     }).toList(),
@@ -383,6 +404,36 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
       ),
     );
   }
+}
+
+Shimmer schemeShimmer(){
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[200]!,
+    highlightColor: Colors.grey[50]!,
+    child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5.0),
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+    ),
+  );
+
+}
+Shimmer ytShimmer(){
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[200]!,
+    highlightColor: Colors.grey[50]!,
+    child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 5.0),
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+        ),
+    ),
+  );
 }
 
 Widget listItem(YouTubeVideo video, BuildContext context) {

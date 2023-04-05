@@ -89,7 +89,7 @@ class _chatScreenState extends State<chatScreen> {
                                 ClipOval(
                                   // backgroundColor: scaffoldBackgroundColor.withOpacity(0.4),
                                   child: Image.asset(
-                                    "assets/openai_logo.png",
+                                    "assets/farmer_male.png",
                                     scale: 15,
                                   ),
                                 ),
@@ -126,8 +126,8 @@ class _chatScreenState extends State<chatScreen> {
                                   ClipOval(
                                     // backgroundColor: scaffoldBackgroundColor.withOpacity(0.4),
                                     child: Image.asset(
-                                      "assets/farmer_male.png",
-                                      scale: 15,
+                                      "assets/openai_logo.png",
+                                      scale: 18,
                                     ),
                                   ),
                                   const SizedBox(width: 8,),

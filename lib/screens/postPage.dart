@@ -4,7 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import '../constants.dart';
 
 class postPage extends StatefulWidget {
-  const postPage({Key? key}) : super(key: key);
+  final String userPhoto;
+  final String userName;
+  const postPage({Key? key, required this.userPhoto, required this.userName}) : super(key: key);
 
   @override
   State<postPage> createState() => _postPageState();
@@ -12,8 +14,6 @@ class postPage extends StatefulWidget {
 
 class _postPageState extends State<postPage> {
 
-  final Widget _avatar = Icon(Icons.person_outline_rounded);
-  final String _name = "Name";
   final TextEditingController _postController = TextEditingController();
   final Constants _constants = Constants();
   @override
@@ -54,17 +54,24 @@ class _postPageState extends State<postPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
                           child: CircleAvatar(
                             radius: 24,
-                            child: _avatar,
+                            backgroundColor: Color(0xff64FFDA).withOpacity(0.1),
+                            backgroundImage: NetworkImage(
+                              widget.userPhoto,
+                            ),
                           ),
                         ),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Text(
-                              _name,
-                              style: GoogleFonts.poppins(
-                                fontSize: 16,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                              child: Text(
+                                widget.userName,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w500
+                                ),
                               ),
                             ),
                             // DropdownButton(
@@ -85,10 +92,19 @@ class _postPageState extends State<postPage> {
                       ],
                     ),
                     FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(Colors.greenAccent.shade700),
+                      ),
                       onPressed: (){
 
                       },
-                      child: Text("Post"),
+                      child: Text(
+                        "Post",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -102,6 +118,13 @@ class _postPageState extends State<postPage> {
                       borderSide: BorderSide(
                         color: Colors.white70,
                         width: 1.2,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.green!,
+                        width: 1,
                       ),
                     ),
                     hintText: "Write something",

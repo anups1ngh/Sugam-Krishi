@@ -7,12 +7,15 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/postPage.dart';
 import 'package:sugam_krishi/weather/ui/detail_page.dart';
 import 'package:http/http.dart' as http;
 import '../weather/components/weather_item.dart';
 import '../constants.dart';
+import 'package:sugam_krishi/models/user.dart' as model;
 
 class FeedPage extends StatefulWidget {
   String location;
@@ -65,6 +68,7 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    model.User user = Provider.of<UserProvider>(context).getUser;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xffE0F2F1),
@@ -320,10 +324,13 @@ class _FeedPageState extends State<FeedPage> {
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
                   borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(18))),
+                  BorderRadius.vertical(top: Radius.circular(18),),),
               context: context,
               builder: (BuildContext context) {
-                return postPage();
+                return postPage(
+                  userName: user.username,
+                  userPhoto: user.photoUrl,
+                );
               },
             );
           },
