@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sugam_krishi/screens/AI-Bot/chatScreen.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
 import 'package:youtube_api/youtube_api.dart';
@@ -139,7 +140,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                     options: CarouselOptions(
                       height: 300,
                       viewportFraction: 0.9,
-                      autoPlay: false,
+                      autoPlay: true,
                     ),
                     items: videoResult.map<Widget>((video) {
                       return Builder(
@@ -338,7 +339,11 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                     //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
                                     // ),
                                     onPressed: () {
-
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => chatScreen()),
+                                      );
                                     },
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -406,7 +411,7 @@ Widget listItem(YouTubeVideo video, BuildContext context) {
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 video.thumbnail.high.url ?? '',
-                width: 250,
+                width: MediaQuery.of(context).size.width * .7,
               ),
             ),
           ),
