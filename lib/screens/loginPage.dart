@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/loginPage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
@@ -29,32 +30,56 @@ class _LoginPageState extends State<LoginPage> {
   String countryDial = "+91";
   bool isLoading = false;
 
-  Future<void> loginWithEmailPassword(String email, String password) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      // The user is signed in
+  void loginUser(String email, String password) async {
+    setState(() {
+      isLoading = true;
+    });
+    String res =
+        await AuthMethods().loginUser(email: email, password: password);
+    if (res == 'success') {
       setState(() {
         isLoading = false;
       });
       showToastText('Login Successful');
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: ((context) => HomePage())));
-    } on FirebaseAuthException catch (e) {
-      // Handle sign in errors
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ),
+          (route) => false);
+    } else {
       setState(() {
         isLoading = false;
       });
-      if (e.code == 'user-not-found') {
-        showToastText('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        showToastText('Wrong password provided for that user.');
-      }
+      showToastText(res);
     }
   }
+
+  // Future<void> loginWithEmailPassword(String email, String password) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     // The user is signed in
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     showToastText('Login Successful');
+  //     Navigator.of(context).pushReplacement(
+  //         MaterialPageRoute(builder: ((context) => HomePage())));
+  //   } on FirebaseAuthException catch (e) {
+  //     // Handle sign in errors
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+  //     if (e.code == 'user-not-found') {
+  //       showToastText('No user found for that email.');
+  //     } else if (e.code == 'wrong-password') {
+  //       showToastText('Wrong password provided for that user.');
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                             setState(() {
                               isLoading = true;
                             });
-                            loginWithEmailPassword(_email, _password);
+                            loginUser(_email, _password);
                           }
                         },
                         child: Container(
