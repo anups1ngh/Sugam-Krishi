@@ -112,8 +112,7 @@ packages:
       sha256: e6a326c8af69605aec75ed6c187d06b349707a27fbff8222ca9cc2cff167975c
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-    version: "1.3.0"
+    version: "1.2.1"
   chat_gpt_flutter:
     dependency: "direct main"
     description:
@@ -130,9 +129,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-=======
-    version: "1.2.1"
->>>>>>> e9eb6593ea3c5403ae0c10df5843bfb9a21e906b
   clock:
     dependency: transitive
     description:
@@ -362,16 +358,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
-<<<<<<< HEAD
-  flutter_spinkit:
-    dependency: "direct main"
-    description:
-      name: flutter_spinkit
-      sha256: "77a2117c0517ff909221f3160b8eb20052ab5216107581168af574ac1f05dff8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.0"
-=======
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -380,7 +366,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.9"
->>>>>>> e9eb6593ea3c5403ae0c10df5843bfb9a21e906b
+  flutter_spinkit:
+    dependency: "direct main"
+    description:
+      name: flutter_spinkit
+      sha256: "77a2117c0517ff909221f3160b8eb20052ab5216107581168af574ac1f05dff8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -527,16 +520,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.15"
-<<<<<<< HEAD
-  infinite_carousel:
-    dependency: "direct main"
-    description:
-      name: infinite_carousel
-      sha256: "4e0cf5124051c7336d406392f443bdf44b8f4e1810d1e13bd964f66af0944eda"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
-=======
   image_picker:
     dependency: "direct main"
     description:
@@ -577,7 +560,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.6.3"
->>>>>>> e9eb6593ea3c5403ae0c10df5843bfb9a21e906b
+  infinite_carousel:
+    dependency: "direct main"
+    description:
+      name: infinite_carousel
+      sha256: "4e0cf5124051c7336d406392f443bdf44b8f4e1810d1e13bd964f66af0944eda"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   intl:
     dependency: transitive
     description:
@@ -601,8 +591,7 @@ packages:
       sha256: "5528c2f391ededb7775ec1daa69e65a2d61276f7552de2b5f7b8d34ee9fd4ab7"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
-    version: "0.6.7"
+    version: "0.6.5"
   json_annotation:
     dependency: transitive
     description:
@@ -619,9 +608,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.6.1"
-=======
-    version: "0.6.5"
->>>>>>> e9eb6593ea3c5403ae0c10df5843bfb9a21e906b
   lints:
     dependency: transitive
     description:
