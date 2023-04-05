@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/loginPage.dart';
 
@@ -34,49 +36,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String countryDial = "+91";
   bool isLoading = false;
 
+  Uint8List? _image;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> addUserToFirestore(
-      String username, String email, String phoneNumber) async {
-    try {
-      await _firestore.collection('users').doc(phoneNumber).set({
-        'username': username,
-        'email': email,
-        'contact': phoneNumber,
-      });
-    } catch (e) {
-      print(e);
-    }
-  }
+  // Future<void> addUserToFirestore(
+  //     String username, String email, String phoneNumber) async {
+  //   try {
+  //     await _firestore.collection('users').doc(phoneNumber).set({
+  //       'username': username,
+  //       'email': email,
+  //       'contact': phoneNumber,
+  //     });
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
-  Future<void> signUpWithEmailPassword(
-      String email, String password, String username, String contact) async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  void signUpUser(String email, String password, String username,
+      String contact, Uint8List? image) async {
+    final ByteData bytes = await rootBundle.load('assets/farmer.png');
+    image = bytes.buffer.asUint8List();
+    // set loading to true
+    setState(() {
+      isLoading = true;
+    });
+
+    // signup user using our authmethodds
+    String res = await AuthMethods().signUpUser(
         email: email,
         password: password,
-      );
-      // store all the data in firestore database
-
-      await addUserToFirestore(username, email, contact);
+        username: username,
+        contact: contact,
+        file: image);
+    // if string returned is sucess, user has been created
+    if (res == "success") {
       setState(() {
         isLoading = false;
       });
-
       showToastText("Account created successfully");
-      // The user is signed up and a new user account is created
-    } on FirebaseAuthException catch (e) {
-      // Handle sign up errors
-      if (e.code == 'weak-password') {
-        print('The password provided is too weak.');
-      } else if (e.code == 'email-already-in-use') {
-        print('The account already exists for that email.');
-      }
-    } catch (e) {
-      print(e);
+      // navigate to the home screen
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } else {
+      setState(() {
+        isLoading = false;
+      });
+      // show the error
+      showToastText(res);
     }
   }
+
+  // Future<void> signUpWithEmailPassword(
+  //     String email, String password, String username, String contact) async {
+  //   try {
+  //     UserCredential userCredential =
+  //         await FirebaseAuth.instance.createUserWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     // store all the data in firestore database
+
+  //     await addUserToFirestore(username, email, contact);
+  //     setState(() {
+  //       isLoading = false;
+  //     });
+
+  //     showToastText("Account created successfully");
+  //     // The user is signed up and a new user account is created
+  //   } on FirebaseAuthException catch (e) {
+  //     // Handle sign up errors
+  //     if (e.code == 'weak-password') {
+  //       print('The password provided is too weak.');
+  //     } else if (e.code == 'email-already-in-use') {
+  //       print('The account already exists for that email.');
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -254,8 +295,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             setState(() {
                               isLoading = true;
                             });
-                            signUpWithEmailPassword(
-                                _email, _password, _username, _contact);
+                            signUpUser(
+                                _email, _password, _username, _contact, _image);
                             Future.delayed(Duration(seconds: 2), () {
                               Navigator.of(context).pushReplacement(
                                   MaterialPageRoute(
