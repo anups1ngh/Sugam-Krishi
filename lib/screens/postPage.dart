@@ -3,23 +3,29 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:sugam_krishi/providers/user_provider.dart';
+import 'package:sugam_krishi/resources/firestore_methods.dart';
 import 'package:sugam_krishi/utils/utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../constants.dart';
 
 class postPage extends StatefulWidget {
   final String userPhoto;
   final String userName;
-  const postPage({Key? key, required this.userPhoto, required this.userName}) : super(key: key);
+  const postPage({Key? key, required this.userPhoto, required this.userName})
+      : super(key: key);
 
   @override
   State<postPage> createState() => _postPageState();
 }
 
 class _postPageState extends State<postPage> {
-
   final TextEditingController _postController = TextEditingController();
   final Constants _constants = Constants();
   String _shareTo = "Anyone";
+  bool isLoading = false;
+  String res = "";
 
   Uint8List? _image;
   bool _photoSelected = false;
@@ -31,11 +37,83 @@ class _postPageState extends State<postPage> {
       _photoSelected = true;
     });
   }
+
+  void showToastText(String text) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
+// In post image function make it such that if we do not select an image then it will upload the post then also
+  void postImage(String uid, String username, String profImage) async {
+    // final ByteData bytes =
+    //     await rootBundle.load('assets/login_illustration.jpg');
+    // _img = bytes.buffer.asUint8List();
+    setState(() {
+      isLoading = true;
+    });
+    // start the loading
+    try {
+      // upload to storage and db
+      if (_image != null) {
+        res = await FireStoreMethods().uploadPost(
+          _postController.text,
+          _image!,
+          uid,
+          username,
+          profImage,
+        );
+      } else {
+        res = await FireStoreMethods().uploadPost(
+          _postController.text,
+          null,
+          uid,
+          username,
+          profImage,
+        );
+      }
+
+      if (res == "success") {
+        setState(() {
+          isLoading = false;
+        });
+        showToastText(
+          'Posted!',
+        );
+        clearImage();
+        _postController.clear();
+        Navigator.pop(context);
+      } else {
+        showToastText(res);
+      }
+    } catch (err) {
+      setState(() {
+        isLoading = false;
+      });
+      showToastText(
+        err.toString(),
+      );
+    }
+  }
+
+  void clearImage() {
+    setState(() {
+      _image = null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final UserProvider userProvider = Provider.of<UserProvider>(context);
     return SafeArea(
       child: SingleChildScrollView(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         // reverse: true,
         child: SafeArea(
           child: Container(
@@ -66,10 +144,12 @@ class _postPageState extends State<postPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 7),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 7),
                             child: CircleAvatar(
                               radius: 24,
-                              backgroundColor: Color(0xff64FFDA).withOpacity(0.1),
+                              backgroundColor:
+                                  Color(0xff64FFDA).withOpacity(0.1),
                               backgroundImage: NetworkImage(
                                 widget.userPhoto,
                               ),
@@ -80,13 +160,13 @@ class _postPageState extends State<postPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 0),
                                 child: Text(
                                   widget.userName,
                                   style: GoogleFonts.poppins(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500
-                                  ),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w500),
                                 ),
                               ),
                               // DropdownButton(
@@ -108,11 +188,10 @@ class _postPageState extends State<postPage> {
                       ),
                       FilledButton(
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.greenAccent.shade700),
+                          backgroundColor: MaterialStateProperty.all(
+                              Colors.greenAccent.shade700),
                         ),
-                        onPressed: (){
-
-                        },
+                        onPressed: () {},
                         child: Text(
                           "Post",
                           style: GoogleFonts.poppins(
@@ -138,7 +217,7 @@ class _postPageState extends State<postPage> {
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                         borderSide: BorderSide(
-                          color: Colors.green!,
+                          color: Colors.green,
                           width: 1,
                         ),
                       ),
@@ -153,71 +232,76 @@ class _postPageState extends State<postPage> {
                   ),
                   _photoSelected
                       ? Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 0.1,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    // height: 300,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: Stack(
-                      alignment: AlignmentDirectional.center,
-                      children: [
-                        Expanded(
-                          child: Image.memory(
-                            _image!,
-                            fit: BoxFit.cover,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 0.1,
+                            ),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: IconButton(
-                            icon: Icon(Icons.cancel_outlined, color: Colors.redAccent,),
-                            onPressed: (){
-                              setState(() {
-                                _photoSelected = false;
-                              });
-                            },
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          // height: 300,
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: Stack(
+                            alignment: AlignmentDirectional.center,
+                            children: [
+                              Expanded(
+                                child: Image.memory(
+                                  _image!,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.cancel_outlined,
+                                    color: Colors.redAccent,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      _photoSelected = false;
+                                    });
+                                  },
+                                ),
+                              )
+                            ],
                           ),
                         )
-                      ],
-                    ),
-                  )
                       : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      FilledButton(
-                        child: Row(
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                              child: FaIcon(FontAwesomeIcons.image),
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            FilledButton(
+                              child: Row(
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 10),
+                                    child: FaIcon(FontAwesomeIcons.image),
+                                  ),
+                                  Text("Add a Photo"),
+                                ],
+                              ),
+                              onPressed: () {
+                                selectImage(ImageSource.gallery);
+                              },
                             ),
-                            Text("Add a Photo"),
+                            FilledButton(
+                              child: Row(
+                                children: const [
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 10),
+                                    child: FaIcon(FontAwesomeIcons.cameraRetro),
+                                  ),
+                                  Text("Take a Photo"),
+                                ],
+                              ),
+                              onPressed: () {
+                                selectImage(ImageSource.camera);
+                              },
+                            ),
                           ],
                         ),
-                        onPressed: (){
-                          selectImage(ImageSource.gallery);
-                        },
-                      ),
-                      FilledButton(
-                        child: Row(
-                          children: const [
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                              child: FaIcon(FontAwesomeIcons.cameraRetro),
-                            ),
-                            Text("Take a Photo"),
-                          ],
-                        ),
-                        onPressed: (){
-                          selectImage(ImageSource.camera);
-                        },
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

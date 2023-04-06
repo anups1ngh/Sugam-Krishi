@@ -40,19 +40,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Future<void> addUserToFirestore(
-  //     String username, String email, String phoneNumber) async {
-  //   try {
-  //     await _firestore.collection('users').doc(phoneNumber).set({
-  //       'username': username,
-  //       'email': email,
-  //       'contact': phoneNumber,
-  //     });
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   void signUpUser(String email, String password, String username,
       String contact, Uint8List? image) async {
     final ByteData bytes = await rootBundle.load('assets/farmer.png');
@@ -89,35 +76,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       showToastText(res);
     }
   }
-
-  // Future<void> signUpWithEmailPassword(
-  //     String email, String password, String username, String contact) async {
-  //   try {
-  //     UserCredential userCredential =
-  //         await FirebaseAuth.instance.createUserWithEmailAndPassword(
-  //       email: email,
-  //       password: password,
-  //     );
-  //     // store all the data in firestore database
-
-  //     await addUserToFirestore(username, email, contact);
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-
-  //     showToastText("Account created successfully");
-  //     // The user is signed up and a new user account is created
-  //   } on FirebaseAuthException catch (e) {
-  //     // Handle sign up errors
-  //     if (e.code == 'weak-password') {
-  //       print('The password provided is too weak.');
-  //     } else if (e.code == 'email-already-in-use') {
-  //       print('The account already exists for that email.');
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -156,10 +114,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     left: screenWidth / 12,
                     right: screenWidth / 12,
                     top: screenHeight / 12,
-                    // top: bottom > 0 ? screenHeight / 12 : 0,
                   ),
                   child: Column(
-                    //mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const SizedBox(
                         height: 8,

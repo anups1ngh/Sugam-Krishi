@@ -25,12 +25,12 @@ class FeedPage extends StatefulWidget {
   String currentWeatherStatus;
   FeedPage(
       {super.key,
-        required this.location,
-        required this.weatherIcon,
-        required this.currentDate,
-        required this.dailyWeatherForecast,
-        required this.currentWeatherStatus,
-        required this.temperature});
+      required this.location,
+      required this.weatherIcon,
+      required this.currentDate,
+      required this.dailyWeatherForecast,
+      required this.currentWeatherStatus,
+      required this.temperature});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -40,11 +40,15 @@ class _FeedPageState extends State<FeedPage> {
   Constants _constants = Constants();
   String day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
 
-  Future<void> getLocationText() async{
-    List<Placemark> placemarks = await placemarkFromCoordinates(LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
+  Future<void> getLocationText() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
     print(placemarks[0].subLocality);
-    widget.location = placemarks[0].subLocality.toString() + ", " + placemarks[0].locality.toString();
+    widget.location = placemarks[0].subLocality.toString() +
+        ", " +
+        placemarks[0].locality.toString();
   }
+
   void refreshVariables() {
     LocationSystem.getPosition();
     WeatherSystem.fetchWeatherData(
@@ -105,7 +109,7 @@ class _FeedPageState extends State<FeedPage> {
                 children: [
                   Container(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                     height: size.height * .22,
                     decoration: BoxDecoration(
                       gradient: _constants.linearGradientTeal,
@@ -129,8 +133,8 @@ class _FeedPageState extends State<FeedPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
                               child: Text(
                                 widget.currentDate,
                                 style: const TextStyle(
@@ -162,7 +166,8 @@ class _FeedPageState extends State<FeedPage> {
                                     // widget.notifyParent();
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 2),
                                     child: const Icon(
                                       Icons.refresh_rounded,
                                       color: Colors.white,
@@ -179,11 +184,11 @@ class _FeedPageState extends State<FeedPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => DetailPage(
-                                    dailyForecastWeather:
-                                    widget.dailyWeatherForecast,
-                                    location: widget.location,
-                                  ),
+                                builder: (context) => DetailPage(
+                                  dailyForecastWeather:
+                                      widget.dailyWeatherForecast,
+                                  location: widget.location,
+                                ),
                               ),
                             );
                           },
@@ -193,7 +198,7 @@ class _FeedPageState extends State<FeedPage> {
                             children: [
                               Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 10),
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -201,13 +206,13 @@ class _FeedPageState extends State<FeedPage> {
                                     //TEMPERATURE
                                     Row(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Padding(
                                           padding:
-                                          const EdgeInsets.only(top: 0),
+                                              const EdgeInsets.only(top: 0),
                                           child: Text(
                                             widget.temperature.toString(),
                                             style: TextStyle(
@@ -323,8 +328,10 @@ class _FeedPageState extends State<FeedPage> {
             showModalBottomSheet<void>(
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(18),),),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(18),
+                ),
+              ),
               context: context,
               builder: (BuildContext context) {
                 return postPage(

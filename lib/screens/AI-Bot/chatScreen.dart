@@ -34,6 +34,7 @@ class _chatScreenState extends State<chatScreen> {
     _listScrollController = ScrollController();
     super.initState();
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -42,6 +43,7 @@ class _chatScreenState extends State<chatScreen> {
     streamSubscription?.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,7 +56,7 @@ class _chatScreenState extends State<chatScreen> {
         // ),
         automaticallyImplyLeading: true,
         title: Text(
-          "ChatGPT",
+          "AgroAssist",
           textAlign: TextAlign.left,
           style: GoogleFonts.openSans(
             color: Colors.white,
@@ -80,7 +82,7 @@ class _chatScreenState extends State<chatScreen> {
                       children: [
                         //CHAT WIDGET - USER QUERY
                         Material(
-                        color: scaffoldBackgroundColor,
+                          color: scaffoldBackgroundColor,
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
@@ -93,7 +95,9 @@ class _chatScreenState extends State<chatScreen> {
                                     scale: 15,
                                   ),
                                 ),
-                                const SizedBox(width: 8,),
+                                const SizedBox(
+                                  width: 8,
+                                ),
                                 Expanded(
                                   child: Text(
                                     questionAnswer.question,
@@ -111,11 +115,11 @@ class _chatScreenState extends State<chatScreen> {
                         const SizedBox(height: 12),
                         if (answer.isEmpty && loading)
                           const SpinKitThreeBounce(
-                          color: Colors.white,
-                          size: 18,
+                            color: Colors.white,
+                            size: 18,
                           )
                         else
-                        //CHAT WIDGET
+                          //CHAT WIDGET
                           Material(
                             color: cardColor,
                             child: Padding(
@@ -130,7 +134,9 @@ class _chatScreenState extends State<chatScreen> {
                                       scale: 18,
                                     ),
                                   ),
-                                  const SizedBox(width: 8,),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
                                   Expanded(
                                     child: Text(
                                       answer,
@@ -149,15 +155,17 @@ class _chatScreenState extends State<chatScreen> {
                     );
                   },
                   separatorBuilder: (context, index) =>
-                  const SizedBox(height: 12),
+                      const SizedBox(height: 12),
                 ),
               ),
               //TEXT FIELD
               Material(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
                 color: cardColor,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                   child: Row(
                     children: [
                       Expanded(
@@ -169,15 +177,15 @@ class _chatScreenState extends State<chatScreen> {
                             _sendMessage();
                           },
                           decoration: InputDecoration.collapsed(
-                              hintText: "How can I help you",
-                              hintStyle: TextStyle(color: Colors.grey),
+                            hintText: "How can I help you",
+                            hintStyle: TextStyle(color: Colors.grey),
                           ),
                         ),
                       ),
                       IconButton(
                           onPressed: () async {
-                              _sendMessage();
-                              focusNode.unfocus();
+                            _sendMessage();
+                            focusNode.unfocus();
                           },
                           icon: const Icon(
                             Icons.send,
@@ -228,8 +236,8 @@ class _chatScreenState extends State<chatScreen> {
     try {
       final stream = await chatGPT.createChatCompletionStream(request);
       streamSubscription = stream?.listen(
-            (event) => setState(
-              () {
+        (event) => setState(
+          () {
             if (event.streamMessageEnd) {
               streamSubscription?.cancel();
             } else {

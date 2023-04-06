@@ -6,25 +6,35 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:youtube_api/youtube_api.dart';
+
 import 'package:sugam_krishi/screens/AI-Bot/chatScreen.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/schemesPage.dart';
 import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
-import 'package:youtube_api/youtube_api.dart';
+
+import '../constants.dart';
 import '../keys.dart';
 import 'package:http/http.dart' as http;
 
 List<int> schemesList = [1, 2, 3, 4, 5];
 List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-const String schemesURL = "https://script.google.com/macros/s/AKfycbx1lF_t19M15c2gj6jQGXT3HAT4lHeSfAEgUqwkzXoe_bh9l8GHEQzjKtwuLipq1_inxQ/exec";
-class Scheme{
+const String schemesURL =
+    "https://script.google.com/macros/s/AKfycbx1lF_t19M15c2gj6jQGXT3HAT4lHeSfAEgUqwkzXoe_bh9l8GHEQzjKtwuLipq1_inxQ/exec";
+
+class Scheme {
   final String name;
   final String description;
   final String applyURL;
   final String imageURL;
-  Scheme({required this.name, required this.description, required this.applyURL, required this.imageURL,});
+  Scheme({
+    required this.name,
+    required this.description,
+    required this.applyURL,
+    required this.imageURL,
+  });
 
-  factory Scheme.fromJson(Map<String, dynamic> json){
+  factory Scheme.fromJson(Map<String, dynamic> json) {
     return Scheme(
       name: json["SchemeName"],
       description: json["Details"],
@@ -33,6 +43,7 @@ class Scheme{
     );
   }
 }
+
 class UtilitiesPage extends StatefulWidget {
   const UtilitiesPage({Key? key}) : super(key: key);
 
@@ -57,25 +68,26 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
     videoResult = await youtube.nextPage();
     setState(() {});
   }
-  Future<void> callSchemesAPI() async{
+
+  Future<void> callSchemesAPI() async {
     var res = await http.get(Uri.parse(schemesURL));
     List<dynamic> schemesMap = json.decode(res.body);
-    schemesMap.forEach((scheme) {
-      schemes.add(
-          new Scheme.fromJson(scheme)
-      );
-    },
+    schemesMap.forEach(
+      (scheme) {
+        schemes.add(new Scheme.fromJson(scheme));
+      },
     );
-    setState(() {
-
-    });
+    setState(() {});
   }
+
   @override
   void initState() {
-    callYTAPI("Modern farming techniques").then((value) => _videosLoaded = true);
+    callYTAPI("Modern farming techniques")
+        .then((value) => _videosLoaded = true);
     callSchemesAPI().then((value) => _schemesLoaded = true);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -138,24 +150,24 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                     ),
                     items: _schemesLoaded
                         ? schemes.map<Widget>((scheme) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return schemeListItem(context, scheme);
-                        },
-                      );
-                    }).toList()
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return schemeListItem(context, scheme);
+                              },
+                            );
+                          }).toList()
                         : schemesList.map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return schemeShimmer();
-                        },
-                      );
-                    }).toList(),
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return schemeShimmer();
+                              },
+                            );
+                          }).toList(),
                   ),
                   //LEARN
                   Padding(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -177,24 +189,24 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                     ),
                     items: _videosLoaded
                         ? videoResult.map<Widget>((video) {
-                      return Builder(
-                        builder: (BuildContext context){
-                          return listItem(video, context);
-                        },
-                      );
-                    }).toList()
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return listItem(video, context);
+                              },
+                            );
+                          }).toList()
                         : videosList.map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return ytShimmer();
-                        },
-                      );
-                    }).toList(),
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return ytShimmer();
+                              },
+                            );
+                          }).toList(),
                   ),
                   //DIAGNOSTICS
                   Padding(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     child: Column(
                       children: [
                         Padding(
@@ -215,7 +227,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                           margin: EdgeInsets.symmetric(vertical: 5),
                           width: double.infinity,
                           padding:
-                          EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                           height: 200,
                           decoration: BoxDecoration(
                             // gradient: _constants.linearGradientGreen,
@@ -227,7 +239,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Column(
@@ -288,7 +300,8 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                 ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
                                 child: FilledButton(
                                   // style: ButtonStyle(
                                   //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
@@ -296,14 +309,16 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => cameraScreen()),
+                                      MaterialPageRoute(
+                                          builder: (context) => cameraScreen()),
                                     );
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 14),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 7, vertical: 14),
                                         child: FaIcon(
                                           FontAwesomeIcons.cameraRetro,
                                           size: 20,
@@ -358,7 +373,8 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 5),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -374,7 +390,8 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
                                   child: FilledButton(
                                     // style: ButtonStyle(
                                     //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
@@ -387,10 +404,12 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                       );
                                     },
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 14),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 7, vertical: 14),
                                           child: FaIcon(
                                             FontAwesomeIcons.robot,
                                             size: 20,
@@ -426,66 +445,65 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
   }
 }
 
-Shimmer schemeShimmer(){
+Shimmer schemeShimmer() {
   return Shimmer.fromColors(
     baseColor: Colors.grey[200]!,
     highlightColor: Colors.grey[50]!,
     child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.0),
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
     ),
   );
-
 }
-Shimmer ytShimmer(){
+
+Shimmer ytShimmer() {
   return Shimmer.fromColors(
     baseColor: Colors.grey[200]!,
     highlightColor: Colors.grey[50]!,
     child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.0),
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-        ),
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
     ),
   );
 }
 
-Widget schemeListItem(BuildContext context, Scheme scheme){
+Widget schemeListItem(BuildContext context, Scheme scheme) {
   return GestureDetector(
-    onTap: (){
+    onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) =>
-                SchemesPage(
-              scheme: scheme,
-            ),
+          builder: (context) => SchemesPage(
+            scheme: scheme,
+          ),
         ),
       );
     },
     child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 5.0),
-        padding: EdgeInsets.symmetric(horizontal: 5),
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
       ),
-    child: ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: Hero(
-        tag: scheme.name,
-        child: Stack(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Hero(
+          tag: scheme.name,
+          child: Stack(
             alignment: AlignmentDirectional.bottomCenter,
             children: [
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                      fit: BoxFit.cover,
+                    fit: BoxFit.cover,
                     image: AssetImage("assets/scheme_back.jpg"),
                   ),
                   borderRadius: BorderRadius.circular(20),
@@ -511,15 +529,15 @@ Widget schemeListItem(BuildContext context, Scheme scheme){
               ),
             ],
           ),
+        ),
       ),
-    ),
     ),
   );
 }
 
 Widget listItem(YouTubeVideo video, BuildContext context) {
   return GestureDetector(
-    onTap: (){
+    onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(
