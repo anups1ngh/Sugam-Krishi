@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:ui';
-import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
@@ -184,7 +183,8 @@ class _FeedPageState extends State<FeedPage> {
                                     dailyForecastWeather:
                                     widget.dailyWeatherForecast,
                                     location: widget.location,
-                                  )),
+                                  ),
+                              ),
                             );
                           },
                           child: Row(
@@ -248,7 +248,7 @@ class _FeedPageState extends State<FeedPage> {
                         ),
                         //WEATHER SUMMARY
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Text(
                             widget.currentWeatherStatus,
                             textAlign: TextAlign.left,

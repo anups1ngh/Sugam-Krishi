@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
 import 'package:sugam_krishi/providers/user_provider.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/screens/editProfilePage.dart';
 import 'package:sugam_krishi/utils/utils.dart';
 
@@ -19,6 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  AuthMethods _authMethods = AuthMethods();
   bool _isLoading = false;
   Uint8List? _image;
   String location = "";
@@ -64,117 +66,177 @@ class _ProfilePageState extends State<ProfilePage> {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 25,
+              SizedBox(height: 30,),
+              // Container(
+              //   height: 120,
+              //   width: 120,
+              //   decoration: BoxDecoration(
+              //     border: Border.all(
+              //       color: Colors.teal.shade400,
+              //       width: 0.4,
+              //     ),
+              //     borderRadius: BorderRadius.circular(100),
+              //   ),
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(0),
+              //     child: ClipRRect(
+              //       borderRadius: BorderRadius.circular(100),
+              //         child: Image.network(
+              //           user.photoUrl,
+              //         ),
+              //     ),
+              //   ),
+              // ),
+              CircleAvatar(
+                backgroundColor: Colors.green.shade100,
+                backgroundImage: NetworkImage(
+                  user.photoUrl,
+                ),
+                radius: 64,
               ),
+              SizedBox(height: 10,),
+              //USER-NAME
+              Text(
+                  user.username,
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                ),
+              ),
+              //EMAIL-ID
+              // Text(
+              //   user.email,
+              //   style: GoogleFonts.poppins(
+              //     fontSize: 12,
+              //     fontWeight: FontWeight.w300,
+              //   ),
+              // ),
+              SizedBox(height: 10,),
+              //EDIT BUTTON
+              SizedBox(
+                width: 150,
+                height: 42,
+                child: FilledButton(
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.amberAccent,
 
-              // Profile Image with image picker
-              Center(
-                child: Stack(
-                  children: [
-                    CircleAvatar(
-                      backgroundColor: Colors.grey,
-                      backgroundImage: NetworkImage(
-                        user.photoUrl,
+                  ),
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) =>
+                          EditProfilePage(
+                            photoURL: user.photoUrl,
+                            username: user.username,
+                            contact: formatContact(user.contact),
+                            location: location,
                       ),
-                      radius: 64,
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Edit Profile",
+                    style: GoogleFonts.openSans(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
-                    Positioned(
-                      bottom: 0,
-                      left: 80,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.blue,
-                        child: IconButton(
-                          onPressed: () {
-                            showModalBottomSheet<void>(
-                              isScrollControlled: true,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(18))),
-                              context: context,
-                              builder: (BuildContext context) {
-                                return EditProfilePage();
-                              },
-                            );
-                          },
-                          icon: const Icon(Icons.edit, color: Colors.black),
-                        ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 50,),
+
+              //MENU
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                        color: Colors.teal.shade400,
+                        width: 0.4
                       ),
-                    )
-                  ],
-                ),
-              ),
-              const SizedBox(
-                height: 35,
-              ),
-              Text(
-                user.username,
-                style: GoogleFonts.openSans(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(
-                height: 8,
-              ),
-              Text(
-                user.email,
-                style: GoogleFonts.openSans(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey,
-                ),
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              // add rest all data in differnt listtiles
-
-              ListTile(
-                leading: const Icon(
-                  Icons.phone,
-                  color: Colors.greenAccent,
-                ),
-                title: Text(
-                  user.contact,
-                  style: GoogleFonts.openSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+                      borderRadius: BorderRadius.circular(100),
+                  ),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.teal.shade100,
+                    ),
+                    child: Icon(
+                      Icons.phone_android_rounded,
+                    ),
+                  ),
+                  title: Text(
+                    formatContact(user.contact),
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
-              const Divider(
-                height: 10,
-                thickness: 1,
-              ),
-              ListTile(
-                leading: const Icon(
-                  Icons.location_on,
-                  color: Colors.blue,
-                ),
-                title: Text(
-                  location,
-                  style: GoogleFonts.openSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: ListTile(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                        color: Colors.teal.shade400,
+                        width: 0.4
+                    ),
+                    borderRadius: BorderRadius.circular(100),
+                  ),
+                  leading: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.teal.shade100,
+                    ),
+                    child: Icon(
+                      Icons.location_on_rounded,
+                    ),
+                  ),
+                  title: Text(
+                    location,
+                    style: GoogleFonts.poppins(
+                      fontSize: 18,
+                    ),
                   ),
                 ),
               ),
-              const Divider(
-                height: 10,
-                thickness: 1,
-              ),
-
-              ListTile(
-                leading: const Icon(Icons.logout, color: Colors.red),
-                title: Text(
-                  "Sign Out",
-                  style: GoogleFonts.openSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.red,
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: GestureDetector(
+                  onTap: () async{
+                    await _authMethods.signOut();
+                  },
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(
+                          color: Colors.teal.shade400,
+                          width: 0.4
+                      ),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.teal.shade100,
+                      ),
+                      child: Icon(
+                        Icons.logout_rounded,
+                      ),
+                    ),
+                    title: Text(
+                      "Sign Out",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                        color: Colors.redAccent,
+                      ),
+                    ),
                   ),
                 ),
               ),

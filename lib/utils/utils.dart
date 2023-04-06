@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
+// for getting properly formatted Contact Number
+String formatContact(String contact){
+  return contact.substring(0, 3) + " " + contact.substring(3);
+}
 // for picking up image from gallery
 pickImage(ImageSource source) async {
   final ImagePicker _imagePicker = ImagePicker();
