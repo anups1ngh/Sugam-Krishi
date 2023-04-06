@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,13 +10,39 @@ import 'package:youtube_api/youtube_api.dart';
 
 import 'package:sugam_krishi/screens/AI-Bot/chatScreen.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
+import 'package:sugam_krishi/screens/schemesPage.dart';
 import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
 
 import '../constants.dart';
 import '../keys.dart';
+import 'package:http/http.dart' as http;
 
 List<int> schemesList = [1, 2, 3, 4, 5];
 List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
+const String schemesURL =
+    "https://script.google.com/macros/s/AKfycbx1lF_t19M15c2gj6jQGXT3HAT4lHeSfAEgUqwkzXoe_bh9l8GHEQzjKtwuLipq1_inxQ/exec";
+
+class Scheme {
+  final String name;
+  final String description;
+  final String applyURL;
+  final String imageURL;
+  Scheme({
+    required this.name,
+    required this.description,
+    required this.applyURL,
+    required this.imageURL,
+  });
+
+  factory Scheme.fromJson(Map<String, dynamic> json) {
+    return Scheme(
+      name: json["SchemeName"],
+      description: json["Details"],
+      applyURL: "",
+      imageURL: "",
+    );
+  }
+}
 
 class UtilitiesPage extends StatefulWidget {
   const UtilitiesPage({Key? key}) : super(key: key);
@@ -24,14 +52,14 @@ class UtilitiesPage extends StatefulWidget {
 }
 
 class _UtilitiesPageState extends State<UtilitiesPage> {
-  final Constants _constants = Constants();
   bool _videosLoaded = false;
   bool _schemesLoaded = false;
 
-  YoutubeAPI youtube = YoutubeAPI(YT_API_KEY);
+  YoutubeAPI youtube = YoutubeAPI(YT_API_KEY, maxResults: 5);
   List<YouTubeVideo> videoResult = [];
+  List<Scheme> schemes = [];
 
-  Future<void> callAPI(String query) async {
+  Future<void> callYTAPI(String query) async {
     videoResult = await youtube.search(
       query,
       order: 'relevance',
@@ -41,10 +69,22 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
     setState(() {});
   }
 
+  Future<void> callSchemesAPI() async {
+    var res = await http.get(Uri.parse(schemesURL));
+    List<dynamic> schemesMap = json.decode(res.body);
+    schemesMap.forEach(
+      (scheme) {
+        schemes.add(new Scheme.fromJson(scheme));
+      },
+    );
+    setState(() {});
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
-    callAPI("Modern farming techniques").then((value) => _videosLoaded = true);
+    callYTAPI("Modern farming techniques")
+        .then((value) => _videosLoaded = true);
+    callSchemesAPI().then((value) => _schemesLoaded = true);
     super.initState();
   }
 
@@ -109,23 +149,10 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                       autoPlayInterval: const Duration(seconds: 5),
                     ),
                     items: _schemesLoaded
-                        ? schemesList.map((i) {
+                        ? schemes.map<Widget>((scheme) {
                             return Builder(
                               builder: (BuildContext context) {
-                                return Container(
-                                    margin:
-                                        EdgeInsets.symmetric(horizontal: 5.0),
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 5),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white60,
-                                      borderRadius: BorderRadius.circular(20),
-                                    ),
-                                    child: Center(
-                                        child: Text(
-                                      'text $i',
-                                      style: TextStyle(fontSize: 16.0),
-                                    )));
+                                return schemeListItem(context, scheme);
                               },
                             );
                           }).toList()
@@ -443,6 +470,66 @@ Shimmer ytShimmer() {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+  );
+}
+
+Widget schemeListItem(BuildContext context, Scheme scheme) {
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SchemesPage(
+            scheme: scheme,
+          ),
+        ),
+      );
+    },
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Hero(
+          tag: scheme.name,
+          child: Stack(
+            alignment: AlignmentDirectional.bottomCenter,
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("assets/scheme_back.jpg"),
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              Container(
+                width: double.infinity,
+                // height: 80,
+                color: Colors.black.withOpacity(0.2),
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Text(
+                    scheme.name,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     ),
   );
