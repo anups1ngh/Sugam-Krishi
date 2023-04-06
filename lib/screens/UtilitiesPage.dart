@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:youtube_api/youtube_api.dart';
+
 import 'package:sugam_krishi/screens/AI-Bot/chatScreen.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
-import 'package:youtube_api/youtube_api.dart';
+
 import '../constants.dart';
 import '../keys.dart';
 
 List<int> schemesList = [1, 2, 3, 4, 5];
-List<Widget> videosList = [];
+List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 
 class UtilitiesPage extends StatefulWidget {
   const UtilitiesPage({Key? key}) : super(key: key);
@@ -22,6 +25,8 @@ class UtilitiesPage extends StatefulWidget {
 
 class _UtilitiesPageState extends State<UtilitiesPage> {
   final Constants _constants = Constants();
+  bool _videosLoaded = false;
+  bool _schemesLoaded = false;
 
   YoutubeAPI youtube = YoutubeAPI(YT_API_KEY);
   List<YouTubeVideo> videoResult = [];
@@ -39,9 +44,10 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
   @override
   void initState() {
     // TODO: implement initState
-    callAPI("Modern farming techniques");
+    callAPI("Modern farming techniques").then((value) => _videosLoaded = true);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -100,30 +106,41 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                       height: 200,
                       viewportFraction: 0.9,
                       autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 5),
                     ),
-                    items: schemesList.map((i) {
-                      return Builder(
-                        builder: (BuildContext context) {
-                          return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5.0),
-                              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: Colors.white60,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Center(
-                                  child: Text(
-                                'text $i',
-                                style: TextStyle(fontSize: 16.0),
-                              )));
-                        },
-                      );
-                    }).toList(),
+                    items: _schemesLoaded
+                        ? schemesList.map((i) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return Container(
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 5.0),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white60,
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Center(
+                                        child: Text(
+                                      'text $i',
+                                      style: TextStyle(fontSize: 16.0),
+                                    )));
+                              },
+                            );
+                          }).toList()
+                        : schemesList.map((i) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return schemeShimmer();
+                              },
+                            );
+                          }).toList(),
                   ),
                   //LEARN
                   Padding(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
@@ -141,19 +158,28 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                       height: 300,
                       viewportFraction: 0.9,
                       autoPlay: true,
+                      autoPlayInterval: const Duration(seconds: 5),
                     ),
-                    items: videoResult.map<Widget>((video) {
-                      return Builder(
-                        builder: (BuildContext context){
-                          return listItem(video, context);
-                        },
-                      );
-                    }).toList(),
+                    items: _videosLoaded
+                        ? videoResult.map<Widget>((video) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return listItem(video, context);
+                              },
+                            );
+                          }).toList()
+                        : videosList.map((i) {
+                            return Builder(
+                              builder: (BuildContext context) {
+                                return ytShimmer();
+                              },
+                            );
+                          }).toList(),
                   ),
                   //DIAGNOSTICS
                   Padding(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
                     child: Column(
                       children: [
                         Padding(
@@ -174,7 +200,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                           margin: EdgeInsets.symmetric(vertical: 5),
                           width: double.infinity,
                           padding:
-                          EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+                              EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                           height: 200,
                           decoration: BoxDecoration(
                             // gradient: _constants.linearGradientGreen,
@@ -186,7 +212,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
+                                    MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Column(
@@ -247,7 +273,8 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                 ],
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 30),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
                                 child: FilledButton(
                                   // style: ButtonStyle(
                                   //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
@@ -255,14 +282,16 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                   onPressed: () {
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => cameraScreen()),
+                                      MaterialPageRoute(
+                                          builder: (context) => cameraScreen()),
                                     );
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 14),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 7, vertical: 14),
                                         child: FaIcon(
                                           FontAwesomeIcons.cameraRetro,
                                           size: 20,
@@ -317,7 +346,8 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 5),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -333,7 +363,8 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30),
                                   child: FilledButton(
                                     // style: ButtonStyle(
                                     //   backgroundColor: MaterialStatePropertyAll<Color>(Colors.greenAccent.shade700),
@@ -346,10 +377,12 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                       );
                                     },
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 14),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 7, vertical: 14),
                                           child: FaIcon(
                                             FontAwesomeIcons.robot,
                                             size: 20,
@@ -385,9 +418,39 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
   }
 }
 
+Shimmer schemeShimmer() {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[200]!,
+    highlightColor: Colors.grey[50]!,
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+  );
+}
+
+Shimmer ytShimmer() {
+  return Shimmer.fromColors(
+    baseColor: Colors.grey[200]!,
+    highlightColor: Colors.grey[50]!,
+    child: Container(
+      margin: EdgeInsets.symmetric(horizontal: 5.0),
+      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+      ),
+    ),
+  );
+}
+
 Widget listItem(YouTubeVideo video, BuildContext context) {
   return GestureDetector(
-    onTap: (){
+    onTap: () {
       Navigator.push(
         context,
         MaterialPageRoute(

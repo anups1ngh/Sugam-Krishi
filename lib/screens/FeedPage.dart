@@ -7,12 +7,15 @@ import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:provider/provider.dart';
+import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/postPage.dart';
 import 'package:sugam_krishi/weather/ui/detail_page.dart';
 import 'package:http/http.dart' as http;
 import '../weather/components/weather_item.dart';
 import '../constants.dart';
+import 'package:sugam_krishi/models/user.dart' as model;
 
 class FeedPage extends StatefulWidget {
   String location;
@@ -23,12 +26,12 @@ class FeedPage extends StatefulWidget {
   String currentWeatherStatus;
   FeedPage(
       {super.key,
-        required this.location,
-        required this.weatherIcon,
-        required this.currentDate,
-        required this.dailyWeatherForecast,
-        required this.currentWeatherStatus,
-        required this.temperature});
+      required this.location,
+      required this.weatherIcon,
+      required this.currentDate,
+      required this.dailyWeatherForecast,
+      required this.currentWeatherStatus,
+      required this.temperature});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -38,11 +41,15 @@ class _FeedPageState extends State<FeedPage> {
   Constants _constants = Constants();
   String day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
 
-  Future<void> getLocationText() async{
-    List<Placemark> placemarks = await placemarkFromCoordinates(LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
+  Future<void> getLocationText() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
     print(placemarks[0].subLocality);
-    widget.location = placemarks[0].subLocality.toString() + ", " + placemarks[0].locality.toString();
+    widget.location = placemarks[0].subLocality.toString() +
+        ", " +
+        placemarks[0].locality.toString();
   }
+
   void refreshVariables() {
     LocationSystem.getPosition();
     WeatherSystem.fetchWeatherData(
@@ -65,6 +72,7 @@ class _FeedPageState extends State<FeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    model.User user = Provider.of<UserProvider>(context).getUser;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xffE0F2F1),
@@ -102,7 +110,7 @@ class _FeedPageState extends State<FeedPage> {
                 children: [
                   Container(
                     padding:
-                    const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                        const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
                     height: size.height * .22,
                     decoration: BoxDecoration(
                       gradient: _constants.linearGradientTeal,
@@ -126,8 +134,8 @@ class _FeedPageState extends State<FeedPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Padding(
-                              padding:
-                              const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
                               child: Text(
                                 widget.currentDate,
                                 style: const TextStyle(
@@ -159,7 +167,8 @@ class _FeedPageState extends State<FeedPage> {
                                     // widget.notifyParent();
                                   },
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 2),
                                     child: const Icon(
                                       Icons.refresh_rounded,
                                       color: Colors.white,
@@ -177,10 +186,10 @@ class _FeedPageState extends State<FeedPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => DetailPage(
-                                    dailyForecastWeather:
-                                    widget.dailyWeatherForecast,
-                                    location: widget.location,
-                                  )),
+                                        dailyForecastWeather:
+                                            widget.dailyWeatherForecast,
+                                        location: widget.location,
+                                      )),
                             );
                           },
                           child: Row(
@@ -189,7 +198,7 @@ class _FeedPageState extends State<FeedPage> {
                             children: [
                               Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 10),
+                                    const EdgeInsets.symmetric(horizontal: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -197,13 +206,13 @@ class _FeedPageState extends State<FeedPage> {
                                     //TEMPERATURE
                                     Row(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Padding(
                                           padding:
-                                          const EdgeInsets.only(top: 0),
+                                              const EdgeInsets.only(top: 0),
                                           child: Text(
                                             widget.temperature.toString(),
                                             style: TextStyle(
@@ -244,7 +253,7 @@ class _FeedPageState extends State<FeedPage> {
                         ),
                         //WEATHER SUMMARY
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
                           child: Text(
                             widget.currentWeatherStatus,
                             textAlign: TextAlign.left,
@@ -319,11 +328,16 @@ class _FeedPageState extends State<FeedPage> {
             showModalBottomSheet<void>(
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
-                  borderRadius:
-                  BorderRadius.vertical(top: Radius.circular(18))),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(18),
+                ),
+              ),
               context: context,
               builder: (BuildContext context) {
-                return postPage();
+                return postPage(
+                  userName: user.username,
+                  userPhoto: user.photoUrl,
+                );
               },
             );
           },
