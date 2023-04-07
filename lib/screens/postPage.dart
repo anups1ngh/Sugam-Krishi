@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -198,12 +199,9 @@ class _postPageState extends State<postPage> {
                         }
                       },
                       child: isLoading
-                          ? Padding(
-                              padding: const EdgeInsets.all(3.0),
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2.5,
-                              ),
+                          ? SpinKitThreeBounce(
+                              color: Colors.white,
+                              size: 18,
                             )
                           : Text(
                               "Post",

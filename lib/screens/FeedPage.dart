@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:ui';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,8 +12,10 @@ import 'package:provider/provider.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/screens/cameraScreen.dart';
 import 'package:sugam_krishi/screens/postPage.dart';
+import 'package:sugam_krishi/screens/post_item.dart';
 import 'package:sugam_krishi/weather/ui/detail_page.dart';
 import 'package:http/http.dart' as http;
+import '../models/post.dart';
 import '../weather/components/weather_item.dart';
 import '../constants.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
@@ -107,6 +111,7 @@ class _FeedPageState extends State<FeedPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  //WEATHER CARD
                   Container(
                     padding:
                         const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
@@ -297,6 +302,32 @@ class _FeedPageState extends State<FeedPage> {
                         // ),
                       ],
                     ),
+                  ),
+
+                  //POSTS FEED
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+                    builder: (context,
+                        AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SpinKitThreeBounce(
+                          color: Colors.white,
+                          size: 22,
+                        );
+                      }
+                      print(snapshot.data!.docs.length);
+                      return ListView.builder(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: snapshot.data!.docs.length,
+                        itemBuilder: (context, index) => PostItem(
+                          snap: snapshot.data!.docs[index].data(),
+                          locationText: widget.location,
+                        ),
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                      );
+                    },
                   ),
                 ],
               ),

@@ -20,16 +20,18 @@ import 'package:http/http.dart' as http;
 List<int> schemesList = [1, 2, 3, 4, 5];
 List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 const String schemesURL =
-    "https://script.google.com/macros/s/AKfycbx1lF_t19M15c2gj6jQGXT3HAT4lHeSfAEgUqwkzXoe_bh9l8GHEQzjKtwuLipq1_inxQ/exec";
+    "https://script.google.com/macros/s/AKfycbzrPTgGuHFc6Dvkh6pfY8e9nR_NCCvKQJVIMtwcGRNeC7rvDN0EsZUFkH5NettEcBJ5Tg/exec";
 
 class Scheme {
   final String name;
   final String description;
+  final int year;
   final String applyURL;
   final String imageURL;
   Scheme({
     required this.name,
     required this.description,
+    required this.year,
     required this.applyURL,
     required this.imageURL,
   });
@@ -38,8 +40,9 @@ class Scheme {
     return Scheme(
       name: json["SchemeName"],
       description: json["Details"],
-      applyURL: "",
-      imageURL: "",
+      year: json["Year"],
+      applyURL: json["Link"],
+      imageURL: json["Image"],
     );
   }
 }
@@ -504,7 +507,7 @@ Widget schemeListItem(BuildContext context, Scheme scheme) {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     fit: BoxFit.cover,
-                    image: AssetImage("assets/scheme_back.jpg"),
+                    image: NetworkImage(scheme.imageURL),
                   ),
                   borderRadius: BorderRadius.circular(20),
                 ),
@@ -512,7 +515,7 @@ Widget schemeListItem(BuildContext context, Scheme scheme) {
               Container(
                 width: double.infinity,
                 // height: 80,
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withOpacity(0.6),
                 child: Padding(
                   padding: const EdgeInsets.all(4),
                   child: Text(
