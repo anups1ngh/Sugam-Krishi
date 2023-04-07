@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:sugam_krishi/providers/user_provider.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
 
 import '../utils/utils.dart';
 
@@ -10,18 +14,26 @@ class EditProfilePage extends StatefulWidget {
   final String location;
   final String contact;
   final String username;
-  const EditProfilePage({Key? key, this.photoURL, required this.location, required this.contact, required this.username}) : super(key: key);
+
+  const EditProfilePage(
+      {Key? key,
+      this.photoURL,
+      required this.location,
+      required this.contact,
+      required this.username})
+      : super(key: key);
 
   @override
   State<EditProfilePage> createState() => _EditProfilePage();
 }
 
 class _EditProfilePage extends State<EditProfilePage> {
-
   late TextEditingController _usernameController;
   late TextEditingController _contactController;
   Uint8List? _image;
   bool photoSelected = false;
+  bool _isLoading = false;
+  AuthMethods _authMethods = AuthMethods();
 
   selectImage(ImageSource source) async {
     Uint8List im = await pickImage(source);
@@ -32,11 +44,37 @@ class _EditProfilePage extends State<EditProfilePage> {
     });
   }
 
+  void showToastText(String text) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0,
+    );
+  }
+
   @override
   void initState() {
     _usernameController = TextEditingController(text: widget.username);
     _contactController = TextEditingController(text: widget.contact);
     super.initState();
+  }
+
+  void updateDetails(Uint8List? img, String username, String contact) async {
+    print("update function called");
+    setState(() {
+      _isLoading = true;
+    });
+    print(username);
+    print(contact);
+    await _authMethods.updateUserDetails(img!, username, contact);
+    setState(() {
+      _isLoading = false;
+    });
+
+    showToastText("Profile Updated");
   }
 
   @override
@@ -61,21 +99,22 @@ class _EditProfilePage extends State<EditProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               Stack(
                 children: [
                   photoSelected
                       ? CircleAvatar(
-                    backgroundColor: Colors.green.shade100,
-                    radius: 64,
-                    backgroundImage: MemoryImage(_image!),
-                  )
+                          backgroundColor: Colors.green.shade100,
+                          radius: 64,
+                          backgroundImage: MemoryImage(_image!),
+                        )
                       : CircleAvatar(
-                    backgroundColor: Colors.green.shade100,
-                    radius: 64,
-                    backgroundImage: NetworkImage(
-                         widget.photoURL),
-                  ),
+                          backgroundColor: Colors.green.shade100,
+                          radius: 64,
+                          backgroundImage: NetworkImage(widget.photoURL),
+                        ),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -87,7 +126,7 @@ class _EditProfilePage extends State<EditProfilePage> {
                         color: Colors.amberAccent.withOpacity(0.9),
                       ),
                       child: GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           selectImage(ImageSource.gallery);
                         },
                         child: Icon(
@@ -98,7 +137,9 @@ class _EditProfilePage extends State<EditProfilePage> {
                   ),
                 ],
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               TextField(
                 textAlign: TextAlign.center,
                 controller: _usernameController,
@@ -106,13 +147,13 @@ class _EditProfilePage extends State<EditProfilePage> {
                   fontSize: 22,
                 ),
                 decoration: InputDecoration(
-                    // focusedBorder: OutlineInputBorder(
-                    //   borderRadius: BorderRadius.circular(12),
-                    //   borderSide: BorderSide(
-                    //       color: Colors.teal.shade400,
-                    //       width: 0.4
-                    //   ),
-                    // ),
+                  // focusedBorder: OutlineInputBorder(
+                  //   borderRadius: BorderRadius.circular(12),
+                  //   borderSide: BorderSide(
+                  //       color: Colors.teal.shade400,
+                  //       width: 0.4
+                  //   ),
+                  // ),
                   border: InputBorder.none,
                   // border: OutlineInputBorder(
                   //   borderRadius: BorderRadius.circular(12),
@@ -128,17 +169,19 @@ class _EditProfilePage extends State<EditProfilePage> {
                   //         width: 0.4
                   //     ),
                   //   ),
-                    hintText: "Username",
-                    hintStyle:  GoogleFonts.poppins(
-                      fontSize: 20,
-                    ),
+                  hintText: "Username",
+                  hintStyle: GoogleFonts.poppins(
+                    fontSize: 20,
+                  ),
                 ),
               ),
               SizedBox(
                 width: 150,
                 height: 42,
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
 
               //MENU
               Padding(
@@ -146,8 +189,8 @@ class _EditProfilePage extends State<EditProfilePage> {
                 child: ListTile(
                   shape: RoundedRectangleBorder(
                     side: BorderSide(
-                        color: Colors.teal.shade400,
-                        width: 0.4,
+                      color: Colors.teal.shade400,
+                      width: 0.4,
                     ),
                     borderRadius: BorderRadius.circular(100),
                   ),
@@ -165,8 +208,8 @@ class _EditProfilePage extends State<EditProfilePage> {
                   title: TextField(
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
-                        // fillColor: Colors.teal.shade50,
-                        // filled: true,
+                      // fillColor: Colors.teal.shade50,
+                      // filled: true,
                       border: InputBorder.none,
                       // border: OutlineInputBorder(
                       //   borderRadius: BorderRadius.circular(20),
@@ -206,8 +249,7 @@ class _EditProfilePage extends State<EditProfilePage> {
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                           color: Colors.teal.shade400.withOpacity(0.5),
-                          width: 0.4
-                      ),
+                          width: 0.4),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     leading: Container(
@@ -241,21 +283,32 @@ class _EditProfilePage extends State<EditProfilePage> {
                 child: FilledButton(
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.amberAccent,
-
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     print(_usernameController.text);
                     print(_contactController.text.replaceAll(" ", ""));
+                    // await _authMethods.updateUserDetails(
+                    //     _image,
+                    //     _usernameController.text,
+                    //     _contactController.text.replaceAll(" ", ""),
+                    // );
+                    // Navigator.pop(context);
+                    updateDetails(_image!, _usernameController.text,
+                        _contactController.text.replaceAll(" ", ""));
                     Navigator.pop(context);
                   },
-                  child: Text(
-                    "Update Profile",
-                    style: GoogleFonts.openSans(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
+                  child: _isLoading
+                      ? CircularProgressIndicator(
+                          color: Colors.white,
+                        )
+                      : Text(
+                          "Update Profile",
+                          style: GoogleFonts.openSans(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
                 ),
               ),
             ],

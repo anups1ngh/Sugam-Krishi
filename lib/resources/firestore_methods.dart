@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sugam_krishi/models/marketplace.dart';
 import 'package:sugam_krishi/models/post.dart';
 import 'package:sugam_krishi/resources/storage_methods.dart';
 import 'package:uuid/uuid.dart';
@@ -29,6 +30,49 @@ class FireStoreMethods {
         profImage: profImage,
       );
       _firestore.collection('posts').doc(postId).set(post.toJson());
+      res = "success";
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  Future<String> uploadMarketplaceItem(
+      String? description,
+      String uid,
+      String username,
+      String category,
+      Uint8List? file,
+      String profImage,
+      String price,
+      String location,
+      String contact,
+      String itemName) async {
+    String res = "Some error occurred";
+    try {
+      String photoUrl = file == null
+          ? ""
+          : await StorageMethods()
+              .uploadImageToStorage('marketplace', file, false, true);
+      String postId = const Uuid().v1(); // creates unique id based on time
+      MarketPlace marketPlace = MarketPlace(
+        description: description,
+        uid: uid,
+        username: username,
+        postId: postId,
+        category: category,
+        datePublished: DateTime.now(),
+        postUrl: photoUrl,
+        profImage: profImage,
+        price: price,
+        location: location,
+        contact: contact,
+        itemName: itemName,
+      );
+      _firestore
+          .collection('marketplace')
+          .doc(postId)
+          .set(marketPlace.toJson());
       res = "success";
     } catch (err) {
       res = err.toString();
