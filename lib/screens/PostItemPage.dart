@@ -435,6 +435,7 @@ class _postItemPageState extends State<postItemPage> {
                 padding: const EdgeInsets.symmetric(vertical: 5.5),
                 child: TextField(
                   controller: _itemPriceController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
                   autofocus: false,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(

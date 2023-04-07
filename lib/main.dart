@@ -9,6 +9,7 @@ import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/loginPage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
