@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -113,197 +114,206 @@ class _postPageState extends State<postPage> {
     return SafeArea(
       child: SingleChildScrollView(
         padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         // reverse: true,
-        child: SafeArea(
-          child: Container(
-            // height: MediaQuery.of(context).size.height * 0.8,
-            decoration: BoxDecoration(
-              // gradient: _constants.linearGradientTeal,
-              color: Color(0xffE0F2F1),
-              boxShadow: [
-                // BoxShadow(
-                //   color: _constants.primaryColor.withOpacity(.2),
-                //   spreadRadius: 5,
-                //   blurRadius: 7,
-                //   offset: const Offset(0, 3),
-                // ),
-              ],
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(18), topRight: Radius.circular(18)),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 7),
-                            child: CircleAvatar(
-                              radius: 24,
-                              backgroundColor:
-                                  Color(0xff64FFDA).withOpacity(0.1),
-                              backgroundImage: NetworkImage(
-                                widget.userPhoto,
-                              ),
+        child: Container(
+          // height: MediaQuery.of(context).size.height * 0.8,
+          decoration: BoxDecoration(
+            // gradient: _constants.linearGradientTeal,
+            color: Color(0xffE0F2F1),
+            boxShadow: [
+              // BoxShadow(
+              //   color: _constants.primaryColor.withOpacity(.2),
+              //   spreadRadius: 5,
+              //   blurRadius: 7,
+              //   offset: const Offset(0, 3),
+              // ),
+            ],
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(18), topRight: Radius.circular(18)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 7),
+                          child: CircleAvatar(
+                            radius: 24,
+                            backgroundColor: Color(0xff64FFDA).withOpacity(0.1),
+                            backgroundImage: NetworkImage(
+                              widget.userPhoto,
                             ),
                           ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5, vertical: 0),
-                                child: Text(
-                                  widget.userName,
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
-                                ),
-                              ),
-                              // DropdownButton(
-                              //   elevation: 0,
-                              //   items: [
-                              //     DropdownMenuItem(child: Text("Anyone"), value: "Anyone",),
-                              //     DropdownMenuItem(child: Text("Friends"), value: "Friends",),
-                              //   ],
-                              //   value: _shareTo,
-                              //   onChanged: (value){
-                              //     setState(() {
-                              //       _shareTo = value!;
-                              //     });
-                              //   },
-                              // ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      FilledButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                              Colors.greenAccent.shade700),
                         ),
-                        onPressed: () {},
-                        child: Text(
-                          "Post",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  TextField(
-                    maxLines: 10,
-                    controller: _postController,
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: Colors.white70,
-                          width: 1.2,
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(
-                          color: Colors.green,
-                          width: 1,
-                        ),
-                      ),
-                      hintText: "Write something",
-                      hintStyle: GoogleFonts.poppins(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  _photoSelected
-                      ? Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 0.1,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          height: MediaQuery.of(context).size.height * 0.3,
-                          // height: 300,
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          child: Stack(
-                            alignment: AlignmentDirectional.center,
-                            children: [
-                              Expanded(
-                                child: Image.memory(
-                                  _image!,
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: IconButton(
-                                  icon: Icon(
-                                    Icons.cancel_outlined,
-                                    color: Colors.redAccent,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _photoSelected = false;
-                                    });
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                      : Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            FilledButton(
-                              child: Row(
-                                children: const [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 10),
-                                    child: FaIcon(FontAwesomeIcons.image),
-                                  ),
-                                  Text("Add a Photo"),
-                                ],
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 5, vertical: 0),
+                              child: Text(
+                                widget.userName,
+                                style: GoogleFonts.poppins(
+                                    fontSize: 18, fontWeight: FontWeight.w500),
                               ),
-                              onPressed: () {
-                                selectImage(ImageSource.gallery);
-                              },
                             ),
-                            FilledButton(
-                              child: Row(
-                                children: const [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 10),
-                                    child: FaIcon(FontAwesomeIcons.cameraRetro),
-                                  ),
-                                  Text("Take a Photo"),
-                                ],
-                              ),
-                              onPressed: () {
-                                selectImage(ImageSource.camera);
-                              },
-                            ),
+                            // DropdownButton(
+                            //   elevation: 0,
+                            //   items: [
+                            //     DropdownMenuItem(child: Text("Anyone"), value: "Anyone",),
+                            //     DropdownMenuItem(child: Text("Friends"), value: "Friends",),
+                            //   ],
+                            //   value: _shareTo,
+                            //   onChanged: (value){
+                            //     setState(() {
+                            //       _shareTo = value!;
+                            //     });
+                            //   },
+                            // ),
                           ],
                         ),
-                ],
-              ),
+                      ],
+                    ),
+                    FilledButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Colors.greenAccent.shade700),
+                      ),
+                      onPressed: () {
+                        if (_postController.text.isNotEmpty) {
+                          postImage(
+                            userProvider.getUser.uid,
+                            userProvider.getUser.username,
+                            userProvider.getUser.photoUrl,
+                          );
+                        }
+                      },
+                      child: isLoading
+                          ? SpinKitThreeBounce(
+                        color: Colors.white,
+                        size: 18,
+                      )
+                          : Text(
+                        "Post",
+                        style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                TextField(
+                  maxLines: 10,
+                  controller: _postController,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.white70,
+                        width: 1.2,
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(
+                        color: Colors.green,
+                        width: 1,
+                      ),
+                    ),
+                    hintText: "Write something",
+                    hintStyle: GoogleFonts.poppins(
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _photoSelected
+                    ? Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 0.1,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  // height: 300,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: [
+                      Expanded(
+                        child: Image.memory(
+                          _image!,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.cancel_outlined,
+                            color: Colors.redAccent,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _photoSelected = false;
+                            });
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                )
+                    : Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    FilledButton(
+                      child: Row(
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 10),
+                            child: FaIcon(FontAwesomeIcons.image),
+                          ),
+                          Text("Add a Photo"),
+                        ],
+                      ),
+                      onPressed: () {
+                        selectImage(ImageSource.gallery);
+                      },
+                    ),
+                    FilledButton(
+                      child: Row(
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5, vertical: 10),
+                            child: FaIcon(FontAwesomeIcons.cameraRetro),
+                          ),
+                          Text("Take a Photo"),
+                        ],
+                      ),
+                      onPressed: () {
+                        selectImage(ImageSource.camera);
+                      },
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
