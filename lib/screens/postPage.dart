@@ -114,7 +114,7 @@ class _postPageState extends State<postPage> {
     return SafeArea(
       child: SingleChildScrollView(
         padding:
-        EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         // reverse: true,
         child: Container(
           // height: MediaQuery.of(context).size.height * 0.8,
@@ -200,16 +200,16 @@ class _postPageState extends State<postPage> {
                       },
                       child: isLoading
                           ? SpinKitThreeBounce(
-                        color: Colors.white,
-                        size: 18,
-                      )
+                              color: Colors.white,
+                              size: 18,
+                            )
                           : Text(
-                        "Post",
-                        style: GoogleFonts.poppins(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
-                        ),
-                      ),
+                              "Post",
+                              style: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
                     ),
                   ],
                 ),
@@ -243,76 +243,76 @@ class _postPageState extends State<postPage> {
                 ),
                 _photoSelected
                     ? Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 0.1,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  // height: 300,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: [
-                      Expanded(
-                        child: Image.memory(
-                          _image!,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.cancel_outlined,
-                            color: Colors.redAccent,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 0.1,
                           ),
-                          onPressed: () {
-                            setState(() {
-                              _photoSelected = false;
-                            });
-                          },
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        // height: 300,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Stack(
+                          alignment: AlignmentDirectional.center,
+                          children: [
+                            Expanded(
+                              child: Image.memory(
+                                _image!,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: IconButton(
+                                icon: Icon(
+                                  Icons.cancel_outlined,
+                                  color: Colors.redAccent,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _photoSelected = false;
+                                  });
+                                },
+                              ),
+                            )
+                          ],
                         ),
                       )
-                    ],
-                  ),
-                )
                     : Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    FilledButton(
-                      child: Row(
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 10),
-                            child: FaIcon(FontAwesomeIcons.image),
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          FilledButton(
+                            child: Row(
+                              children: const [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 10),
+                                  child: FaIcon(FontAwesomeIcons.image),
+                                ),
+                                Text("Add a Photo"),
+                              ],
+                            ),
+                            onPressed: () {
+                              selectImage(ImageSource.gallery);
+                            },
                           ),
-                          Text("Add a Photo"),
+                          FilledButton(
+                            child: Row(
+                              children: const [
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 10),
+                                  child: FaIcon(FontAwesomeIcons.cameraRetro),
+                                ),
+                                Text("Take a Photo"),
+                              ],
+                            ),
+                            onPressed: () {
+                              selectImage(ImageSource.camera);
+                            },
+                          ),
                         ],
                       ),
-                      onPressed: () {
-                        selectImage(ImageSource.gallery);
-                      },
-                    ),
-                    FilledButton(
-                      child: Row(
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 10),
-                            child: FaIcon(FontAwesomeIcons.cameraRetro),
-                          ),
-                          Text("Take a Photo"),
-                        ],
-                      ),
-                      onPressed: () {
-                        selectImage(ImageSource.camera);
-                      },
-                    ),
-                  ],
-                ),
               ],
             ),
           ),

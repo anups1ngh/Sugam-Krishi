@@ -33,6 +33,10 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  void refresh() {
+    setState(() {});
+  }
+
   Future<void> getLocationText() async {
     List<Placemark> placemarks = await placemarkFromCoordinates(
         LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
@@ -42,6 +46,13 @@ class _ProfilePageState extends State<ProfilePage> {
           ", " +
           placemarks[0].locality.toString();
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    refresh();
   }
 
   @override
@@ -67,7 +78,9 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 30,),
+              SizedBox(
+                height: 30,
+              ),
               // Container(
               //   height: 120,
               //   width: 120,
@@ -95,10 +108,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 radius: 64,
               ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               //USER-NAME
               Text(
-                  user.username,
+                user.username,
                 style: GoogleFonts.poppins(
                   fontSize: 22,
                 ),
@@ -111,7 +126,9 @@ class _ProfilePageState extends State<ProfilePage> {
               //     fontWeight: FontWeight.w300,
               //   ),
               // ),
-              SizedBox(height: 10,),
+              SizedBox(
+                height: 10,
+              ),
               //EDIT BUTTON
               SizedBox(
                 width: 150,
@@ -119,18 +136,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: FilledButton(
                   style: FilledButton.styleFrom(
                     backgroundColor: Colors.amberAccent,
-
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) =>
-                          EditProfilePage(
-                            photoURL: user.photoUrl,
-                            username: user.username,
-                            contact: formatContact(user.contact),
-                            location: location,
-                      ),
+                      MaterialPageRoute(
+                        builder: (context) => EditProfilePage(
+                          photoURL: user.photoUrl,
+                          username: user.username,
+                          contact: formatContact(user.contact),
+                          location: location,
+                        ),
                       ),
                     );
                   },
@@ -144,18 +160,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 50,),
+              SizedBox(
+                height: 50,
+              ),
 
               //MENU
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Colors.teal.shade400,
-                        width: 0.4
-                      ),
-                      borderRadius: BorderRadius.circular(100),
+                    side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                    borderRadius: BorderRadius.circular(100),
                   ),
                   leading: Container(
                     width: 40,
@@ -180,10 +195,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(
-                        color: Colors.teal.shade400,
-                        width: 0.4
-                    ),
+                    side: BorderSide(color: Colors.teal.shade400, width: 0.4),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   leading: Container(
@@ -208,15 +220,12 @@ class _ProfilePageState extends State<ProfilePage> {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: GestureDetector(
-                  onTap: () async{
+                  onTap: () async {
                     await _authMethods.signOut();
                   },
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                          color: Colors.teal.shade400,
-                          width: 0.4
-                      ),
+                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     leading: Container(
