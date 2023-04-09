@@ -10,9 +10,17 @@ import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/loginPage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:sugam_krishi/onboard/onboard.dart';
 
+
+int? isviewed;
 Future<void> main() async {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
   WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  isviewed = prefs.getInt('onBoard');
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
@@ -34,7 +42,7 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
           primarySwatch: Colors.green,
         ),
-        home: StreamBuilder(
+        home: isviewed != 0 ? OnBoard() : StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.active) {
