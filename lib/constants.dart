@@ -161,7 +161,7 @@ class Constants {
   final linearGradientTeal = const LinearGradient(
       begin: Alignment.bottomRight,
       end: Alignment.topLeft,
-      colors: [Color(0xff80CBC4), Color(0xff00796B)],
+      colors: [Color(0xff80CBC4), Color(0xff26A69A)],
       stops: [0.0, 1.0]);
   final linearGradientGreen = LinearGradient(
       begin: Alignment.bottomRight,

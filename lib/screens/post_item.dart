@@ -1,28 +1,67 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:sugam_krishi/screens/postViewScreen.dart';
-
+import 'package:intl/intl.dart';
 import '../models/post.dart';
+import '../providers/user_provider.dart';
+import '../resources/firestore_methods.dart';
+import '../utils/like_animation.dart';
+import '../utils/utils.dart';
+import '../models/user.dart' as model;
 
 class PostItem extends StatefulWidget {
   final snap;
-  final String locationText;
-  const PostItem({Key? key, required this.snap, required this.locationText}) : super(key: key);
+  const PostItem({Key? key, required this.snap}) : super(key: key);
 
   @override
   State<PostItem> createState() => _PostItemState();
 }
 
 class _PostItemState extends State<PostItem> {
-
+  DateTime time = DateTime.now();
   bool hasImage = true;
+  String publishedDifference = "";
+  int commentLen = 0;
+  String formatTimestamp(Timestamp timestamp) {
+    var format = new DateFormat('d'); // <- use skeleton here
+    return format.format(timestamp.toDate());
+  }
+  String getDateDifference(DateTime now, DateTime published){
+    Duration diff = now.difference(published);
+    print(diff.inHours.toString());
+    return diff.inHours.toString();
+  }
+
+  fetchCommentLen() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+      commentLen = snap.docs.length;
+    } catch (err) {
+      showSnackBar(
+        context,
+        err.toString(),
+      );
+    }
+    setState(() {});
+  }
+
   @override
   void initState() {
     hasImage = widget.snap["postUrl"].toString() != "";
+    DateTime time = DateTime.now();
+    // publishedDifference = getDateDifference(formatTimestamp(widget.snap["datePublished"]) , time);
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
+    final model.User user = Provider.of<UserProvider>(context).getUser;
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -30,7 +69,6 @@ class _PostItemState extends State<PostItem> {
           MaterialPageRoute(
               builder: (context) => PostViewScreen(
                 snap: widget.snap,
-                locationText: widget.locationText,
               ),
           ),
         );
@@ -79,28 +117,44 @@ class _PostItemState extends State<PostItem> {
                             textAlign: TextAlign.left,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 0),
-                          child: Text(
-                            widget.locationText,
-                            style: GoogleFonts.poppins(
-                                fontSize: 12, fontWeight: FontWeight.w500),
-                          ),
-                        ),
-                        // DropdownButton(
-                        //   elevation: 0,
-                        //   items: [
-                        //     DropdownMenuItem(child: Text("Anyone"), value: "Anyone",),
-                        //     DropdownMenuItem(child: Text("Friends"), value: "Friends",),
-                        //   ],
-                        //   value: _shareTo,
-                        //   onChanged: (value){
-                        //     setState(() {
-                        //       _shareTo = value!;
-                        //     });
-                        //   },
-                        // ),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 3, vertical: 0),
+                              child: Text(
+                                widget.snap["location"].toString(),
+                                style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 2,
+                              height: 2,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.black54,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 3, vertical: 0),
+                              child: Text(
+                                DateFormat.yMMMd().format(
+                                  widget.snap['datePublished'].toDate(),
+                                ),
+                                style: GoogleFonts.poppins(
+                                    fontSize: 10,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
                       ],
                     ),
                   ],
@@ -135,23 +189,77 @@ class _PostItemState extends State<PostItem> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    IconButton(
-                      icon: Icon(
-                          Icons.thumb_up_alt_outlined,
-                        size: 26,
-                      ),
-                      onPressed: (){
-
-                      },
+                    Column(
+                      children: [
+                        LikeAnimation(
+                          isAnimating: widget.snap['likes'].contains(user.uid),
+                          smallLike: true,
+                          child: IconButton(
+                            icon: widget.snap['likes'].contains(user.uid)
+                                ? Icon(FontAwesomeIcons.solidThumbsUp,
+                                size: 26, color: Colors.blueAccent)
+                                : Icon(
+                              FontAwesomeIcons.thumbsUp,
+                              size: 26,
+                              //color: Colors.white60,
+                            ),
+                            onPressed: () {
+                              FireStoreMethods().likePost(
+                                widget.snap['postId'].toString(),
+                                user.uid,
+                                widget.snap['likes'],
+                              );
+                            },
+                          ),
+                        ),
+                        DefaultTextStyle(
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.grey),
+                            child: Text(
+                              '${widget.snap['likes'].length} likes',
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center,
+                            ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.comment_outlined,
-                        size: 26,
-                      ),
-                      onPressed: (){
-
-                      },
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.comment,
+                            size: 26,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PostViewScreen(
+                                  snap: widget.snap,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        DefaultTextStyle(
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle2!
+                                .copyWith(
+                                fontWeight: FontWeight.w800,
+                                color: Colors.grey,
+                            ),
+                            child: Text(
+                              '$commentLen replies',
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.center,
+                            ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

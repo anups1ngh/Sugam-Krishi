@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -27,6 +28,7 @@ class _postPageState extends State<postPage> {
   String _shareTo = "Anyone";
   bool isLoading = false;
   String res = "";
+  String location = "";
 
   Uint8List? _image;
   bool _photoSelected = false;
@@ -50,11 +52,23 @@ class _postPageState extends State<postPage> {
     );
   }
 
+  Future<void> getLocationText() async {
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
+
+    setState(() {
+      location = placemarks[0].subLocality.toString() +
+          ", " +
+          placemarks[0].locality.toString();
+    });
+  }
 // In post image function make it such that if we do not select an image then it will upload the post then also
   void postImage(String uid, String username, String profImage) async {
     // final ByteData bytes =
     //     await rootBundle.load('assets/login_illustration.jpg');
     // _img = bytes.buffer.asUint8List();
+    LocationSystem.getPosition();
+    getLocationText();
     setState(() {
       isLoading = true;
     });
@@ -68,6 +82,7 @@ class _postPageState extends State<postPage> {
           uid,
           username,
           profImage,
+          location,
         );
       } else {
         res = await FireStoreMethods().uploadPost(
@@ -76,6 +91,7 @@ class _postPageState extends State<postPage> {
           uid,
           username,
           profImage,
+          location,
         );
       }
 
@@ -244,6 +260,12 @@ class _postPageState extends State<postPage> {
                 _photoSelected
                     ? Container(
                         decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: MemoryImage(
+                              _image!,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                           border: Border.all(
                             width: 0.1,
                           ),
@@ -251,16 +273,16 @@ class _postPageState extends State<postPage> {
                         ),
                         height: MediaQuery.of(context).size.height * 0.3,
                         // height: 300,
-                        width: MediaQuery.of(context).size.width * 0.9,
+                        width: MediaQuery.of(context).size.width * 1,
                         child: Stack(
                           alignment: AlignmentDirectional.center,
                           children: [
-                            Expanded(
-                              child: Image.memory(
-                                _image!,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            // Expanded(
+                            //   child: Image.memory(
+                            //     _image!,
+                            //     fit: BoxFit.cover,
+                            //   ),
+                            // ),
                             Align(
                               alignment: Alignment.topRight,
                               child: IconButton(

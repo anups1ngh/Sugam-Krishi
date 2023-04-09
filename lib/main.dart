@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -6,11 +7,21 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
+import 'package:sugam_krishi/providers/value_providers.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/loginPage.dart';
 import 'package:sugam_krishi/screens/signupPage.dart';
 
+List<CameraDescription> cameras = [];
+
 Future<void> main() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    cameras = await availableCameras();
+    } on CameraException catch (e) {
+    print('Error in fetching the cameras: $e');
+  }
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   HttpOverrides.global = MyHttpOverrides();
@@ -25,6 +36,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => ValueProviders()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
