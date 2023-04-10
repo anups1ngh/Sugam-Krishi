@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
@@ -14,16 +15,25 @@ import 'package:sugam_krishi/screens/signupPage.dart';
 
 List<CameraDescription> cameras = [];
 
+// const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//   'high_importance_channel', // id
+//   'High Importance Notifications', // title
+//   'This channel is used for important notifications.', // description
+//   importance: Importance.high,
+//   playSound: true,
+// );
+
 Future<void> main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
-    } on CameraException catch (e) {
+  } on CameraException catch (e) {
     print('Error in fetching the cameras: $e');
   }
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

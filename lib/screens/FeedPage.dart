@@ -77,14 +77,14 @@ class _FeedPageState extends State<FeedPage> {
     });
   }
 
-  String greeting(){
+  String greeting() {
     int hour = TimeOfDay.now().hour;
     String time;
-    if(hour >= 4 && hour < 12)
+    if (hour >= 4 && hour < 12)
       time = "Morning";
-    else if(hour >= 12 && hour < 17)
+    else if (hour >= 12 && hour < 17)
       time = "Afternoon";
-    else if(hour >= 17 && hour < 20)
+    else if (hour >= 17 && hour < 20)
       time = "Evening";
     else
       time = "Night";
@@ -109,6 +109,7 @@ class _FeedPageState extends State<FeedPage> {
 
     // scrollController.animateTo(offset, duration: duration, curve: curve);
   }
+
   void initState() {
     day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
     scrollController = ScrollController();
@@ -123,12 +124,14 @@ class _FeedPageState extends State<FeedPage> {
     dropDownController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     model.User user = Provider.of<UserProvider>(context).getUser;
     showFAB = Provider.of<ValueProviders>(context).shouldShowFAB;
-    print("Show FAB : "+showFAB.toString());
-    showWeatherCard = Provider.of<ValueProviders>(context, listen: false).shouldShowWeatherCard;
+    print("Show FAB : " + showFAB.toString());
+    showWeatherCard = Provider.of<ValueProviders>(context, listen: false)
+        .shouldShowWeatherCard;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xffE0F2F1),
@@ -154,11 +157,13 @@ class _FeedPageState extends State<FeedPage> {
             refreshVariables();
           },
           child: NotificationListener<UserScrollNotification>(
-            onNotification: (notification){
-              if(notification.direction == ScrollDirection.forward){
-                Provider.of<ValueProviders>(context, listen: false).toggleShowFAB();
-              } else if(notification.direction == ScrollDirection.reverse){
-                Provider.of<ValueProviders>(context, listen: false).toggleShowFAB();
+            onNotification: (notification) {
+              if (notification.direction == ScrollDirection.forward) {
+                Provider.of<ValueProviders>(context, listen: false)
+                    .toggleShowFAB();
+              } else if (notification.direction == ScrollDirection.reverse) {
+                Provider.of<ValueProviders>(context, listen: false)
+                    .toggleShowFAB();
               }
               return true;
             },
@@ -170,10 +175,10 @@ class _FeedPageState extends State<FeedPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-
                     //HELLO MESSAGE
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         // child: Text(
@@ -196,7 +201,7 @@ class _FeedPageState extends State<FeedPage> {
                             ),
                             children: [
                               TextSpan(
-                                text: "\n"+user.username,
+                                text: "\n" + user.username,
                                 style: GoogleFonts.poppins(
                                   fontSize: 30,
                                   fontWeight: FontWeight.w500,
@@ -212,8 +217,8 @@ class _FeedPageState extends State<FeedPage> {
 
                     //WEATHER CARD
                     Container(
-                      padding:
-                          const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 10),
                       height: size.height * .22,
                       decoration: BoxDecoration(
                         gradient: _constants.linearGradientTeal,
@@ -241,13 +246,15 @@ class _FeedPageState extends State<FeedPage> {
                                     horizontal: 10, vertical: 10),
                                 child: Text(
                                   widget.currentDate,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: Colors.white70,
+                                    fontSize: size.width * 0.04,
                                   ),
                                 ),
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   // Image.asset(
@@ -259,9 +266,12 @@ class _FeedPageState extends State<FeedPage> {
                                   // ),
                                   Text(
                                     widget.location,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 16.0,
+                                      //fontSize: 16.0,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.05,
                                     ),
                                   ),
                                   GestureDetector(
@@ -301,10 +311,11 @@ class _FeedPageState extends State<FeedPage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 10),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       //TEMPERATURE
@@ -320,8 +331,9 @@ class _FeedPageState extends State<FeedPage> {
                                             child: Text(
                                               widget.temperature.toString(),
                                               style: TextStyle(
-                                                fontSize: 80,
+                                                // fontSize: 80,
                                                 fontWeight: FontWeight.bold,
+                                                fontSize: size.width * 0.2,
                                                 foreground: Paint()
                                                   ..shader = _constants.shader,
                                               ),
@@ -330,7 +342,8 @@ class _FeedPageState extends State<FeedPage> {
                                           Text(
                                             'o',
                                             style: TextStyle(
-                                              fontSize: 40,
+                                              //fontSize: 40,
+                                              fontSize: size.width * 0.08,
                                               fontWeight: FontWeight.bold,
                                               foreground: Paint()
                                                 ..shader = _constants.shader,
@@ -345,7 +358,8 @@ class _FeedPageState extends State<FeedPage> {
                                 Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: SizedBox(
-                                    height: 100,
+                                    //height: 100,
+                                    height: size.height * 0.08,
                                     child: Image.asset(
                                       "assets/$day_night/" + widget.weatherIcon,
                                       scale: 0.6,
@@ -404,7 +418,8 @@ class _FeedPageState extends State<FeedPage> {
                     ),
 
                     Padding(
-                      padding: const EdgeInsets.only(left: 5, right: 5, top: 15, bottom: 0),
+                      padding: const EdgeInsets.only(
+                          left: 5, right: 5, top: 15, bottom: 0),
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -427,7 +442,7 @@ class _FeedPageState extends State<FeedPage> {
                           items: const ["All Posts", "My Posts"],
                           controller: dropDownController,
                           excludeSelected: false,
-                          onChanged: (value){
+                          onChanged: (value) {
                             setState(() {
                               postsFilter = value;
                             });
@@ -438,10 +453,14 @@ class _FeedPageState extends State<FeedPage> {
 
                     //POSTS FEED
                     StreamBuilder(
-                      stream: FirebaseFirestore.instance.collection('posts').snapshots(),
+                      stream: FirebaseFirestore.instance
+                          .collection('posts')
+                          .snapshots(),
                       builder: (context,
-                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return Center(
                             child: SpinKitThreeBounce(
                               color: Colors.white,
@@ -454,9 +473,9 @@ class _FeedPageState extends State<FeedPage> {
                           padding: EdgeInsets.only(bottom: 100),
                           physics: NeverScrollableScrollPhysics(),
                           itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index){
+                          itemBuilder: (context, index) {
                             print(postsFilter);
-                            if(postsFilter == "My Posts") {
+                            if (postsFilter == "My Posts") {
                               if (user.uid ==
                                   snapshot.data!.docs[index].data()["uid"])
                                 return PostItem(
@@ -483,44 +502,46 @@ class _FeedPageState extends State<FeedPage> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: AnimatedSwitcherTranslation.bottom(
         duration: const Duration(milliseconds: 500),
-        child: showFAB ? Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 3),
-          child: FloatingActionButton.extended(
-            elevation: 1,
-            // backgroundColor: Color(0xff00897B),
-            backgroundColor: Colors.greenAccent.shade700,
-            icon: FaIcon(
-              FontAwesomeIcons.penToSquare,
-              size: 20,
-              color: Colors.white,
-            ),
-            label: Text(
-              "Share to the Community",
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-            onPressed: () {
-              showModalBottomSheet<void>(
-                isScrollControlled: true,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(18),
+        child: showFAB
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: FloatingActionButton.extended(
+                  elevation: 1,
+                  // backgroundColor: Color(0xff00897B),
+                  backgroundColor: Colors.greenAccent.shade700,
+                  icon: FaIcon(
+                    FontAwesomeIcons.penToSquare,
+                    size: 20,
+                    color: Colors.white,
                   ),
+                  label: Text(
+                    "Share to the Community",
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
+                  onPressed: () {
+                    showModalBottomSheet<void>(
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(18),
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return postPage(
+                          userName: user.username,
+                          userPhoto: user.photoUrl,
+                        );
+                      },
+                    );
+                  },
                 ),
-                context: context,
-                builder: (BuildContext context) {
-                  return postPage(
-                    userName: user.username,
-                    userPhoto: user.photoUrl,
-                  );
-                },
-              );
-            },
-          ),
-        ) : null,
+              )
+            : null,
       ),
     );
   }

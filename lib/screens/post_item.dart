@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:sugam_krishi/screens/postViewScreen.dart';
 import 'package:intl/intl.dart';
 import '../models/post.dart';
@@ -29,7 +30,8 @@ class _PostItemState extends State<PostItem> {
     var format = new DateFormat('d'); // <- use skeleton here
     return format.format(timestamp.toDate());
   }
-  String getDateDifference(DateTime now, DateTime published){
+
+  String getDateDifference(DateTime now, DateTime published) {
     Duration diff = now.difference(published);
     print(diff.inHours.toString());
     return diff.inHours.toString();
@@ -52,13 +54,19 @@ class _PostItemState extends State<PostItem> {
     setState(() {});
   }
 
+  Future<String> _fetchImageFromFirebase() async {
+    return Future.delayed(Duration(seconds: 2), () => widget.snap["postUrl"]);
+  }
+
   @override
   void initState() {
     hasImage = widget.snap["postUrl"].toString() != "";
     DateTime time = DateTime.now();
     // publishedDifference = getDateDifference(formatTimestamp(widget.snap["datePublished"]) , time);
     super.initState();
+    fetchCommentLen();
   }
+
   @override
   Widget build(BuildContext context) {
     final model.User user = Provider.of<UserProvider>(context).getUser;
@@ -67,9 +75,9 @@ class _PostItemState extends State<PostItem> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => PostViewScreen(
-                snap: widget.snap,
-              ),
+            builder: (context) => PostViewScreen(
+              snap: widget.snap,
+            ),
           ),
         );
       },
@@ -125,7 +133,7 @@ class _PostItemState extends State<PostItem> {
                               child: Text(
                                 widget.snap["location"].toString(),
                                 style: GoogleFonts.poppins(
-                                    fontSize: 10,
+                                  fontSize: 10,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black54,
                                 ),
@@ -135,8 +143,8 @@ class _PostItemState extends State<PostItem> {
                               width: 2,
                               height: 2,
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.black54,
+                                shape: BoxShape.circle,
+                                color: Colors.black54,
                               ),
                             ),
                             Padding(
@@ -147,7 +155,7 @@ class _PostItemState extends State<PostItem> {
                                   widget.snap['datePublished'].toDate(),
                                 ),
                                 style: GoogleFonts.poppins(
-                                    fontSize: 10,
+                                  fontSize: 10,
                                   fontWeight: FontWeight.w500,
                                   color: Colors.black54,
                                 ),
@@ -160,8 +168,8 @@ class _PostItemState extends State<PostItem> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 5, vertical: 0),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                   child: Text(
                     widget.snap['description'].toString(),
                     style: GoogleFonts.poppins(
@@ -169,23 +177,54 @@ class _PostItemState extends State<PostItem> {
                     textAlign: TextAlign.left,
                   ),
                 ),
-                hasImage ? Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    // image: DecorationImage(
-                    //   fit: BoxFit.,
-                    //   image: NetworkImage(
-                    //     widget.snap["postUrl"].toString(),
-                    //   ),
-                    // ),
-                  ),
-                    child: Image.network(
-                      widget.snap["postUrl"].toString(),
-                    )
-                )
-                    : Container(height: 0,),
-                SizedBox(height: 10,),
+                hasImage
+                    ? FutureBuilder(
+                        future:
+                            _fetchImageFromFirebase(), // replace with your own function to fetch the image
+                        builder: (BuildContext context,
+                            AsyncSnapshot<String> snapshot) {
+                          if (snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData) {
+                            return Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  // image: DecorationImage(
+                                  //   fit: BoxFit.,
+                                  //   image: NetworkImage(
+                                  //     widget.snap["postUrl"].toString(),
+                                  //   ),
+                                  // ),
+                                ),
+                                child: Image.network(
+                                  widget.snap["postUrl"].toString(),
+                                ));
+                          } else {
+                            return AspectRatio(
+                              aspectRatio: 1,
+                              child: Shimmer.fromColors(
+                                baseColor: Colors.grey[300]!,
+                                highlightColor: Colors.grey[100]!,
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(vertical: 5),
+                                  width: double.infinity,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                        },
+                      )
+                    : Container(
+                        height: 0,
+                      ),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -197,12 +236,12 @@ class _PostItemState extends State<PostItem> {
                           child: IconButton(
                             icon: widget.snap['likes'].contains(user.uid)
                                 ? Icon(FontAwesomeIcons.solidThumbsUp,
-                                size: 26, color: Colors.blueAccent)
+                                    size: 26, color: Colors.blueAccent)
                                 : Icon(
-                              FontAwesomeIcons.thumbsUp,
-                              size: 26,
-                              //color: Colors.white60,
-                            ),
+                                    FontAwesomeIcons.thumbsUp,
+                                    size: 26,
+                                    //color: Colors.white60,
+                                  ),
                             onPressed: () {
                               FireStoreMethods().likePost(
                                 widget.snap['postId'].toString(),
@@ -213,17 +252,17 @@ class _PostItemState extends State<PostItem> {
                           ),
                         ),
                         DefaultTextStyle(
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.grey),
-                            child: Text(
-                              '${widget.snap['likes'].length} likes',
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle2!
+                              .copyWith(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.grey),
+                          child: Text(
+                            '${widget.snap['likes'].length} likes',
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
@@ -246,18 +285,16 @@ class _PostItemState extends State<PostItem> {
                           },
                         ),
                         DefaultTextStyle(
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.grey,
-                            ),
-                            child: Text(
-                              '$commentLen replies',
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.center,
-                            ),
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.grey,
+                                  ),
+                          child: Text(
+                            '${commentLen} replies',
+                            style: Theme.of(context).textTheme.bodySmall,
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ],
                     ),
