@@ -1,0 +1,20 @@
+dev_dependencies:
+  flutter_launcher_icons: "^0.13.0"
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/AppIcons/playstore.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  web:
+    generate: true
+    image_path: "assets/AppIcons/playstore.png"
+    background_color: "#E9B347"
+    theme_color: "#37893E"
+  windows:
+    generate: true
+    image_path: "assets/AppIcons/playstore.png"
+    icon_size: 80 # min:48, max:256, default: 48
+  macos:
+    generate: true
+    image_path: "assets/AppIcons/playstore.png"
