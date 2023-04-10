@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.1"
+  cart_stepper:
+    dependency: "direct main"
+    description:
+      name: cart_stepper
+      sha256: "54da5a729f109649a1df07b47034471a54fb358e1d156bc20b23166e7af31869"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
   characters:
     dependency: transitive
     description:

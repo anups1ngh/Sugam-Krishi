@@ -57,6 +57,7 @@ class _PostItemState extends State<PostItem> {
     hasImage = widget.snap["postUrl"].toString() != "";
     DateTime time = DateTime.now();
     // publishedDifference = getDateDifference(formatTimestamp(widget.snap["datePublished"]) , time);
+    fetchCommentLen();
     super.initState();
   }
   @override

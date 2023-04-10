@@ -557,7 +557,10 @@ class _postItemPageState extends State<postItemPage> {
                       Icons.lightbulb_circle_rounded,
                       color: Colors.tealAccent.shade700,
                     ),
-                    Text('The mandi price for ${itemName} is ₹${modal_price} ')
+                    Text(
+                      'The mandi price for ${itemName} is ₹${modal_price} ',
+                      overflow: TextOverflow.fade,
+                    )
                   ],
                 ),
               ),

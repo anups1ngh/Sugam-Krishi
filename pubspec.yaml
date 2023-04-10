@@ -69,6 +69,7 @@ dependencies:
   video_player: ^2.1.14
   animated_custom_dropdown: ^1.5.0
   animated_switcher_plus: ^1.0.3
+  cart_stepper: ^4.1.1
 
 
 dev_dependencies:
