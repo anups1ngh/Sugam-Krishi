@@ -8,12 +8,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sugam_krishi/screens/diagnosisPage.dart';
+import 'package:sugam_krishi/screens/postPage.dart';
 import 'package:tflite/tflite.dart';
 import 'package:intl/intl.dart' show toBeginningOfSentenceCase;
 import 'package:url_launcher/url_launcher.dart';
+import '../providers/user_provider.dart';
 import '../utils/utils.dart';
 import 'AI-Bot/chatScreen.dart';
+import 'package:sugam_krishi/models/user.dart' as model;
 
 class cameraScreen extends StatefulWidget {
   const cameraScreen({Key? key}) : super(key: key);
@@ -24,8 +28,8 @@ class cameraScreen extends StatefulWidget {
 
 class _cameraScreenState extends State<cameraScreen> {
 
-  late File _image;
-  late List _output;
+  File? _image;
+  List? _output;
   bool _photoSelected = false;
   final imagepicker = ImagePicker();
   String diseaseName = "";
@@ -43,13 +47,13 @@ class _cameraScreenState extends State<cameraScreen> {
 
   selectImage(ImageSource _source) async {
     var image = await imagepicker.getImage(source: _source);
-    if (image == null) {
-      return null;
-    } else {
+    if(image != null) {
       _image = File(image.path);
+      setState(() {
+        _photoSelected = true;
+      });
+      run_ML_Model(_image!);
     }
-    _photoSelected = true;
-    run_ML_Model(_image);
   }
 
   Future<void> initTensorflow(String modelPath, String labelPath) async{
@@ -60,29 +64,41 @@ class _cameraScreenState extends State<cameraScreen> {
         isAsset: true, // defaults to true, set to false to load resources outside assets
         useGpuDelegate: false // defaults to false, set to true to use GPU delegate
     );
+    print(res);
   }
   run_ML_Model(File image) async{
-    var recognitions = await Tflite.runModelOnImage(
-        path: image.path,   // required
-        imageMean: 0.0,   // defaults to 117.0
-        imageStd: 255.0,  // defaults to 1.0
-        numResults: 5,    // defaults to 5
-        threshold: 0.75,   // defaults to 0.1
-        asynch: true      // defaults to true
-    );
-    setState(() {
-      _output = recognitions!;
-      diseaseName = formatDiseaseName((_output[0]['label']).toString().substring(2));
-      print(_output);
-    });
+    try{
+      print(image.path);
+      var recognitions = await Tflite.runModelOnImage(
+          path: image.path,   // required
+          imageMean: 0.0,   // defaults to 117.0
+          imageStd: 255.0,  // defaults to 1.0
+          numResults: 5,    // defaults to 5
+          threshold: 0.1,   // defaults to 0.1
+          asynch: true      // defaults to true
+      );
+      if(recognitions == null)
+        throw "Null response";
+      else if(recognitions.isEmpty)
+        throw "Empty response";
+      else{
+        setState(() {
+          _output = recognitions;
+          diseaseName = formatDiseaseName((_output?[0]['label']).toString().substring(2));
+          print(_output);
+        });
+      }
+    }
+    catch(e){
+      print(e);
+    }
   }
 
   @override
   void initState() {
-    initTensorflow("assets/model_unquant.tflite", "assets/labels.txt").then((value){setState(() {
-
-    });});
     selectImage(ImageSource.camera);
+    initTensorflow("assets/model_unquant.tflite" ,"assets/labels.txt").then((value){setState(() {
+    });});
     super.initState();
   }
 
@@ -105,6 +121,7 @@ class _cameraScreenState extends State<cameraScreen> {
   }
   @override
   Widget build(BuildContext context) {
+    model.User user = Provider.of<UserProvider>(context).getUser;
     return Scaffold(
       backgroundColor: Color(0xffE0F2F1),
       extendBodyBehindAppBar: true,
@@ -131,7 +148,7 @@ class _cameraScreenState extends State<cameraScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                   child: ClipRRect(
-                    child: Image.file(_image),
+                    child: _photoSelected ? Image.file(_image!) : SizedBox(height: 60,),
                     borderRadius: BorderRadius.circular(12),
                   ),
               ),
@@ -166,7 +183,7 @@ class _cameraScreenState extends State<cameraScreen> {
                       ),
                       children: [
                         TextSpan(
-                          text: formatConfidence((_output[0]['confidence'])),
+                          text: _output != null ? formatConfidence((_output?[0]['confidence'])) : "",
                           style: GoogleFonts.poppins(
                             color: Colors.black87,
                             fontSize: 12,
@@ -197,7 +214,21 @@ class _cameraScreenState extends State<cameraScreen> {
                       ],
                     ),
                     onPressed: () {
-
+                      showModalBottomSheet<void>(
+                        isScrollControlled: true,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(18),
+                          ),
+                        ),
+                        context: context,
+                        builder: (BuildContext context) {
+                          return postPage(
+                            userName: user.username,
+                            userPhoto: user.photoUrl,
+                          );
+                        },
+                      );
                     },
                   ),
                   FilledButton(

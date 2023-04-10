@@ -47,7 +47,7 @@ class FeedPage extends StatefulWidget {
 class _FeedPageState extends State<FeedPage> {
   Constants _constants = Constants();
   String day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
-  ScrollController scrollController = ScrollController();
+  late ScrollController scrollController;
   TextEditingController dropDownController = TextEditingController();
   String postsFilter = "All Posts";
   bool showFAB = true;
@@ -94,19 +94,21 @@ class _FeedPageState extends State<FeedPage> {
 
   _scrollListener() {
     // print(scrollController.offset);
-    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
-        !scrollController.position.outOfRange) {
-      // setState(() {
-      //   print(scrollController.position.pixels);
-      // });
+    // if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+    //     !scrollController.position.outOfRange) {
+    //   // setState(() {
+    //   //   print(scrollController.position.pixels);
+    //   // });
+    // }
+    // if (scrollController.offset <= scrollController.position.minScrollExtent &&
+    //     !scrollController.position.outOfRange) {
+    //   // setState(() {
+    //   //   print(scrollController.position.pixels);
+    //   // });
+    // }
+    if (scrollController.offset >= 265) {
+      // Provider.of<ValueProviders>(context, listen: false).setShowWeatherCard(false);
     }
-    if (scrollController.offset <= scrollController.position.minScrollExtent &&
-        !scrollController.position.outOfRange) {
-      // setState(() {
-      //   print(scrollController.position.pixels);
-      // });
-    }
-
     // scrollController.animateTo(offset, duration: duration, curve: curve);
   }
 
@@ -130,12 +132,93 @@ class _FeedPageState extends State<FeedPage> {
     model.User user = Provider.of<UserProvider>(context).getUser;
     showFAB = Provider.of<ValueProviders>(context).shouldShowFAB;
     print("Show FAB : " + showFAB.toString());
-    showWeatherCard = Provider.of<ValueProviders>(context, listen: false)
-        .shouldShowWeatherCard;
+    showWeatherCard =
+        Provider.of<ValueProviders>(context).shouldShowWeatherCard;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Color(0xffE0F2F1),
       appBar: AppBar(
+        actions: [
+          Visibility(
+            visible: !showWeatherCard,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DetailPage(
+                      dailyForecastWeather: widget.dailyWeatherForecast,
+                      location: widget.location,
+                    ),
+                  ),
+                );
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(100),
+                  color: Colors.teal.shade200,
+                ),
+                height: 24,
+                width: 100,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          //TEMPERATURE
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    widget.temperature.toString(),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'o',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //WEATHER ICON
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10),
+                      child: SizedBox(
+                        height: 40,
+                        child: Image.asset(
+                          "assets/$day_night/" + widget.weatherIcon,
+                          scale: 0.6,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
         backgroundColor: Colors.white,
         elevation: 1,
         automaticallyImplyLeading: false,
@@ -158,13 +241,16 @@ class _FeedPageState extends State<FeedPage> {
           },
           child: NotificationListener<UserScrollNotification>(
             onNotification: (notification) {
-              if (notification.direction == ScrollDirection.forward) {
-                Provider.of<ValueProviders>(context, listen: false)
-                    .toggleShowFAB();
-              } else if (notification.direction == ScrollDirection.reverse) {
-                Provider.of<ValueProviders>(context, listen: false)
-                    .toggleShowFAB();
-              }
+              // print(notification.metrics.extentInside);
+              // if(notification.direction == ScrollDirection.forward){
+              //   Provider.of<ValueProviders>(context, listen: false).setShowFAB(true);
+              //   if(notification.metrics.pixels >= 265)
+              //     Provider.of<ValueProviders>(context, listen: false).setShowWeatherCard(false);
+              // } else if(notification.direction == ScrollDirection.reverse){
+              //   Provider.of<ValueProviders>(context, listen: false).setShowFAB(false);
+              //   if(notification.metrics.pixels <= 265)
+              //     Provider.of<ValueProviders>(context, listen: false).setShowWeatherCard(true);
+              // }
               return true;
             },
             child: SingleChildScrollView(
@@ -500,48 +586,50 @@ class _FeedPageState extends State<FeedPage> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: AnimatedSwitcherTranslation.bottom(
-        duration: const Duration(milliseconds: 500),
-        child: showFAB
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: FloatingActionButton.extended(
-                  elevation: 1,
-                  // backgroundColor: Color(0xff00897B),
-                  backgroundColor: Colors.greenAccent.shade700,
-                  icon: FaIcon(
-                    FontAwesomeIcons.penToSquare,
-                    size: 20,
+      floatingActionButton: AnimatedSlide(
+        duration: const Duration(milliseconds: 400),
+        offset: showFAB ? Offset.zero : Offset(0, 2),
+        child: AnimatedOpacity(
+            duration: const Duration(milliseconds: 400),
+            opacity: showFAB ? 1 : 0,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 3),
+              child: FloatingActionButton.extended(
+                elevation: 1,
+                // backgroundColor: Color(0xff00897B),
+                backgroundColor: Colors.greenAccent.shade700,
+                icon: FaIcon(
+                  FontAwesomeIcons.penToSquare,
+                  size: 20,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  "Share to the Community",
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
-                  label: Text(
-                    "Share to the Community",
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () {
-                    showModalBottomSheet<void>(
-                      isScrollControlled: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(18),
-                        ),
-                      ),
-                      context: context,
-                      builder: (BuildContext context) {
-                        return postPage(
-                          userName: user.username,
-                          userPhoto: user.photoUrl,
-                        );
-                      },
-                    );
-                  },
                 ),
-              )
-            : null,
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(18),
+                      ),
+                    ),
+                    context: context,
+                    builder: (BuildContext context) {
+                      return postPage(
+                        userName: user.username,
+                        userPhoto: user.photoUrl,
+                      );
+                    },
+                  );
+                },
+              ),
+            )),
       ),
     );
   }

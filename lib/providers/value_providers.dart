@@ -10,17 +10,17 @@ class ValueProviders with ChangeNotifier {
   bool get shouldShowMarketplaceFAB => _showMarketplaceFAB;
   bool get shouldShowWeatherCard => _showWeatherCard;
 
-  void toggleShowFAB(){
-    _showFAB = !_showFAB;
+  void setShowFAB(bool state){
+    _showFAB = state;
     // print("Show FAB : "+_showFAB.toString());
     notifyListeners();
   }
-  void toggleShowMarketplaceFAB(){
-    _showMarketplaceFAB = !_showMarketplaceFAB;
+  void setShowMarketplaceFAB(bool state){
+    _showMarketplaceFAB = state;
     notifyListeners();
   }
-  void toggleShowWeatherCard(){
-    _showWeatherCard = !_showWeatherCard;
+  void setShowWeatherCard(bool state){
+    _showWeatherCard = state;
     notifyListeners();
   }
 }

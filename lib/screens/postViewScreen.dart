@@ -49,6 +49,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
           .collection('comments')
           .get();
       commentLen = snap.docs.length;
+      print(snap.docs.length);
     } catch (err) {
       showSnackBar(
         context,
@@ -60,6 +61,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
 
   @override
   void initState() {
+    fetchCommentLen();
     hasImage = widget.snap["postUrl"].toString() != "";
     _commentController = TextEditingController();
     focusNode = FocusNode();
