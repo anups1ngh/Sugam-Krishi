@@ -10,7 +10,8 @@ Color scaffoldBackgroundColor = const Color(0xFF343541);
 Color cardColor = const Color(0xFF444654);
 
 class chatScreen extends StatefulWidget {
-  const chatScreen({Key? key}) : super(key: key);
+  final String? initialQuery;
+  const chatScreen({Key? key, required this.initialQuery}) : super(key: key);
 
   @override
   State<chatScreen> createState() => _chatScreenState();
@@ -28,10 +29,14 @@ class _chatScreenState extends State<chatScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    _textEditingController = TextEditingController();
     focusNode = FocusNode();
     _listScrollController = ScrollController();
+    if(widget.initialQuery != null){
+      _textEditingController = TextEditingController(text: widget.initialQuery);
+      _sendMessage();
+    } else {
+      _textEditingController = TextEditingController();
+    }
     super.initState();
   }
 
@@ -121,6 +126,9 @@ class _chatScreenState extends State<chatScreen> {
                         else
                           //CHAT WIDGET
                           Material(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(6),
+                            ),
                             color: cardColor,
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),

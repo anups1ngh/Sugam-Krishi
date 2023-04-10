@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/auth_methods.dart';
+import 'package:sugam_krishi/resources/firestore_methods.dart';
 
 import '../utils/utils.dart';
 
@@ -69,12 +70,20 @@ class _EditProfilePage extends State<EditProfilePage> {
     });
     print(username);
     print(contact);
-    await _authMethods.updateUserDetails(img!, username, contact);
-    setState(() {
-      _isLoading = false;
-    });
-
-    showToastText("Profile Updated");
+    String res = await FireStoreMethods().updateUserDetails(img!, username,
+        contact, Provider.of<UserProvider>(context, listen: false).getUser.uid);
+    if (res == "success") {
+      setState(() {
+        _isLoading = false;
+      });
+      showToastText("Profile updated");
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      // show the error
+      showToastText(res);
+    }
   }
 
   @override

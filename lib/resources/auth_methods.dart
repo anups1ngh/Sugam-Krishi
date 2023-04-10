@@ -18,36 +18,6 @@ class AuthMethods {
     return model.User.fromSnap(documentSnapshot);
   }
 
-// update user details
-// add default parameter values to avoid errors
-  Future<String> updateUserDetails(
-      Uint8List img, String username, String contact) async {
-    User currentUser = _auth.currentUser!;
-    String res = "Some error Occurred";
-    try {
-      String photoUrl = await StorageMethods()
-          .uploadImageToStorage('profilePics', img, false, false);
-      // model.User _user = model.User(
-      //   username: username,
-      //   uid: currentUser.uid,
-      //   photoUrl: photoUrl,
-      //   email: currentUser.email!,
-      //   contact: contact,
-      // );
-      await _firestore.collection("users").doc(currentUser.uid).update({
-        "username": username,
-        "photoUrl": photoUrl,
-        "contact": contact,
-      });
-      // .set(_user.toJson());
-      //return _user;
-      res = "success";
-    } catch (e) {
-      return e.toString();
-    }
-    return res;
-  }
-
   // Signing Up User
 
   Future<String> signUpUser({

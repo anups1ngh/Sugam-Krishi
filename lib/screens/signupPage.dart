@@ -118,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   child: Column(
                     children: [
                       const SizedBox(
-                        height: 8,
+                        height: 6,
                       ),
                       TextFormField(
                         validator: (value) {
@@ -147,7 +147,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(
-                        height: 16,
+                        height: 12,
                       ),
                       TextFormField(
                         validator: (value) {
@@ -177,7 +177,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(
-                        height: 16,
+                        height: 12,
                       ),
                       TextFormField(
                         validator: (value) {
@@ -208,7 +208,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       const SizedBox(
-                        height: 16,
+                        height: 12,
                       ),
                       IntlPhoneField(
                         controller: phoneController,
@@ -242,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 35,
+                        height: 30,
                       ),
                       GestureDetector(
                         onTap: () {
@@ -286,7 +286,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       SizedBox(
-                        height: 25,
+                        height: 15,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 16, right: 16),

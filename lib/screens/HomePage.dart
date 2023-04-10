@@ -32,6 +32,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
+
+  final controller = ScrollController();
   void refreshPage() {
     setState(() {});
   }

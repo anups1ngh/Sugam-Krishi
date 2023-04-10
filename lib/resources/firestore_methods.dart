@@ -9,15 +9,44 @@ import 'package:uuid/uuid.dart';
 class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<String> updateUserDetails(
+      Uint8List img, String username, String contact, String uid) async {
+    // User currentUser = _auth.currentUser!;
+    String res = "Some error Occurred";
+    try {
+      String photoUrl = await StorageMethods()
+          .uploadImageToStorage('profilePics', img, false, false);
+      // model.User _user = model.User(
+      //   username: username,
+      //   uid: currentUser.uid,
+      //   photoUrl: photoUrl,
+      //   email: currentUser.email!,
+      //   contact: contact,
+      // );
+      await _firestore.collection("users").doc(uid).update({
+        "username": username,
+        "photoUrl": photoUrl,
+        "contact": contact,
+      });
+      // .set(_user.toJson());
+      //return _user;
+      res = "success";
+    } catch (e) {
+      return e.toString();
+    }
+    return res;
+  }
+
   Future<String> uploadPost(String description, Uint8List? file, String uid,
-      String username, String profImage) async {
+      String username, String profImage, String location) async {
     // asking uid here because we dont want to make extra calls to firebase auth when we can just get from our state management
     String res = "Some error occurred";
     try {
       String photoUrl = file == null
           ? ""
           : await StorageMethods()
-              .uploadImageToStorage('posts', file, true, false);
+          .uploadImageToStorage('posts', file, true, false);
+
       String postId = const Uuid().v1(); // creates unique id based on time
       Post post = Post(
         description: description,
@@ -28,6 +57,7 @@ class FireStoreMethods {
         datePublished: DateTime.now(),
         postUrl: photoUrl,
         profImage: profImage,
+        location: location,
       );
       _firestore.collection('posts').doc(postId).set(post.toJson());
       res = "success";
@@ -47,13 +77,14 @@ class FireStoreMethods {
       String price,
       String location,
       String contact,
-      String itemName) async {
+      String itemName,
+      String? quantity) async {
     String res = "Some error occurred";
     try {
       String photoUrl = file == null
           ? ""
           : await StorageMethods()
-              .uploadImageToStorage('marketplace', file, false, true);
+          .uploadImageToStorage('marketplace', file, false, true);
       String postId = const Uuid().v1(); // creates unique id based on time
       MarketPlace marketPlace = MarketPlace(
         description: description,
@@ -103,8 +134,9 @@ class FireStoreMethods {
 
   // Post comment
   Future<String> postComment(String postId, String text, String uid,
-      String name, String profilePic) async {
+      String name, String profilePic, String location) async {
     String res = "Some error occurred";
+    print("In FIrestore");
     try {
       if (text.isNotEmpty) {
         // if the likes list contains the user uid, we need to remove it
@@ -121,6 +153,7 @@ class FireStoreMethods {
           'text': text,
           'commentId': commentId,
           'datePublished': DateTime.now(),
+          'location': location,
         });
         res = 'success';
       } else {
@@ -129,6 +162,7 @@ class FireStoreMethods {
     } catch (err) {
       res = err.toString();
     }
+    print(res);
     return res;
   }
 

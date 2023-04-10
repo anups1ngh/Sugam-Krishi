@@ -17,6 +17,8 @@ import '../constants.dart';
 import '../keys.dart';
 import 'package:http/http.dart' as http;
 
+import 'Camera/camera_screen.dart';
+
 List<int> schemesList = [1, 2, 3, 4, 5];
 List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
 const String schemesURL =
@@ -315,6 +317,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                       MaterialPageRoute(
                                           builder: (context) => cameraScreen()),
                                     );
+
                                   },
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -403,7 +406,7 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => chatScreen()),
+                                            builder: (context) => chatScreen(initialQuery: null,)),
                                       );
                                     },
                                     child: Row(
