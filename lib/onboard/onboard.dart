@@ -15,34 +15,34 @@ class _OnBoardState extends State<OnBoard> {
   late PageController _pageController;
   List<OnboardModel> screens = <OnboardModel>[
     OnboardModel(
-      img: 'assets/images/img-1.png',
-      text: "Farmers Community",
+      img: 'assets/images/community.png',
+      text: "Krishi Community",
       desc:
-          "1st Image",
+          "Share with Others and Increase your reach",
       bg: Colors.white,
       button: Color(0xFF4756DF),
     ),
     OnboardModel(
-      img: 'assets/images/img-2.png',
-      text: "2nd Screen",
+      img: 'assets/images/market.png',
+      text: "Market Place",
       desc:
-          "Ye 2nd Screen hai",
+          "Buy or Sell Items compared to govenment Fixed Rates",
       bg: Color(0xFF4756DF),
       button: Colors.white,
     ),
     OnboardModel(
-      img: 'assets/images/img-3.png',
-      text: "3rd Screen",
+      img: 'assets/images/news.png',
+      text: "Govt. Schemes and AI Bot",
       desc:
-          "Ye 3rd Screen hai",
+          "Updated News of Govt. Schemes for Farmering and Ask AI Bot for quick solutions",
       bg: Colors.white,
       button: Color.fromARGB(255, 71, 223, 129),
     ),
     OnboardModel(
-      img: 'assets/images/img-1.png',
-      text: "4th Screen",
+      img: 'assets/images/plant.png',
+      text: "Plant Disease Detection",
       desc:
-          "Ye last wala screen hai",
+          "Scan and Know health of your plant",
       bg: Color(0xFF4756DF),
       button: Colors.white,
     )
