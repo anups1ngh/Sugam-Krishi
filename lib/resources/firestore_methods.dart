@@ -45,7 +45,7 @@ class FireStoreMethods {
       String photoUrl = file == null
           ? ""
           : await StorageMethods()
-          .uploadImageToStorage('posts', file, true, false);
+              .uploadImageToStorage('posts', file, true, false);
 
       String postId = const Uuid().v1(); // creates unique id based on time
       Post post = Post(
@@ -84,7 +84,7 @@ class FireStoreMethods {
       String photoUrl = file == null
           ? ""
           : await StorageMethods()
-          .uploadImageToStorage('marketplace', file, false, true);
+              .uploadImageToStorage('marketplace', file, false, true);
       String postId = const Uuid().v1(); // creates unique id based on time
       MarketPlace marketPlace = MarketPlace(
         description: description,
@@ -99,6 +99,7 @@ class FireStoreMethods {
         location: location,
         contact: contact,
         itemName: itemName,
+        quantity: quantity,
       );
       _firestore
           .collection('marketplace')

@@ -68,6 +68,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
     LocationSystem.getPosition();
     getLocationText();
     super.initState();
+    fetchCommentLen();
   }
 
   @override
@@ -84,35 +85,38 @@ class _PostViewScreenState extends State<PostViewScreen> {
           automaticallyImplyLeading: true,
         ),
         body: ListView(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          padding:
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           children: [
-
             //POST IMAGE
-            hasImage ? Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * .35,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(6)),
-                image: DecorationImage(
-                  // image: AssetImage(
-                  //   "assets/scheme_back.jpg",
-                  // ),
-                  image: NetworkImage(
-                    widget.snap["postUrl"].toString(),
+            hasImage
+                ? Container(
+                    width: double.infinity,
+                    height: MediaQuery.of(context).size.height * .35,
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.vertical(bottom: Radius.circular(6)),
+                      image: DecorationImage(
+                        // image: AssetImage(
+                        //   "assets/scheme_back.jpg",
+                        // ),
+                        image: NetworkImage(
+                          widget.snap["postUrl"].toString(),
+                        ),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    // child: Image.network(
+                    //   widget.snap["postUrl"].toString(),
+                    // )
+                  )
+                : Container(
+                    height: 60,
                   ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              // child: Image.network(
-              //   widget.snap["postUrl"].toString(),
-              // )
-            )
-                : Container(height: 60,),
 
             //POST TEXT
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 10, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Text(
                 widget.snap['description'].toString(),
                 // "Hello can anyone help me on this please can anyone help me on this please can anyone help me on this please ",
@@ -212,19 +216,20 @@ class _PostViewScreenState extends State<PostViewScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           LikeAnimation(
-                            isAnimating: widget.snap['likes'].contains(user.uid),
+                            isAnimating:
+                                widget.snap['likes'].contains(user.uid),
                             smallLike: true,
                             child: SizedBox(
                               height: 36,
                               child: IconButton(
                                 icon: widget.snap['likes'].contains(user.uid)
                                     ? Icon(FontAwesomeIcons.solidThumbsUp,
-                                    size: 22, color: Colors.blueAccent)
+                                        size: 22, color: Colors.blueAccent)
                                     : Icon(
-                                  FontAwesomeIcons.thumbsUp,
-                                  size: 22,
-                                  //color: Colors.white60,
-                                ),
+                                        FontAwesomeIcons.thumbsUp,
+                                        size: 22,
+                                        //color: Colors.white60,
+                                      ),
                                 onPressed: () {
                                   // setState(() {
                                   //   FireStoreMethods().likePost(
@@ -242,8 +247,8 @@ class _PostViewScreenState extends State<PostViewScreen> {
                                 .textTheme
                                 .subtitle2!
                                 .copyWith(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.grey),
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.grey),
                             child: Text(
                               '${widget.snap['likes'].length} likes',
                               style: Theme.of(context).textTheme.bodySmall,
@@ -264,18 +269,15 @@ class _PostViewScreenState extends State<PostViewScreen> {
                                 FontAwesomeIcons.comment,
                                 size: 22,
                               ),
-                              onPressed: () {
-                              },
+                              onPressed: () {},
                             ),
                           ),
                           DefaultTextStyle(
-                            style: Theme.of(context)
-                                .textTheme
-                                .subtitle2!
-                                .copyWith(
-                              fontWeight: FontWeight.w800,
-                              color: Colors.grey,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.subtitle2!.copyWith(
+                                      fontWeight: FontWeight.w800,
+                                      color: Colors.grey,
+                                    ),
                             child: Text(
                               '$commentLen replies',
                               style: Theme.of(context).textTheme.bodySmall,
@@ -292,9 +294,10 @@ class _PostViewScreenState extends State<PostViewScreen> {
 
             //COMMENTS FEED
             Container(
-              height: hasImage ? MediaQuery.of(context).size.height * .24 : MediaQuery.of(context).size.height * .51,
-              margin: EdgeInsets.symmetric(
-                  horizontal: 10, vertical: 20),
+              height: hasImage
+                  ? MediaQuery.of(context).size.height * .24
+                  : MediaQuery.of(context).size.height * .51,
+              margin: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               padding: EdgeInsets.symmetric(horizontal: 5, vertical: 0),
               decoration: BoxDecoration(
                 color: Colors.teal.shade100.withOpacity(0.5),
@@ -313,23 +316,25 @@ class _PostViewScreenState extends State<PostViewScreen> {
                     return Align(
                       alignment: Alignment.center,
                       child: Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5, vertical: 22),
-                        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 5, vertical: 22),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                         decoration: BoxDecoration(
                           color: Colors.teal.shade100.withOpacity(0.5),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(12),
+                              topRight: Radius.circular(12)),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                                "Loading Comments",
+                            Text("Loading Comments",
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 16,
-                                )
-                            ),
+                                )),
                             SpinKitThreeBounce(
                               color: Colors.white,
                               size: 22,
@@ -339,135 +344,152 @@ class _PostViewScreenState extends State<PostViewScreen> {
                       ),
                     );
                   }
-                  List<DocumentSnapshot> commentDocs =
-                      snapshot.data!.docs;
+                  List<DocumentSnapshot> commentDocs = snapshot.data!.docs;
                   List<Comment> comments = [];
                   commentDocs.forEach((commentDoc) {
-                    Comment comment =
-                    Comment.fromFirestore(commentDoc);
+                    Comment comment = Comment.fromFirestore(commentDoc);
                     comments.add(comment);
                   });
                   return comments.length == 0
                       ? Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        "No Comments yet",
-                        style: GoogleFonts.montserrat(
-                          fontStyle: FontStyle.italic,
-                          color: Colors.black54,
-                        ),
-                      ),
-                    ),
-                  )
-                      : Flexible(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      primary: false,
-                      physics: BouncingScrollPhysics(),
-                      itemCount: comments.length,
-                      itemBuilder:
-                          (BuildContext context, int index) {
-                        Comment comment = comments[index];
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    //PROFILE PIC
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 7),
-                                      child: CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Color(0xff64FFDA).withOpacity(0.1),
-                                        backgroundImage: NetworkImage(
-                                          comment.profilePic,
-                                        ),
-                                      ),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        //USERNAME
-                                        Row(
-                                          children: [
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 5, vertical: 0),
-                                              child: Text(
-                                                comment.name,
-                                                style: GoogleFonts.poppins(
-                                                    fontSize: 14, fontWeight: FontWeight.w600),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                            Container(
-                                              width: 2,
-                                              height: 2,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 5, vertical: 0),
-                                              child: Text(
-                                                comment.location,
-                                                style: GoogleFonts.poppins(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Colors.black54,
-                                                ),
-                                                textAlign: TextAlign.left,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        //COMMENT
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5, vertical: 0),
-                                          child: Text(
-                                            comment.text,
-                                            style: GoogleFonts.poppins(
-                                                fontSize: 16, fontWeight: FontWeight.w400),
-                                            textAlign: TextAlign.left,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            //DATE PUBLISHED
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
-                              child: Text(
-                                DateFormat.yMMMd().format(
-                                  comment.datePublished,
-                                ),
-                                style: GoogleFonts.poppins(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black54,
-                                ),
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "No Comments yet",
+                              style: GoogleFonts.montserrat(
+                                fontStyle: FontStyle.italic,
+                                color: Colors.black54,
                               ),
                             ),
-                          ],
+                          ),
+                        )
+                      : Flexible(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            primary: false,
+                            physics: BouncingScrollPhysics(),
+                            itemCount: comments.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              Comment comment = comments[index];
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          //PROFILE PIC
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 5, vertical: 7),
+                                            child: CircleAvatar(
+                                              radius: 20,
+                                              backgroundColor: Color(0xff64FFDA)
+                                                  .withOpacity(0.1),
+                                              backgroundImage: NetworkImage(
+                                                comment.profilePic,
+                                              ),
+                                            ),
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              //USERNAME
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 0),
+                                                    child: Text(
+                                                      comment.name,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                              fontSize: 14,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w600),
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    width: 2,
+                                                    height: 2,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      color: Colors.black54,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 0),
+                                                    child: Text(
+                                                      comment.location,
+                                                      style:
+                                                          GoogleFonts.poppins(
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color: Colors.black54,
+                                                      ),
+                                                      textAlign: TextAlign.left,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              //COMMENT
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 0),
+                                                child: Text(
+                                                  comment.text,
+                                                  style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w400),
+                                                  textAlign: TextAlign.left,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  //DATE PUBLISHED
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 0),
+                                    child: Text(
+                                      DateFormat.yMMMd().format(
+                                        comment.datePublished,
+                                      ),
+                                      style: GoogleFonts.poppins(
+                                        fontSize: 10,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         );
-                      },
-                    ),
-                  );
                 },
               ),
             ),
@@ -475,14 +497,15 @@ class _PostViewScreenState extends State<PostViewScreen> {
             //COMMENT TEXTFIELD
             SafeArea(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 child: Material(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12)),
                   color: Colors.teal.shade100,
                   child: Padding(
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -516,12 +539,12 @@ class _PostViewScreenState extends State<PostViewScreen> {
                           onPressed: () {
                             print("pressed");
                             FireStoreMethods().postComment(
-                                widget.snap['postId'].toString(),
-                                _commentController.text,
-                                user.uid,
-                                user.username,
-                                user.photoUrl,
-                                location,
+                              widget.snap['postId'].toString(),
+                              _commentController.text,
+                              user.uid,
+                              user.username,
+                              user.photoUrl,
+                              location,
                             );
                             _commentController.clear();
                             focusNode.unfocus();

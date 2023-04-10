@@ -16,6 +16,14 @@ import 'package:sugam_krishi/onboard/onboard.dart';
 
 List<CameraDescription> cameras = [];
 
+// const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//   'high_importance_channel', // id
+//   'High Importance Notifications', // title
+//   'This channel is used for important notifications.', // description
+//   importance: Importance.high,
+//   playSound: true,
+// );
+
 int? isviewed;
 Future<void> main() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -25,6 +33,7 @@ Future<void> main() async {
     WidgetsFlutterBinding.ensureInitialized();
     cameras = await availableCameras();
   } on CameraException catch (e) {
+  } on CameraException catch (e) {
     print('Error in fetching the cameras: $e');
   }
 
@@ -32,6 +41,7 @@ Future<void> main() async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   isviewed = prefs.getInt('onBoard');
   await Firebase.initializeApp();
+
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());
 }

@@ -83,17 +83,15 @@ class _MarketplacePageState extends State<MarketplacePage> {
           ),
         ),
       ),
-      body: SafeArea(
-        child: RefreshIndicator(
-          edgeOffset: 40,
-          strokeWidth: 2.5,
-          color: Color(0xff0ba99b),
-          onRefresh: () async {
-            await Future.delayed(Duration(milliseconds: 800));
-            setState(() {
-
-            });
-          },
+      body: RefreshIndicator(
+        edgeOffset: 40,
+        strokeWidth: 2.5,
+        color: Color(0xff0ba99b),
+        onRefresh: () async {
+          await Future.delayed(Duration(milliseconds: 800));
+          setState(() {});
+        },
+        child: SafeArea(
           child: SizedBox(
             width: size.width,
             height: size.height,
@@ -115,7 +113,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                           width: size.width,
                           height: size.height * 0.04,
                           child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
+                              physics: const BouncingScrollPhysics(),
                               scrollDirection: Axis.horizontal,
                               itemCount: tabs.length,
                               itemBuilder: (context, index) {
@@ -167,63 +165,67 @@ class _MarketplacePageState extends State<MarketplacePage> {
                 ),
                 "${tabs[current]}" == "Sell"
                     ? Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("marketplace")
-                        .where("category", isEqualTo: "Sell")
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        print('Sell count : ${snapshot.data!.docs.length}');
-                        return ListView.builder(
-                          controller: scrollController,
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            return MarketItem(
-                              snap: snapshot.data!.docs[index].data(),
-                            );
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection("marketplace")
+                              .where("category", isEqualTo: "Sell")
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              print(
+                                  'Sell count : ${snapshot.data!.docs.length}');
+                              return ListView.builder(
+                                padding: EdgeInsets.only(bottom: 100),
+                                controller: scrollController,
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: (context, index) {
+                                  return MarketItem(
+                                    snap: snapshot.data!.docs[index].data(),
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                child: SpinKitFadingCircle(
+                                  color: Colors.green,
+                                  size: 50.0,
+                                ),
+                              );
+                            }
                           },
-                        );
-                      } else {
-                        return const Center(
-                          child: SpinKitFadingCircle(
-                            color: Colors.green,
-                            size: 50.0,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                )
+                        ),
+                      )
                     : Expanded(
-                  child: StreamBuilder<QuerySnapshot>(
-                    stream: FirebaseFirestore.instance
-                        .collection("marketplace")
-                        .where("category", isEqualTo: "Rent")
-                        .snapshots(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        print('Sell count : ${snapshot.data!.docs.length}');
-                        return ListView.builder(
-                          controller: scrollController,
-                          itemCount: snapshot.data!.docs.length,
-                          itemBuilder: (context, index) {
-                            return MarketItem(
-                              snap: snapshot.data!.docs[index].data(),
-                            );
+                        child: StreamBuilder<QuerySnapshot>(
+                          stream: FirebaseFirestore.instance
+                              .collection("marketplace")
+                              .where("category", isEqualTo: "Rent")
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              print(
+                                  'Sell count : ${snapshot.data!.docs.length}');
+                              return ListView.builder(
+                                padding: EdgeInsets.only(bottom: 100),
+                                controller: scrollController,
+                                itemCount: snapshot.data!.docs.length,
+                                itemBuilder: (context, index) {
+                                  return MarketItem(
+                                    snap: snapshot.data!.docs[index].data(),
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                child: SpinKitFadingCircle(
+                                  color: Colors.green,
+                                  size: 50.0,
+                                ),
+                              );
+                            }
                           },
-                        );
-                      } else {
-                        return const Center(
-                          child: SpinKitFadingCircle(
-                            color: Colors.green,
-                            size: 50.0,
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                )
+                        ),
+                      )
                 // : const Center(
                 //     child: SpinKitFadingCircle(
                 //       color: Colors.green,
