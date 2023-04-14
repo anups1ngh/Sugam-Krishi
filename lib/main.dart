@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,15 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   isviewed = prefs.getInt('onBoard');
-  await Firebase.initializeApp();
+  if (kIsWeb)
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+            apiKey: 'AIzaSyBtdcgzlJAFCJk38HOIqdVD8YK_arRO3E0',
+            appId: '1:552247693665:android:f5b325d9d45b3a33947520',
+            messagingSenderId: '552247693665',
+            projectId: 'sugam-krishi-82075'));
+  else
+    await Firebase.initializeApp();
 
   HttpOverrides.global = MyHttpOverrides();
   runApp(const MyApp());

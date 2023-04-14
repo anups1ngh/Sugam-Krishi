@@ -75,7 +75,7 @@ class LocationSystem{
   }
 }
 class WeatherSystem{
-  static String API_KEY = "6341f24a80484da9a1b43817232903";
+  static String API_KEY = "1b57d00eb8df4144a9c61510231404";
   static String searchWeatherAPI = "https://api.weatherapi.com/v1/forecast.json?key=" + API_KEY + "&days=7&q=";
 
   static String location = 'Bhubaneswar';
