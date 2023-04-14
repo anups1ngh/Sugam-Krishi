@@ -138,7 +138,7 @@ class _chatScreenState extends State<chatScreen> {
                                   ClipOval(
                                     // backgroundColor: scaffoldBackgroundColor.withOpacity(0.4),
                                     child: Image.asset(
-                                      "assets/openai_logo.png",
+                                      "assets/AppIcons/playstore.png",
                                       scale: 18,
                                     ),
                                   ),
