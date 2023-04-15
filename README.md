@@ -1,35 +1,29 @@
 # Sugam-Krishi
 A one stop solution to all the farmer's needs !
+The platform enables farmers to communicate, share knowledge, and seek advice through a dedicated community.It offers a marketplace for farmers to sell their harvest and rent out their tools, along with an in-app guide and a chatbot that provides resources and assistance. It also includes weather updates for up to seven days, a plant disease detection tool, and information on government programs related to agriculture, addressing the issue of public unawareness of such programs and schemes.
 
 ## Features
 ### Krishi Community
-A platform has been created to support farmers and their needs.
-This community allows farmers to share their queries, suggestions, and achievements in agriculture.
-The community is dedicated to the farming community.
-Farmers can use the platform to communicate with other farmers.
-They can share their knowledge and experiences.
-The community provides a space for farmers to discuss their challenges and seek advice from others.
-It encourages collaboration and promotes a sense of unity among farmers.
-The community is a valuable resource for farmers who want to learn from others and improve their farming practices.
+The platform fosters a collaborative and unified community of farmers, where they can communicate, share knowledge, and seek advice to enhance their farming practices. This valuable support system encourages discussion, exploration of solutions, and improvement of expertise, ultimately helping farmers to improve their knowledge in agriculture.
+
+The platform functions as a self-help support system for farmers, offering a community where they can interact, share knowledge, post queries, and find solutions. Farmers can post queries related to farming, and others can view and respond with potential solutions. Google Firebase, a cloud-based real-time database, stores all posts, along with comments and likes, ensuring the security of personal data. The platform offers a valuable resource for learning and improving farming practices, enabling farmers to collaborate, share experiences, and obtain solutions. Other farmers can benefit from the community by viewing posts and comments to gain farming knowledge. In summary, the platform is a powerful tool for farmers to improve their farming practices and livelihoods by storing and providing access to relevant data and solutions.
 
 ### Marketplace
-An in-app marketplace where farmers can rent out their tools, sell their harvest. It will
-basically work as a D2C market. It will also include the mandi prices using Mandi prices
-api which helps in buying or selling at a fair price.
-### Crop Calendar
-In-app guide to take you through every single stage of farming. Tell us what crop you are
-sowing and when, and a timeline of events starting from sowing of crops to harvest will be
-generated to guide you throughout the entire process, helping you at every step.
-### Multilingual ChatBot
-Want to know more about a Particular Crop or Farming Technique? Ask our Chatbot in Hindi
-or English! It'll clear your queries with articles, images and videos!
+The app features an in-app marketplace that enables farmers to rent out their tools and sell their harvest directly to consumers (D2C market). The marketplace includes Mandi prices API, ensuring fair prices for buyers and sellers alike.
+Sell - Farmers can post their produce on the platform with details such as quantity, price, and description. Interested buyers can directly contact the farmers for negotiations, and vendors can share these posts through various means like WhatsApp and email.
+Rent - The platform allows vendors to post their equipment available for rent, along with a description and hourly rental cost. Buyers can directly contact the vendors to negotiate rental prices.
+
+### AI ChatBot
+This feature can be valuable for farmers who may not have easy access to information or expertise in their local area. By using the chatbot, farmers can quickly get answers to their questions and gain insights into best practices and emerging trends in the industry. This can help them to make more informed decisions about their farming operations and improve their overall efficiency and productivity.
+
 ### Weather Forecast
-A tool/utility in the app which will give the user the weather updates on a range of 7 days
+This page also offers weather forecast as one of its features, utilizing a weather API to display current and upcoming weather conditions based on the device location, which helps farmers to prepare for any upcoming weather anomalies and save their crops.
+
 ### Plant disease detection
-With the use of ML model we detect plant disease and if any disease is found the app gives
-the user the leverage to ask about it in the community. So that if any unknown disease is
-found the user can communicate and come to a solution with the help of his peers
-Government schemes related to agriculture
-It has been found in many occasions that the public are not aware of the government
-schemes and programs and they miss out on the opportunities. This app covers this aspect
-for the farmers. All schemes and programs by the government will be informed to the farmers
+The plant disease detection utility uses computer vision to analyze images of plant leaves and identify any signs of disease, helping farmers quickly respond to potential outbreaks and protect their crops.
+
+### Learn Section
+The learn section offers farmers access to videos demonstrating various farming techniques. Through these videos, farmers can familiarize themselves with new methods of farming that have the potential to increase their productivity.
+
+### Government Scheme
+The Utilities page's government schemes section provides info on various government schemes, like subsidies, loans, and insurance, that can help farmers in their agricultural activities. By using this section, farmers can learn about eligibility criteria, application processes, and scheme benefits, which can help them make informed decisions. This resource is valuable for farmers looking for government scheme-related information.
