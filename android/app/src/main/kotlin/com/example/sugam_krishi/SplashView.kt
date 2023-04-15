@@ -1,4 +1,4 @@
-package com.example.sugam_krishi
+package com.sugamkrishi.firebaseflutterapp
 
 import android.content.Context
 import android.os.Bundle

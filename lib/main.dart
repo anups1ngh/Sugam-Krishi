@@ -1,10 +1,14 @@
 import 'dart:io';
+import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
@@ -39,6 +43,18 @@ Future<void> main() async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
+  // RenderErrorBox.backgroundColor = Color(0xffE0F2F1);
+  // ErrorWidget.builder = (error) =>
+  // Scaffold(
+  //   body: Center(
+  //     child: Column(
+  //       children: [
+  //         SpinKitCircle(),
+  //         Text("Loading APP"),
+  //       ],
+  //     ),
+  //   ),
+  // );
   SharedPreferences prefs = await SharedPreferences.getInstance();
   isviewed = prefs.getInt('onBoard');
   if (kIsWeb)

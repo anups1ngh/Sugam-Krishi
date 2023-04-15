@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "552247693665",
-    "project_id": "sugam-krishi-82075",
-    "storage_bucket": "sugam-krishi-82075.appspot.com"
+    "project_number": "487751987988",
+    "project_id": "sugam-krishi-59b8e",
+    "storage_bucket": "sugam-krishi-59b8e.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:552247693665:android:f5b325d9d45b3a33947520",
+        "mobilesdk_app_id": "1:487751987988:android:11814b1a2e15bc02504801",
         "android_client_info": {
-          "package_name": "com.example.sugam_krishi"
+          "package_name": "com.sugamkrishi.firebaseflutterapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "552247693665-r4c43v07p6g00eslhpr5g8u8colu2hlb.apps.googleusercontent.com",
+          "client_id": "487751987988-efl67gubj5h7k7heuecv2b13uiobbedn.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.sugam_krishi",
+            "package_name": "com.sugamkrishi.firebaseflutterapp",
             "certificate_hash": "4c1f98a91dbf80c4b71c3208ec0b47e2f56c5e8e"
           }
         },
         {
-          "client_id": "552247693665-37e0k6s0qs29l3abfbdmmi9f9jro9odc.apps.googleusercontent.com",
+          "client_id": "487751987988-52mve7fnimnqm0sau0dkr4eels38md2g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBtdcgzlJAFCJk38HOIqdVD8YK_arRO3E0"
+          "current_key": "AIzaSyCiIyXtee645WDJLx_vJEM5qhmPgfrgj1k"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "552247693665-37e0k6s0qs29l3abfbdmmi9f9jro9odc.apps.googleusercontent.com",
+              "client_id": "487751987988-52mve7fnimnqm0sau0dkr4eels38md2g.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -462,6 +462,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
                                                       fontWeight:
                                                           FontWeight.w400),
                                                   textAlign: TextAlign.left,
+                                                  softWrap: true,
                                                 ),
                                               ),
                                             ],

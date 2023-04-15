@@ -13,7 +13,7 @@ import 'package:sugam_krishi/screens/UtilitiesPage.dart';
 import 'package:sugam_krishi/constants.dart';
 
 class SharedPrefsHandler {
-  //The following functions save and retrieve bool data from shared preferences according to the given tag
+  //The following functions save and retrieve String data from shared preferences according to the given tag
   static void saveData({required String tag, required String data}) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(tag, data);

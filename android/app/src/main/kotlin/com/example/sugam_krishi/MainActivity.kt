@@ -1,4 +1,4 @@
-package com.example.sugam_krishi
+package com.sugamkrishi.firebaseflutterapp
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.SplashScreen
