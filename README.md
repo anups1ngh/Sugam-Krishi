@@ -27,3 +27,15 @@ The learn section offers farmers access to videos demonstrating various farming 
 
 ### Government Scheme
 The Utilities page's government schemes section provides info on various government schemes, like subsidies, loans, and insurance, that can help farmers in their agricultural activities. By using this section, farmers can learn about eligibility criteria, application processes, and scheme benefits, which can help them make informed decisions. This resource is valuable for farmers looking for government scheme-related information.
+
+## Business Potential
+- Advertising revenue: With a large user base, you could sell advertising space to companies looking to reach farmers and agriculture-related businesses.
+- Partnership opportunities: You could explore partnerships with companies that offer agricultural products and services, such as seed companies, equipment manufacturers, and insurance providers. By integrating their products and services into the app, you could offer a more comprehensive solution for farmers while earning a commission on any resulting sales.
+- Data monetization: The app could collect valuable data on farmers' needs and preferences, which could be used to offer targeted marketing and insights to companies in the agriculture industry.
+- Grants: You could explore opportunities for grants or funding from government organizations, non-profits, or other entities that support agricultural innovation and technology.
+
+## Future scope
+- More user friendly experience
+- Introducing in-app checkout feature for marketplace
+- Adding reward points feature to reward those members who constantly indulge and help others in krishi community
+- Adding in-app incentives 
