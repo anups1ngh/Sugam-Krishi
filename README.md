@@ -35,6 +35,7 @@ The Utilities page's government schemes section provides info on various governm
 - Grants: You could explore opportunities for grants or funding from government organizations, non-profits, or other entities that support agricultural innovation and technology.
 
 ## Future scope
+- Integrating support for multiple languages to improve the accessibility of the application's services.
 - More user friendly experience
 - Introducing in-app checkout feature for marketplace
 - Adding reward points feature to reward those members who constantly indulge and help others in krishi community
