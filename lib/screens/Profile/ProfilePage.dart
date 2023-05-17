@@ -7,11 +7,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/auth_methods.dart';
-import 'package:sugam_krishi/screens/editProfilePage.dart';
+import 'package:sugam_krishi/screens/Profile/editProfilePage.dart';
 import 'package:sugam_krishi/utils/utils.dart';
-import 'package:sugam_krishi/weather/locationSystem.dart';
-import 'package:sugam_krishi/weather/weatherSystem.dart';
-import '../constants.dart';
+
+import '../../constants.dart';
+import '../../weather/locationSystem.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -40,17 +40,16 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    LocationSystem.getPosition();
+    location = LocationSystem.locationText.replaceAll("\n", " ");
     super.initState();
-    refresh();
   }
 
   @override
   Widget build(BuildContext context) {
     model.User user = Provider.of<UserProvider>(context).getUser;
-    LocationSystem.getLocation();
     return Scaffold(
-      backgroundColor: const Color(0xffE0F2F1),
+      backgroundColor: Color(0xffE0F2F1),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 1,
@@ -67,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(
+              SizedBox(
                 height: 30,
               ),
               // Container(
@@ -97,7 +96,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 radius: 64,
               ),
-              const SizedBox(
+              SizedBox(
                 height: 10,
               ),
               //USER-NAME
@@ -115,7 +114,7 @@ class _ProfilePageState extends State<ProfilePage> {
               //     fontWeight: FontWeight.w300,
               //   ),
               // ),
-              const SizedBox(
+              SizedBox(
                 height: 10,
               ),
               //EDIT BUTTON
@@ -149,13 +148,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 50,
               ),
 
               //MENU
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
                     side: BorderSide(color: Colors.teal.shade400, width: 0.4),
@@ -168,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(100),
                       color: Colors.teal.shade100,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.phone_android_rounded,
                     ),
                   ),
@@ -181,7 +180,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
                     side: BorderSide(color: Colors.teal.shade400, width: 0.4),
@@ -194,7 +193,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       borderRadius: BorderRadius.circular(100),
                       color: Colors.teal.shade100,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.location_on_rounded,
                     ),
                   ),
@@ -207,7 +206,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: GestureDetector(
                   onTap: () async {
                     await _authMethods.signOut();
@@ -224,7 +223,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         borderRadius: BorderRadius.circular(100),
                         color: Colors.teal.shade100,
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.logout_rounded,
                       ),
                     ),

@@ -5,12 +5,16 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sugam_krishi/AllDataFetchHandler.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
-import 'package:sugam_krishi/screens/FeedPage.dart';
-import 'package:sugam_krishi/screens/MarketplacePage.dart';
-import 'package:sugam_krishi/screens/ProfilePage.dart';
-import 'package:sugam_krishi/screens/UtilitiesPage.dart';
+import 'package:sugam_krishi/screens/Community/FeedPage.dart';
+import 'package:sugam_krishi/screens/Marketplace/MarketplacePage.dart';
+import 'package:sugam_krishi/screens/Profile/ProfilePage.dart';
+import 'package:sugam_krishi/screens/Utilities/UtilitiesPage.dart';
 import 'package:sugam_krishi/constants.dart';
+
+import '../weather/locationSystem.dart';
+import '../weather/weatherSystem.dart';
 
 class SharedPrefsHandler {
   //The following functions save and retrieve String data from shared preferences according to the given tag
@@ -43,14 +47,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   List<MenuModel> bottomMenuItems = <MenuModel>[];
 
   List listItems = [
-    FeedPage(
-      location: WeatherSystem.location,
-      currentDate: WeatherSystem.currentDate,
-      currentWeatherStatus: WeatherSystem.currentWeatherStatus,
-      temperature: WeatherSystem.temperature,
-      dailyWeatherForecast: WeatherSystem.dailyWeatherForecast,
-      weatherIcon: WeatherSystem.weatherIcon,
-    ),
+    FeedPage(),
     MarketplacePage(),
     UtilitiesPage(),
     ProfilePage(),
@@ -63,14 +60,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
     switch (pos) {
       case 0:
-        return FeedPage(
-          location: WeatherSystem.location,
-          currentDate: WeatherSystem.currentDate,
-          currentWeatherStatus: WeatherSystem.currentWeatherStatus,
-          temperature: WeatherSystem.temperature,
-          dailyWeatherForecast: WeatherSystem.dailyWeatherForecast,
-          weatherIcon: WeatherSystem.weatherIcon,
-        );
+        return FeedPage();
       case 1:
         return MarketplacePage();
       case 2:
@@ -89,12 +79,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    addData();
 
     LocationSystem.getPosition();
     WeatherSystem.fetchWeatherData(
         LocationSystem.convertPositionToString(LocationSystem.currPos));
-
-    addData();
+    AllDataFetchHandler.fetchAllData();
   }
 
   void addData() async {

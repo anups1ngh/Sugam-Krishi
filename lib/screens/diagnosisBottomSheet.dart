@@ -9,6 +9,8 @@ import 'package:sugam_krishi/constants.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 
 import '../resources/firestore_methods.dart';
+import 'package:sugam_krishi/weather/locationSystem.dart';
+import 'package:sugam_krishi/weather/weatherSystem.dart';
 
 class diagnosisSheet extends StatefulWidget {
   final String userPhoto;
@@ -52,24 +54,9 @@ class _diagnosisSheetState extends State<diagnosisSheet> {
     );
   }
 
-  Future<void> getLocationText() async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        LocationSystem.currPos.latitude, LocationSystem.currPos.longitude);
-
-    setState(() {
-      location = placemarks[0].subLocality.toString() +
-          ", " +
-          placemarks[0].locality.toString();
-    });
-  }
-
 // In post image function make it such that if we do not select an image then it will upload the post then also
   void postImageDiagnosis(String uid, String username, String profImage) async {
-    // final ByteData bytes =
-    //     await rootBundle.load('assets/login_illustration.jpg');
-    // _img = bytes.buffer.asUint8List();
-    LocationSystem.getPosition();
-    getLocationText();
+    LocationSystem.getLocation();
     setState(() {
       isLoading = true;
     });

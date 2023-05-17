@@ -5,17 +5,17 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../constants.dart';
-import '../models/comments.dart';
-import '../models/user.dart' as model;
-import '../models/post.dart';
-import '../providers/user_provider.dart';
-import '../resources/firestore_methods.dart';
-import '../utils/like_animation.dart';
-import '../utils/utils.dart';
+import '../../constants.dart';
+import '../../models/comments.dart';
+import '../../models/user.dart' as model;
+import '../../models/post.dart';
+import '../../providers/user_provider.dart';
+import '../../resources/firestore_methods.dart';
+import '../../utils/like_animation.dart';
+import '../../utils/utils.dart';
 import 'package:intl/intl.dart';
-import 'package:sugam_krishi/weather/locationSystem.dart';
-import 'package:sugam_krishi/weather/weatherSystem.dart';
+
+import '../../weather/locationSystem.dart';
 
 class PostViewScreen extends StatefulWidget {
   final snap;
@@ -56,7 +56,7 @@ class _PostViewScreenState extends State<PostViewScreen> {
     hasImage = widget.snap["postUrl"].toString() != "";
     _commentController = TextEditingController();
     focusNode = FocusNode();
-    LocationSystem.getLocation();
+    LocationSystem.getPosition();
     super.initState();
     fetchCommentLen();
   }

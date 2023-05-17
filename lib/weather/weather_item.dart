@@ -21,8 +21,8 @@ class WeatherItem extends StatelessWidget {
           height: 55,
           width: 55,
           decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(15),
+            color: Colors.white60,
+            borderRadius: BorderRadius.circular(20),
           ),
           child: Image.asset(imageUrl),
         ),

@@ -6,16 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sugam_krishi/AllDataFetchHandler.dart';
 import 'package:youtube_api/youtube_api.dart';
 
-import 'package:sugam_krishi/screens/AI-Bot/chatScreen.dart';
-import 'package:sugam_krishi/screens/cameraScreen.dart';
-import 'package:sugam_krishi/screens/schemesPage.dart';
-import 'package:sugam_krishi/screens/ytPlayerScreen.dart';
+import 'package:sugam_krishi/screens/Utilities/Diagnosis/cameraScreen.dart';
+import 'package:sugam_krishi/screens/Utilities/schemesPage.dart';
+import 'package:sugam_krishi/screens/Utilities/ytPlayerScreen.dart';
 
-import '../constants.dart';
-import '../keys.dart';
+import '../../constants.dart';
+import '../../keys.dart';
 import 'package:http/http.dart' as http;
+
+import 'AI-Bot/chatScreen.dart';
 
 List<int> schemesList = [1, 2, 3, 4, 5];
 List<int> videosList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
@@ -58,36 +60,17 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
   bool _videosLoaded = false;
   bool _schemesLoaded = false;
 
-  YoutubeAPI youtube = YoutubeAPI(YT_API_KEY, maxResults: 5);
   List<YouTubeVideo> videoResult = [];
   List<Scheme> schemes = [];
 
-  Future<void> callYTAPI(String query) async {
-    videoResult = await youtube.search(
-      query,
-      order: 'relevance',
-      videoDuration: 'any',
-    );
-    videoResult = await youtube.nextPage();
-    setState(() {});
-  }
-
-  Future<void> callSchemesAPI() async {
-    var res = await http.get(Uri.parse(schemesURL));
-    List<dynamic> schemesMap = json.decode(res.body);
-    schemesMap.forEach(
-      (scheme) {
-        schemes.add(new Scheme.fromJson(scheme));
-      },
-    );
-    setState(() {});
-  }
-
   @override
   void initState() {
-    callYTAPI("Modern farming techniques")
-        .then((value) => _videosLoaded = true);
-    callSchemesAPI().then((value) => _schemesLoaded = true);
+    // AllDataFetchHandler.callYTAPI("Modern farming techniques").then((value) => _videosLoaded = true);
+    // AllDataFetchHandler.callSchemesAPI().then((value) => _schemesLoaded = true);
+    videoResult = AllDataFetchHandler.videoResult;
+    schemes = AllDataFetchHandler.schemes;
+    _videosLoaded = videoResult.isNotEmpty;
+    _schemesLoaded = schemes.isNotEmpty;
     super.initState();
   }
 
@@ -120,7 +103,9 @@ class _UtilitiesPageState extends State<UtilitiesPage> {
           color: Color(0xff0ba99b),
           onRefresh: () async {
             await Future.delayed(Duration(milliseconds: 800));
-            setState(() {});
+            setState(() {
+              AllDataFetchHandler.fetchUtilsData();
+            });
           },
           child: SingleChildScrollView(
             physics: BouncingScrollPhysics(),

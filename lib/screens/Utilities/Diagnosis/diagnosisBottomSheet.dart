@@ -1,46 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sugam_krishi/constants.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
-import 'package:sugam_krishi/resources/firestore_methods.dart';
-import 'package:sugam_krishi/utils/utils.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../constants.dart';
-import 'package:sugam_krishi/weather/locationSystem.dart';
-import 'package:sugam_krishi/weather/weatherSystem.dart';
 
-class postPage extends StatefulWidget {
+import '../../../resources/firestore_methods.dart';
+import '../../../weather/locationSystem.dart';
+
+class diagnosisSheet extends StatefulWidget {
   final String userPhoto;
   final String userName;
-  const postPage({Key? key, required this.userPhoto, required this.userName})
-      : super(key: key);
+  final String diseaseName;
+  final Uint8List? image;
+  const diagnosisSheet(
+      {super.key,
+      required this.userPhoto,
+      required this.userName,
+      required this.diseaseName,
+      required this.image});
 
   @override
-  State<postPage> createState() => _postPageState();
+  State<diagnosisSheet> createState() => _diagnosisSheetState();
 }
 
-class _postPageState extends State<postPage> {
-  final TextEditingController _postController = TextEditingController();
-  final Constants _constants = Constants();
+class _diagnosisSheetState extends State<diagnosisSheet> {
+  late TextEditingController _descriptionController;
+  //final Constants _constants = Constants();
   String _shareTo = "Anyone";
   bool isLoading = false;
   String res = "";
   String location = "";
 
-  Uint8List? _image;
-  bool _photoSelected = false;
-  selectImage(ImageSource _source) async {
-    Uint8List im = await pickImage(_source);
-    // set state because we need to display the image we selected on the circle avatar
-    setState(() {
-      _image = im;
-      _photoSelected = true;
-    });
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _descriptionController = TextEditingController(text: widget.diseaseName);
   }
 
   void showToastText(String text) {
@@ -53,22 +52,23 @@ class _postPageState extends State<postPage> {
       fontSize: 16.0,
     );
   }
+
 // In post image function make it such that if we do not select an image then it will upload the post then also
-  void postImage(String uid, String username, String profImage) async {
+  void postImageDiagnosis(String uid, String username, String profImage) async {
     // final ByteData bytes =
     //     await rootBundle.load('assets/login_illustration.jpg');
     // _img = bytes.buffer.asUint8List();
-    LocationSystem.getLocation();
+    LocationSystem.getPosition();
     setState(() {
       isLoading = true;
     });
     // start the loading
     try {
       // upload to storage and db
-      if (_image != null) {
+      if (widget.image != null) {
         res = await FireStoreMethods().uploadPost(
-          _postController.text,
-          _image!,
+          _descriptionController.text,
+          widget.image!,
           uid,
           username,
           profImage,
@@ -76,7 +76,7 @@ class _postPageState extends State<postPage> {
         );
       } else {
         res = await FireStoreMethods().uploadPost(
-          _postController.text,
+          _descriptionController.text,
           null,
           uid,
           username,
@@ -92,8 +92,7 @@ class _postPageState extends State<postPage> {
         showToastText(
           'Posted!',
         );
-        clearImage();
-        _postController.clear();
+        _descriptionController.clear();
         Navigator.pop(context);
       } else {
         showToastText(res);
@@ -106,12 +105,6 @@ class _postPageState extends State<postPage> {
         err.toString(),
       );
     }
-  }
-
-  void clearImage() {
-    setState(() {
-      _image = null;
-    });
   }
 
   @override
@@ -173,19 +166,6 @@ class _postPageState extends State<postPage> {
                                     fontSize: 18, fontWeight: FontWeight.w500),
                               ),
                             ),
-                            // DropdownButton(
-                            //   elevation: 0,
-                            //   items: [
-                            //     DropdownMenuItem(child: Text("Anyone"), value: "Anyone",),
-                            //     DropdownMenuItem(child: Text("Friends"), value: "Friends",),
-                            //   ],
-                            //   value: _shareTo,
-                            //   onChanged: (value){
-                            //     setState(() {
-                            //       _shareTo = value!;
-                            //     });
-                            //   },
-                            // ),
                           ],
                         ),
                       ],
@@ -196,8 +176,8 @@ class _postPageState extends State<postPage> {
                             Colors.greenAccent.shade700),
                       ),
                       onPressed: () {
-                        if (_postController.text.isNotEmpty) {
-                          postImage(
+                        if (_descriptionController.text.isNotEmpty) {
+                          postImageDiagnosis(
                             userProvider.getUser.uid,
                             userProvider.getUser.username,
                             userProvider.getUser.photoUrl,
@@ -221,7 +201,7 @@ class _postPageState extends State<postPage> {
                 ),
                 TextField(
                   maxLines: 10,
-                  controller: _postController,
+                  controller: _descriptionController,
                   autofocus: false,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
@@ -247,84 +227,6 @@ class _postPageState extends State<postPage> {
                 SizedBox(
                   height: 10,
                 ),
-                _photoSelected
-                    ? Container(
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image: MemoryImage(
-                              _image!,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                          border: Border.all(
-                            width: 0.1,
-                          ),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        // height: 300,
-                        width: MediaQuery.of(context).size.width * 1,
-                        child: Stack(
-                          alignment: AlignmentDirectional.center,
-                          children: [
-                            // Expanded(
-                            //   child: Image.memory(
-                            //     _image!,
-                            //     fit: BoxFit.cover,
-                            //   ),
-                            // ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: IconButton(
-                                icon: Icon(
-                                  Icons.cancel_outlined,
-                                  color: Colors.redAccent,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _photoSelected = false;
-                                  });
-                                },
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          FilledButton(
-                            child: Row(
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 10),
-                                  child: FaIcon(FontAwesomeIcons.image),
-                                ),
-                                Text("Add a Photo"),
-                              ],
-                            ),
-                            onPressed: () {
-                              selectImage(ImageSource.gallery);
-                            },
-                          ),
-                          FilledButton(
-                            child: Row(
-                              children: const [
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5, vertical: 10),
-                                  child: FaIcon(FontAwesomeIcons.cameraRetro),
-                                ),
-                                Text("Take a Photo"),
-                              ],
-                            ),
-                            onPressed: () {
-                              selectImage(ImageSource.camera);
-                            },
-                          ),
-                        ],
-                      ),
               ],
             ),
           ),

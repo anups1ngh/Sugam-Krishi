@@ -14,8 +14,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/providers/value_providers.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
-import 'package:sugam_krishi/screens/loginPage.dart';
-import 'package:sugam_krishi/screens/signupPage.dart';
+import 'package:sugam_krishi/screens/Login_Signup/loginPage.dart';
+import 'package:sugam_krishi/screens/Login_Signup/signupPage.dart';
 //import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:sugam_krishi/onboard/onboard.dart';
 

@@ -76,8 +76,8 @@ class _chatScreenState extends State<chatScreen> {
               Expanded(
                 child: ListView.separated(
                   controller: _listScrollController,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  physics: const BouncingScrollPhysics(),
+                  padding: EdgeInsets.symmetric(vertical: 10),
+                  physics: BouncingScrollPhysics(),
                   itemCount: questionAnswers.length,
                   itemBuilder: (context, index) {
                     final questionAnswer = questionAnswers[index];
@@ -106,7 +106,7 @@ class _chatScreenState extends State<chatScreen> {
                                 Expanded(
                                   child: Text(
                                     questionAnswer.question,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       color: Colors.white70,
                                       fontSize: 16,
                                       fontWeight: FontWeight.w700,
@@ -148,7 +148,7 @@ class _chatScreenState extends State<chatScreen> {
                                   Expanded(
                                     child: Text(
                                       answer,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                         fontWeight: FontWeight.w400,
@@ -184,7 +184,7 @@ class _chatScreenState extends State<chatScreen> {
                           onSubmitted: (value) async {
                             _sendMessage();
                           },
-                          decoration: const InputDecoration.collapsed(
+                          decoration: InputDecoration.collapsed(
                             hintText: "How can I help you",
                             hintStyle: TextStyle(color: Colors.grey),
                           ),

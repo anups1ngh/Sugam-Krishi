@@ -1,9 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import '../components/weather_item.dart';
-import '../../constants.dart';
+import 'weather_item.dart';
+import '../constants.dart';
 
 class DetailPage extends StatefulWidget {
   final dailyForecastWeather;
@@ -54,14 +55,17 @@ class _DetailPageState extends State<DetailPage> {
       };
       return forecastData;
     }
-
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Color(0xff26A69A),
+    ));
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Color(0xffE0F2F1),
       appBar: AppBar(
-        leadingWidth: 45,
-        title: Text('Forecasts for ${widget.location}', style: GoogleFonts.openSans(fontSize: 18), overflow: TextOverflow.fade,),
+        toolbarHeight: 70,
+        leadingWidth: 25,
+        title: Text('Forecasts for ${widget.location.replaceAll("\n", " ")}', style: GoogleFonts.openSans(fontSize: 18),  maxLines: 2,),
         centerTitle: true,
-        backgroundColor: _constants.primaryColor,
+        backgroundColor: Color(0xff26A69A),
         elevation: 1,
       ),
       body: ListView.builder(
@@ -71,14 +75,14 @@ class _DetailPageState extends State<DetailPage> {
               itemBuilder: (context, index) {
                 if(index == 0)
                   return Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
                           padding:
                           const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          height: size.height * .30,
+                          height: size.height * .32,
                           decoration: BoxDecoration(
                             gradient: _constants.linearGradientTeal,
                             boxShadow: [
@@ -240,10 +244,13 @@ class _DetailPageState extends State<DetailPage> {
                 else
                   return Card(
                     elevation: 3.0,
-                    margin:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    shadowColor: Colors.black.withOpacity(0.3),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [

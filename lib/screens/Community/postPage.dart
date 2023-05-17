@@ -10,9 +10,8 @@ import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/firestore_methods.dart';
 import 'package:sugam_krishi/utils/utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import '../constants.dart';
-import 'package:sugam_krishi/weather/locationSystem.dart';
-import 'package:sugam_krishi/weather/weatherSystem.dart';
+import '../../constants.dart';
+import '../../weather/locationSystem.dart';
 
 class postPage extends StatefulWidget {
   final String userPhoto;
@@ -58,7 +57,7 @@ class _postPageState extends State<postPage> {
     // final ByteData bytes =
     //     await rootBundle.load('assets/login_illustration.jpg');
     // _img = bytes.buffer.asUint8List();
-    LocationSystem.getLocation();
+    LocationSystem.getPosition();
     setState(() {
       isLoading = true;
     });

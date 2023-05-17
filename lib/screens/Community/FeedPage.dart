@@ -14,21 +14,21 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/providers/value_providers.dart';
-import 'package:sugam_krishi/screens/cameraScreen.dart';
-import 'package:sugam_krishi/screens/postPage.dart';
-import 'package:sugam_krishi/screens/post_item.dart';
+import 'package:sugam_krishi/screens/Utilities/Diagnosis/cameraScreen.dart';
+import 'package:sugam_krishi/screens/Community/postPage.dart';
+import 'package:sugam_krishi/screens/Community/post_item.dart';
 import 'package:sugam_krishi/weather/detail_page.dart';
 import 'package:http/http.dart' as http;
-import '../models/post.dart';
-import '../weather/weather_item.dart';
-import '../constants.dart';
+import '../../models/post.dart';
+import '../../weather/locationSystem.dart';
+import '../../weather/weatherSystem.dart';
+import '../../weather/weather_item.dart';
+import '../../constants.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
-import 'package:sugam_krishi/weather/locationSystem.dart';
-import 'package:sugam_krishi/weather/weatherSystem.dart';
 
 class FeedPage extends StatefulWidget {
   FeedPage(
-      {super.key});
+      {super.key,});
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -42,8 +42,9 @@ class _FeedPageState extends State<FeedPage> {
   String postsFilter = "All Posts";
   bool showFAB = true;
   bool showWeatherCard = true;
+  bool isUserNull = false;
 
-  String location = LocationSystem.currentLocationText;
+  String location = LocationSystem.locationText;
   String weatherIcon = WeatherSystem.weatherIcon;
   int temperature = WeatherSystem.temperature;
   String currentDate = WeatherSystem.currentDate;
@@ -51,17 +52,16 @@ class _FeedPageState extends State<FeedPage> {
   String currentWeatherStatus = WeatherSystem.currentWeatherStatus;
 
   void refreshVariables() {
-    LocationSystem.getLocation();
+    LocationSystem.getPosition();
     WeatherSystem.fetchWeatherData(
-        LocationSystem.convertPositionToString(LocationSystem.currentLocation));
+        LocationSystem.convertPositionToString(LocationSystem.currPos));
     setState(() {
-      location = WeatherSystem.location;
+      location = LocationSystem.locationText;
       currentWeatherStatus = WeatherSystem.currentWeatherStatus;
       dailyWeatherForecast = WeatherSystem.dailyWeatherForecast;
       currentDate = WeatherSystem.currentDate;
       temperature = WeatherSystem.temperature;
       weatherIcon = WeatherSystem.weatherIcon;
-      location = LocationSystem.currentLocationText;
     });
   }
 
@@ -105,7 +105,6 @@ class _FeedPageState extends State<FeedPage> {
     scrollController = ScrollController();
     dropDownController = TextEditingController();
     scrollController.addListener(_scrollListener);
-    refreshVariables();
     super.initState();
   }
 
@@ -115,6 +114,8 @@ class _FeedPageState extends State<FeedPage> {
     dropDownController.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -137,7 +138,7 @@ class _FeedPageState extends State<FeedPage> {
                   MaterialPageRoute(
                     builder: (context) => DetailPage(
                       dailyForecastWeather: dailyWeatherForecast,
-                      location: WeatherSystem.location,
+                      location: location,
                     ),
                   ),
                 );
@@ -290,10 +291,10 @@ class _FeedPageState extends State<FeedPage> {
                       ),
                     ),
 
-                    //WEATHER CARD
+                    // WEATHER CARD
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 0, horizontal: 10),
+                          vertical: 2, horizontal: 10),
                       height: size.height * .22,
                       decoration: BoxDecoration(
                         gradient: _constants.linearGradientTeal,
@@ -332,21 +333,15 @@ class _FeedPageState extends State<FeedPage> {
                                     MainAxisAlignment.spaceAround,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  // Image.asset(
-                                  //   "assets/pin.png",
-                                  //   width: 20,
-                                  // ),
-                                  // const SizedBox(
-                                  //   width: 2,
-                                  // ),
                                   Text(
                                     location,
+                                    overflow: TextOverflow.fade,
                                     style: TextStyle(
                                       color: Colors.white,
                                       //fontSize: 16.0,
                                       fontSize:
                                           MediaQuery.of(context).size.width *
-                                              0.05,
+                                              0.04,
                                     ),
                                   ),
                                   GestureDetector(
@@ -492,6 +487,7 @@ class _FeedPageState extends State<FeedPage> {
                       ),
                     ),
 
+                    // POST FILTER
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 5, right: 5, top: 15, bottom: 0),
@@ -531,9 +527,7 @@ class _FeedPageState extends State<FeedPage> {
                       stream: FirebaseFirestore.instance
                           .collection('posts')
                           .snapshots(),
-                      builder: (context,
-                          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>>
-                              snapshot) {
+                      builder: (context, snapshot){
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return Center(

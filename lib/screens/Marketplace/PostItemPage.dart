@@ -14,8 +14,8 @@ import 'package:sugam_krishi/resources/firestore_methods.dart';
 import 'package:sugam_krishi/utils/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:toggle_switch/toggle_switch.dart';
-import 'package:sugam_krishi/weather/locationSystem.dart';
-import 'package:sugam_krishi/weather/weatherSystem.dart';
+
+import '../../weather/locationSystem.dart';
 
 enum SELLTYPE { SELL, RENT }
 
@@ -205,13 +205,14 @@ class _postItemPageState extends State<postItemPage> {
   @override
   initState() {
     selltype = SELLTYPE.SELL;
+    LocationSystem.getLocationText();
+    location = LocationSystem.placemarks[0].administrativeArea.toString();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
-    LocationSystem.getLocation();
     return SafeArea(
         child: SingleChildScrollView(
             child: Container(
@@ -301,7 +302,7 @@ class _postItemPageState extends State<postItemPage> {
                       initialLabelIndex: _toggleStateIndex,
                       totalSwitches: 2,
                       labels: ['Sell', 'Rent'],
-                      activeBgColor: [Colors.greenAccent.shade700],
+                      activeBgColor: (selltype == SELLTYPE.SELL) ? [Colors.greenAccent.shade700] : [Color.fromARGB(255, 239, 198, 90)],
                       activeFgColor: Colors.white,
                       inactiveBgColor: Colors.black26,
                       inactiveFgColor: Colors.black45,
@@ -547,7 +548,7 @@ class _postItemPageState extends State<postItemPage> {
                       color: Colors.tealAccent.shade700,
                     ),
                     Text(
-                      'The mandi price for ${itemName} is ₹${modal_price} ',
+                      'The mandi price for ${itemName} is ₹${modal_price} per Quintal',
                       overflow: TextOverflow.fade,
                     )
                   ],

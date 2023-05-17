@@ -1,9 +1,9 @@
 import 'package:sugam_krishi/onboard/onboard_model.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sugam_krishi/screens/loginPage.dart';
+import 'package:sugam_krishi/screens/Login_Signup/loginPage.dart';
 
-import '../constant.dart';
+import '../constants.dart';
 
 class OnBoard extends StatefulWidget {
   @override
@@ -164,7 +164,8 @@ class _OnBoardState extends State<OnBoard> {
 
                       _pageController.nextPage(
                         duration: Duration(milliseconds: 300),
-                        curve: Curves.bounceIn,
+                        curve: Curves.linear,
+                        // curve: Curves.bounceIn,
                       );
                     },
                     child: Container(
