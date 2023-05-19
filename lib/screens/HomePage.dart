@@ -1,8 +1,10 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/AllDataFetchHandler.dart';
@@ -13,6 +15,7 @@ import 'package:sugam_krishi/screens/Profile/ProfilePage.dart';
 import 'package:sugam_krishi/screens/Utilities/UtilitiesPage.dart';
 import 'package:sugam_krishi/constants.dart';
 
+import '../myCropsHandler.dart';
 import '../weather/locationSystem.dart';
 import '../weather/weatherSystem.dart';
 
@@ -76,18 +79,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() => _selectedDrawerIndex = index);
   }
 
+  bool userAdded = false;
+  bool weatherLoaded = false;
+  bool locationLoaded = false;
+  bool allDataLoaded = false;
+  bool cropsLoaded = true;
   @override
   void initState() {
     super.initState();
-    addData();
+    addData().then((value){
+      setState(() {
+        userAdded = true;
+      });
+    });
 
-    LocationSystem.getPosition();
-    WeatherSystem.fetchWeatherData(
-        LocationSystem.convertPositionToString(LocationSystem.currPos));
-    AllDataFetchHandler.fetchAllData();
+    LocationSystem.getPosition().then((value){
+      setState(() {
+        locationLoaded = true;
+      });
+    });
+    WeatherSystem.fetchWeatherData(LocationSystem.convertPositionToString(LocationSystem.currPos)).then((value){
+      setState(() {
+        weatherLoaded = true;
+      });
+    });
+    AllDataFetchHandler.fetchAllData().then((value){
+      setState(() {
+        allDataLoaded = true;
+      });
+    });
+    // MyCropsHandler.collectPalette().then((value){
+    //   setState(() {
+    //     cropsLoaded = true;
+    //   });
+    // });
   }
 
-  void addData() async {
+  Future<void> addData() async {
     UserProvider _userProvider =
         Provider.of<UserProvider>(context, listen: false);
     await _userProvider.refreshUser();
@@ -95,7 +123,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    bool allLoaded = userAdded && weatherLoaded && locationLoaded && allDataLoaded && cropsLoaded;
+    print(userAdded);
+    print(weatherLoaded);
+    print(locationLoaded);
+    print(allDataLoaded);
+    print(cropsLoaded);
+    return allLoaded
+    ? Scaffold(
       backgroundColor: Colors.white,
       body: listItems[currentIndex],
       bottomNavigationBar: BottomNavyBar(
@@ -133,6 +168,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             activeColor: Colors.teal,
           ),
         ],
+      ),
+    )
+    : Scaffold(
+      body: Center(
+        child: LoadingAnimationWidget.prograssiveDots(
+          size: 60,
+          color: Colors.tealAccent.shade700,
+        ),
       ),
     );
   }

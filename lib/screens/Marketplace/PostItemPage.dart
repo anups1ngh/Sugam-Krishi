@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:awesome_select/awesome_select.dart';
+import 'package:cool_dropdown/cool_dropdown.dart';
+import 'package:cool_dropdown/models/cool_dropdown_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sugam_krishi/constants.dart';
+import 'package:sugam_krishi/myCropsHandler.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/firestore_methods.dart';
 import 'package:sugam_krishi/utils/utils.dart';
@@ -38,14 +42,14 @@ class _postItemPageState extends State<postItemPage> {
   final TextEditingController _itemNameController = TextEditingController();
   final TextEditingController _itemPriceController = TextEditingController();
   final TextEditingController _itemQuantityController = TextEditingController();
-  final TextEditingController _itemDescriptionController =
-  TextEditingController();
+  final TextEditingController _itemDescriptionController = TextEditingController();
   Uint8List? _image;
   bool _photoSelected = false;
   String category = "";
   String res = "";
-  String location = "";
+  String locationAdministrativeArea = "";
   String itemName = "";
+  String itemUnit = "";
   String stateName = "";
   List<dynamic> data = [];
   String modal_price = "";
@@ -80,23 +84,22 @@ class _postItemPageState extends State<postItemPage> {
     return name[0].toUpperCase() + name.substring(1);
   }
   Future<void> fetchData(String itemName) async {
+    modal_price = "";
     final response = await http.get(Uri.parse(
       "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
           "?api-key=579b464db66ec23bdd000001cdd3946e44ce4aad7209ff7b23ac571b"
           "&format=json"
-          "&filters%5Bstate%5D=${location.replaceAll(" ", "%20")}"
+          "&filters%5Bstate%5D=${locationAdministrativeArea.replaceAll(" ", "%20")}"
           "&filters%5Bcommodity%5D=${capitalizeFirst(itemName)}",
     ));
     if (response.statusCode == 200) {
       final decodedData = json.decode(response.body);
-      setState(() {
         data = decodedData['records'];
         for (final record in data) {
           final modalPrice = record['modal_price'];
           print("Modal price = $modalPrice");
           modal_price = modalPrice;
         }
-      });
     } else {
       print('Failed to fetch data');
     }
@@ -113,58 +116,23 @@ class _postItemPageState extends State<postItemPage> {
       isLoading = true;
     });
     try {
-      if (_itemDescriptionController.text.isEmpty && _image != null) {
+      if(_itemNameController.text.isEmpty && itemName.isEmpty){
+        res = "Item name cannot be empty";
+      }else {
         res = await FireStoreMethods().uploadMarketplaceItem(
-            "",
-            uid,
-            username,
-            category,
-            _image,
-            profImage,
-            _itemPriceController.text,
-            location,
-            contact,
-            _itemNameController.text,
-            _itemQuantityController.text);
-      } else if (_image == null && _itemDescriptionController.text.isNotEmpty) {
-        res = await FireStoreMethods().uploadMarketplaceItem(
-            _itemDescriptionController.text,
-            uid,
-            username,
-            category,
-            null,
-            profImage,
-            _itemPriceController.text,
-            location,
-            contact,
-            _itemNameController.text,
-            _itemQuantityController.text);
-      } else if (_image == null && _itemDescriptionController.text.isEmpty) {
-        res = await FireStoreMethods().uploadMarketplaceItem(
-            "",
-            uid,
-            username,
-            category,
-            null,
-            profImage,
-            _itemPriceController.text,
-            location,
-            contact,
-            _itemNameController.text,
-            _itemQuantityController.text);
-      } else {
-        res = await FireStoreMethods().uploadMarketplaceItem(
-            _itemDescriptionController.text,
-            uid,
-            username,
-            category,
-            _image,
-            profImage,
-            _itemPriceController.text,
-            location,
-            contact,
-            _itemNameController.text,
-            _itemQuantityController.text);
+          uid: uid,
+          username: username,
+          profImage: profImage,
+          location: LocationSystem.locationText,
+          contact: contact,
+
+          category: category,
+          file: _image,
+          itemName: _itemNameController.text.isNotEmpty ? capitalizeFirst(_itemNameController.text) : capitalizeFirst(itemName),
+          description: _itemDescriptionController.text,
+          quantity: _itemQuantityController.text,
+          price: _itemPriceController.text,
+        );
       }
       if (res == "success") {
         setState(() {
@@ -206,7 +174,7 @@ class _postItemPageState extends State<postItemPage> {
   initState() {
     selltype = SELLTYPE.SELL;
     LocationSystem.getLocationText();
-    location = LocationSystem.placemarks[0].administrativeArea.toString();
+    locationAdministrativeArea = LocationSystem.placemarks[0].administrativeArea.toString();
     super.initState();
   }
 
@@ -215,6 +183,7 @@ class _postItemPageState extends State<postItemPage> {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
     return SafeArea(
         child: SingleChildScrollView(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
               decoration: BoxDecoration(
                 color: Color(0xffE0F2F1),
@@ -293,28 +262,36 @@ class _postItemPageState extends State<postItemPage> {
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 15,
+                    Divider(
+                      height: 5,
+                      thickness: 1,
+                      indent: 15,
+                      endIndent: 15,
                     ),
 
                     // Here, default theme colors are used for activeBgColor, activeFgColor, inactiveBgColor and inactiveFgColor
-                    ToggleSwitch(
-                      initialLabelIndex: _toggleStateIndex,
-                      totalSwitches: 2,
-                      labels: ['Sell', 'Rent'],
-                      activeBgColor: (selltype == SELLTYPE.SELL) ? [Colors.greenAccent.shade700] : [Color.fromARGB(255, 239, 198, 90)],
-                      activeFgColor: Colors.white,
-                      inactiveBgColor: Colors.black26,
-                      inactiveFgColor: Colors.black45,
-                      onToggle: (index) {
-                        setState(() {
-                          index == 0
-                              ? selltype = SELLTYPE.SELL
-                              : selltype = SELLTYPE.RENT;
-                          _toggleStateIndex = index!;
-                          category = _toggleStateIndex == 0 ? "Sell" : "Rent";
-                        });
-                      },
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: ToggleSwitch(
+                        customTextStyles: [GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.white)],
+                        initialLabelIndex: _toggleStateIndex,
+                        totalSwitches: 2,
+                        labels: ['Sell', 'Rent'],
+                        radiusStyle: true,
+                        activeBgColor: (selltype == SELLTYPE.SELL) ? [Colors.greenAccent.shade700] : [Color.fromARGB(255, 239, 198, 90)],
+                        activeFgColor: Colors.white,
+                        inactiveBgColor: Colors.black26,
+                        inactiveFgColor: Colors.black45,
+                        onToggle: (index) {
+                          setState(() {
+                            index == 0
+                                ? selltype = SELLTYPE.SELL
+                                : selltype = SELLTYPE.RENT;
+                            _toggleStateIndex = index!;
+                            category = _toggleStateIndex == 0 ? "Sell" : "Rent";
+                          });
+                        },
+                      ),
                     ),
 
                     selltype == SELLTYPE.SELL ? sell() : rent(),
@@ -402,259 +379,499 @@ class _postItemPageState extends State<postItemPage> {
             )));
   }
 
+  String sellUnit = "Kg";
   Widget sell() {
-    return SingleChildScrollView(
-      padding:
-      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 15.0,
-        ),
-        child: Column(
+    List<CoolDropdownItem<String>> listOfCrops = [];
+    List<CoolDropdownItem<String>> listOfUnits = [
+      CoolDropdownItem<String>(
+        label: "Kg",
+        value: "Kg",
+      ),
+      CoolDropdownItem<String>(
+        label: "Quintal",
+        value: "Quintal",
+      ),
+    ];
+    final DropdownController dropdownController = DropdownController(duration: Duration(milliseconds: 200));
+    final DropdownController sellUnitsDropdownController = DropdownController(duration: Duration(milliseconds: 200));
+    void fillData(){
+      for(cropItem crop in MyCropsHandler.myCrops){
+        String cropName = crop.name[0].toUpperCase()+crop.name.substring(1).toLowerCase();
+        listOfCrops.add(
+          CoolDropdownItem<String>(
+            label: cropName,
+            value: crop.name,
+            icon: Container(
+              padding: EdgeInsets.all(5),
+              height: 50,
+              width: 50,
+              child: Image.asset("assets/crops/${crop.name}.png",),
+            ),
+          ),
+        );
+      }
+    }
+    fillData();
+    bool isMandiLoading = false;
+    InlineSpan getInlineTextSpan(){
+      if(isMandiLoading){
+        return TextSpan(
+          text: "Loading mandi pricing for $itemName",
+          style: GoogleFonts.openSans(fontSize: 14, color: Colors.black),
+        );
+      }
+      if(itemName.isEmpty){
+        return TextSpan(
+          text: "Select item to view its mandi pricing",
+          style: GoogleFonts.openSans(fontSize: 14, color: Colors.black),
+        );
+      }
+      if(modal_price.isEmpty) {
+        return TextSpan(
+          text: "Sorry, cannot find mandi pricing for ",
+          style: GoogleFonts.openSans(fontSize: 14, color: Colors.black),
+          children: [
+            TextSpan(
+              text: itemName[0].toUpperCase()+itemName.substring(1),
+              style: GoogleFonts.openSans(fontSize: 14, color: MyCropsHandler.cropsMap[itemName]?.bgColor),
+            ),
+          ],
+        );
+      } else{
+        return TextSpan(
+          text: "Mandi pricing for ",
+          style: GoogleFonts.openSans(fontSize: 14, color: Colors.black),
+          children: [
+            TextSpan(
+              text: itemName[0].toUpperCase()+itemName.substring(1),
+              style: GoogleFonts.openSans(fontSize: 14, color: MyCropsHandler.cropsMap[itemName]?.bgColor),
+            ),
+            TextSpan(
+              text: " is ",
+            ),
+            TextSpan(
+              text: "Rs. $modal_price",
+              style: GoogleFonts.openSans(fontSize: 14, color: Colors.tealAccent.shade700),
+            ),
+            TextSpan(
+              text: " per quintal",
+            ),
+          ],
+        );
+      }
+    }
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //ITEM NAME
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //ICON AND TEXT
+                  Text(
+                    "Crop",
+                    style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 20
+                    ),
+                  ),
+                  CoolDropdown<String>(
+                    controller: dropdownController,
+                    dropdownList: listOfCrops,
+                    defaultItem: null,
+                    onChange: (a) {
+                      itemName = a[0].toLowerCase()+a.substring(1);
+                      setState(() {
+                        isMandiLoading = true;
+                      });
+                      fetchData(itemName).then((value){setState(() {
+                        isMandiLoading = false;
+                      });});
+                      print(itemName);
+                      print(modal_price);
+                      dropdownController.close();
+                    },
+                    resultOptions: ResultOptions(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      placeholder: "Select Crop",
+                      width: 250,
+                      render: ResultRender.all,
+                      icon: SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CustomPaint(
+                          painter: DropdownArrowPainter(color: Colors.green),
+                        ),
+                      ),
+                    ),
+                    dropdownOptions: DropdownOptions(
+                      left: 50,
+                      width: 160,
+                    ),
+                    dropdownItemOptions: DropdownItemOptions(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      selectedBoxDecoration: BoxDecoration(
+                        color: Color(0XFFEFFAF0),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-          // mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 6,),
-                child: TextField(
-                  controller: _itemNameController,
-                  onChanged: (value) {
-                    itemName = value;
-                    fetchData(itemName);
-                  },
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.white70,
-                        width: 1.2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      gapPadding: 0,
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 1,
-                      ),
-                    ),
-                    hintText: "What are you selling?",
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
+            //DESCRIPTION
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "Description",
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: TextFormField(
+                textInputAction: TextInputAction.next,
+                maxLines: 3,
+                controller: _itemDescriptionController,
+                autofocus: false,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: TextField(
-                  maxLines: 5,
-                  controller: _itemDescriptionController,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.white70,
-                        width: 1.2,
+            ),
+
+
+            //PRICE AND QUANTITY
+
+            //QUANTITY
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "Quantity",
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.white,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontSize: 18),
+                      textInputAction: TextInputAction.next,
+                      controller: _itemQuantityController,
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                       ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 1,
-                      ),
-                    ),
-                    hintText: "Write something about your " + _itemNameController.text + " yield",
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 16,
+                      //unit
                     ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(top: 6,),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.465,
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        controller: _itemPriceController,
-                        autofocus: false,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: Colors.white70,
-                              width: 1.2,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: Colors.green,
-                              width: 1,
-                            ),
-                          ),
-                          hintText: "Enter price of item in Rs./kg",
-                          hintStyle: GoogleFonts.poppins(
-                            fontSize: 16,
-                          ),
+                  CoolDropdown<String>(
+                    controller: sellUnitsDropdownController,
+                    dropdownList: listOfUnits,
+                    defaultItem: null,
+                    onChange: (a) {
+                      setState(() {
+                        itemUnit = a;
+                        sellUnit = a;
+                        print(sellUnit);
+                      });
+                      sellUnitsDropdownController.close();
+                    },
+                    resultOptions: ResultOptions(
+                      textStyle: TextStyle(color: Colors.greenAccent.shade700, fontSize: 16, fontWeight: FontWeight.w400),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      placeholder: "Kg",
+                      width: 120,
+                      render: ResultRender.label,
+                      icon: SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CustomPaint(
+                          painter: DropdownArrowPainter(color: Colors.green),
                         ),
                       ),
                     ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.465,
-                      child: TextField(
-                        controller: _itemQuantityController,
-                        autofocus: false,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: Colors.white70,
-                              width: 1.2,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                              color: Colors.green,
-                              width: 1,
-                            ),
-                          ),
-                          hintText:
-                          'Enter quantity of ${_itemNameController.text} up for sell',
-                          hintStyle: GoogleFonts.poppins(
-                            fontSize: 16,
-                          ),
-                        ),
+                    dropdownOptions: DropdownOptions(
+                    ),
+                    dropdownItemOptions: DropdownItemOptions(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      selectedBoxDecoration: BoxDecoration(
+                        color: Color(0XFFEFFAF0),
                       ),
                     ),
-                  ],
+                  ),
+                ],
+              ),
+            ),
+
+
+            //PRICE
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "Price",
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                child: Row(
-                  children: [
-                    Icon(
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.white,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("Rs. ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.greenAccent.shade700),),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontSize: 18),
+                      textInputAction: TextInputAction.next,
+                      controller: _itemPriceController,
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                      //unit
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text(" per $sellUnit ", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Colors.greenAccent.shade700),),
+                  ),
+                ],
+              ),
+            ),
+
+            //MANDI PRICE
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(
                       Icons.lightbulb_circle_rounded,
                       color: Colors.tealAccent.shade700,
+                      size: 35,
                     ),
-                    Text(
-                      'The mandi price for ${itemName} is ₹${modal_price} per Quintal',
-                      overflow: TextOverflow.fade,
-                    )
-                  ],
-                ),
+                  ),
+                  Expanded(
+                    child: RichText(
+                      text: getInlineTextSpan(),
+                    ),
+                  )
+                ],
               ),
-            ]),
-      ),
+            ),
+          ]),
     );
   }
 
   Widget rent() {
-    return SingleChildScrollView(
-      padding:
-      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-      child: Padding(
-        padding: const EdgeInsets.only(
-          top: 15.0,
-        ),
-        child: Column(
+    List<CoolDropdownItem<String>> listOfRentUnits = [
+      CoolDropdownItem<String>(
+        label: "per hour",
+        value: "per hour",
+      ),
+      CoolDropdownItem<String>(
+        label: "per day",
+        value: "per day",
+      ),
+    ];
+    final DropdownController rentUnitsDropdownController = DropdownController(duration: Duration(milliseconds: 200));
+    return Padding(
+      padding: const EdgeInsets.only(top: 15.0),
+      child: Column(
+        // mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //ITEM NAME
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  //ICON AND TEXT
+                  Text(
+                    "Item",
+                    style: GoogleFonts.poppins(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 20
+                    ),
+                  ),
+                  Container(
+                    width: 250,
+                    child: TextFormField(
+                      textInputAction: TextInputAction.next,
+                      maxLines: 1,
+                      controller: _itemNameController,
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
 
-          // mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: TextField(
-                  controller: _itemNameController,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.white70,
-                        width: 1.2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 1,
-                      ),
-                    ),
-                    hintText: "What are you renting?",
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
+            //DESCRIPTION
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "Description",
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              child: TextFormField(
+                textInputAction: TextInputAction.next,
+                maxLines: 3,
+                controller: _itemDescriptionController,
+                autofocus: false,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6),
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 6),
-                child: TextField(
-                  maxLines: 5,
-                  controller: _itemDescriptionController,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.white70,
-                        width: 1.2,
-                      ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 1,
-                      ),
-                    ),
-                    hintText: "Write something about your " + _itemNameController.text,
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 16,
-                    ),
-                  ),
+            ),
+
+
+            //PRICE
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                "Price",
+                style: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 20
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 6, bottom: 15),
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  controller: _itemPriceController,
-                  autofocus: false,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.white70,
-                        width: 1.2,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: Colors.white,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("Rs. ", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.greenAccent.shade700),),
+                  ),
+                  Expanded(
+                    child: TextFormField(
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(fontSize: 18),
+                      textInputAction: TextInputAction.next,
+                      controller: _itemPriceController,
+                      autofocus: false,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
                       ),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(
-                        color: Colors.green,
-                        width: 1,
-                      ),
-                    ),
-                    hintText: "Enter rent price of item in Rs./hour",
-                    hintStyle: GoogleFonts.poppins(
-                      fontSize: 16,
+                      //unit
                     ),
                   ),
-                ),
+                  CoolDropdown<String>(
+                    controller: rentUnitsDropdownController,
+                    dropdownList: listOfRentUnits,
+                    defaultItem: null,
+                    onChange: (a) {
+                      itemUnit = a;
+                      rentUnitsDropdownController.close();
+                    },
+                    resultOptions: ResultOptions(
+                      textStyle: TextStyle(color: Colors.greenAccent.shade700, fontSize: 16, fontWeight: FontWeight.w400),
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      placeholder: "per hour",
+                      width: 120,
+                      render: ResultRender.label,
+                      icon: SizedBox(
+                        width: 10,
+                        height: 10,
+                        child: CustomPaint(
+                          painter: DropdownArrowPainter(color: Colors.green),
+                        ),
+                      ),
+                    ),
+                    dropdownOptions: DropdownOptions(
+                    ),
+                    dropdownItemOptions: DropdownItemOptions(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      selectedBoxDecoration: BoxDecoration(
+                        color: Color(0XFFEFFAF0),
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ]),
+            ),
+            SizedBox(height: 30,),
+          ],
       ),
     );
   }

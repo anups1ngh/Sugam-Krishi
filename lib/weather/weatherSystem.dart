@@ -22,7 +22,7 @@ class WeatherSystem{
   static String day_night = TimeOfDay.now().hour < 17 ? "day" : "night";
 
   //searchText = latitude,longitude
-  static void fetchWeatherData(String searchText) async {
+  static Future<void> fetchWeatherData(String searchText) async {
     try {
       var searchResult =
       await http.get(Uri.parse(searchWeatherAPI + searchText));

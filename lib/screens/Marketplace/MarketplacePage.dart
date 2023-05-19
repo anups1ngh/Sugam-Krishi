@@ -37,8 +37,8 @@ class _MarketplacePageState extends State<MarketplacePage> {
   }
 
   List<String> tabs = [
-    "Sell",
-    "Rent",
+    "Crops for Sale",
+    "Items for Rent",
   ];
   int current = 0;
 
@@ -47,7 +47,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
       case 0:
         return 0;
       case 1:
-        return 50;
+        return 140;
       default:
         return 0;
     }
@@ -147,8 +147,8 @@ class _MarketplacePageState extends State<MarketplacePage> {
                         duration: const Duration(milliseconds: 500),
                         child: AnimatedContainer(
                           margin: const EdgeInsets.only(left: 10),
-                          width: changeContainerWidth(),
-                          height: size.height * 0.006,
+                          width: 140,
+                          height: size.height * 0.003,
                           decoration: BoxDecoration(
                             color: Colors.teal,
                             borderRadius: BorderRadius.circular(5),
@@ -163,7 +163,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                 SizedBox(
                   height: 20,
                 ),
-                "${tabs[current]}" == "Sell"
+                "${tabs[current]}" == "Crops for Sale"
                     ? Expanded(
                         child: StreamBuilder<QuerySnapshot>(
                           stream: FirebaseFirestore.instance
@@ -250,7 +250,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
             color: Colors.white,
           ),
           label: Text(
-            "Sell/Rent",
+            "Sell / Rent",
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,

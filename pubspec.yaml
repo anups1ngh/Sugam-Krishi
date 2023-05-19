@@ -57,7 +57,7 @@ dependencies:
   geolocator: ^9.0.2
   google_fonts: ^4.0.3
   http: ^0.13.5
-  image_picker: ^0.8.7+1
+  image_picker: ^0.8.7+5
   infinite_carousel: ^1.0.2
   intl_phone_field: ^3.1.0
   lottie: ^2.3.2
@@ -79,6 +79,10 @@ dependencies:
   youtube_player_flutter: ^8.1.2
   rename: ^2.1.1
   location: ^4.4.0
+  awesome_select: ^6.0.0
+  palette_generator: ^0.3.3+2
+  cool_dropdown: ^2.1.0
+  loading_animation_widget: ^1.2.0+4
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.0

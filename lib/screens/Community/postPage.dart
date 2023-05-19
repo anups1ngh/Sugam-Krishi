@@ -223,6 +223,8 @@ class _postPageState extends State<postPage> {
                   controller: _postController,
                   autofocus: false,
                   decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide(

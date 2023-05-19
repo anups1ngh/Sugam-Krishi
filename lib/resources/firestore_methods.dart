@@ -9,8 +9,7 @@ import 'package:uuid/uuid.dart';
 class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<String> updateUserDetails(
-      Uint8List img, String username, String contact, String uid) async {
+  Future<String> updateUserDetails({required Uint8List img, required String username, required String contact, required String uid}) async {
     // User currentUser = _auth.currentUser!;
     String res = "Some error Occurred";
     try {
@@ -68,17 +67,17 @@ class FireStoreMethods {
   }
 
   Future<String> uploadMarketplaceItem(
-      String? description,
-      String uid,
-      String username,
-      String category,
+      {String? description,
+      required String uid,
+      required String username,
+      required String category,
       Uint8List? file,
-      String profImage,
-      String price,
-      String location,
-      String contact,
-      String itemName,
-      String? quantity) async {
+      required String profImage,
+      required String price,
+      required String location,
+      required String contact,
+      required String itemName,
+      String? quantity}) async {
     String res = "Some error occurred";
     try {
       String photoUrl = file == null
