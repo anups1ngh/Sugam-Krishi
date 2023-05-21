@@ -62,10 +62,9 @@ dependencies:
   get: ^4.6.5
   google_fonts: ^4.0.3
   http: ^0.13.5
-  image_picker: ^0.8.7+1
+  image_picker: ^0.8.7+5
   infinite_carousel: ^1.0.2
   intl_phone_field: ^3.1.0
-  location: ^4.4.0
   lottie: ^2.3.2
   modal_bottom_sheet: ^3.0.0-pre
   path_provider: ^2.0.14
@@ -85,6 +84,11 @@ dependencies:
   video_player: ^2.1.14
   youtube_api: ^1.0.4
   youtube_player_flutter: ^8.1.2
+  location: ^4.4.0
+  awesome_select: ^6.0.0
+  palette_generator: ^0.3.3+2
+  cool_dropdown: ^2.1.0
+  loading_animation_widget: ^1.2.0+4
 
 dev_dependencies:
   flutter_launcher_icons: ^0.13.0

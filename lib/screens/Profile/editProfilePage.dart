@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sugam_krishi/myCropsHandler.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/resources/firestore_methods.dart';
@@ -60,18 +61,34 @@ class _EditProfilePage extends State<EditProfilePage> {
   void initState() {
     _usernameController = TextEditingController(text: widget.username);
     _contactController = TextEditingController(text: widget.contact);
+    MyCropsHandler.collectPalette().then((value){setState(() {
+
+    });});
     super.initState();
   }
 
-  void updateDetails(Uint8List? img, String username, String contact) async {
-    print("update function called");
+  void updateDetails() async {
     setState(() {
       _isLoading = true;
     });
-    print(username);
-    print(contact);
-    String res = await FireStoreMethods().updateUserDetails(img!, username,
-        contact, Provider.of<UserProvider>(context, listen: false).getUser.uid);
+    String res;
+    if(_image == null){
+      final ByteData bytes = await rootBundle.load(Provider.of<UserProvider>(context, listen: false).getUser.photoUrl);
+      Uint8List existingImage = bytes.buffer.asUint8List();
+      res = await FireStoreMethods().updateUserDetails(
+        uid: Provider.of<UserProvider>(context, listen: false).getUser.uid,
+        username: _usernameController.text,
+        contact: _contactController.text.replaceAll(" ", ""),
+        img: existingImage,
+      );
+    }else{
+      res = await FireStoreMethods().updateUserDetails(
+        uid: Provider.of<UserProvider>(context, listen: false).getUser.uid,
+        username: _usernameController.text,
+        contact: _contactController.text.replaceAll(" ", ""),
+        img: _image!,
+      );
+    }
     if (res == "success") {
       setState(() {
         _isLoading = false;
@@ -108,8 +125,10 @@ class _EditProfilePage extends State<EditProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+
+              //PROFILE PIC
               SizedBox(
-                height: 30,
+                height: 20,
               ),
               Stack(
                 children: [
@@ -147,55 +166,93 @@ class _EditProfilePage extends State<EditProfilePage> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: 0,
               ),
-              TextField(
-                textAlign: TextAlign.center,
-                controller: _usernameController,
-                style: GoogleFonts.poppins(
-                  fontSize: 22,
-                ),
-                decoration: InputDecoration(
-                  // focusedBorder: OutlineInputBorder(
-                  //   borderRadius: BorderRadius.circular(12),
-                  //   borderSide: BorderSide(
-                  //       color: Colors.teal.shade400,
-                  //       width: 0.4
-                  //   ),
-                  // ),
-                  border: InputBorder.none,
-                  // border: OutlineInputBorder(
-                  //   borderRadius: BorderRadius.circular(12),
-                  //   borderSide: BorderSide(
-                  //       color: Colors.teal.shade400,
-                  //       width: 0.4
-                  //   ),
-                  // ),
-                  //   enabledBorder: OutlineInputBorder(
-                  //     borderRadius: BorderRadius.circular(12),
-                  //     borderSide: BorderSide(
-                  //         color: Colors.teal.shade400,
-                  //         width: 0.4
-                  //     ),
-                  //   ),
-                  hintText: "Username",
-                  hintStyle: GoogleFonts.poppins(
-                    fontSize: 20,
+
+              //USERNAME
+              SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 90, vertical: 0),
+                child: TextFormField(
+                  initialValue: widget.username,
+                    style: GoogleFonts.poppins(
+                    fontSize: 22,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.zero,
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(100),
+                      borderSide: BorderSide.none,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(
-                width: 150,
-                height: 42,
+
+              //DESCRIPTION
+              SizedBox(height: 10,),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 0),
+                child: TextFormField(
+                  textAlign: TextAlign.center,
+                  // initialValue: widget.description,
+                  initialValue: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit risus, dapibus pretium rhoncus pharetra, faucibus non dolor.",
+                  style: GoogleFonts.poppins(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w200,
+                    height: 1.2,
+                  ),
+                  maxLines: 3,
+                  autofocus: false,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
               ),
-              SizedBox(
-                height: 10,
+              SizedBox(height: 10,),
+
+              //CROPS TO SELECT
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                height: 60,
+                child: ListView.builder(
+                  addAutomaticKeepAlives: true,
+                  cacheExtent: 1000000,
+                  physics: BouncingScrollPhysics(),
+                  scrollDirection: Axis.horizontal,
+                  primary: false,
+                  itemCount: MyCropsHandler.cropItemsList.length,
+                  itemBuilder: (context, index){
+                    return cropItemWidget(item: MyCropsHandler.cropItemsList[index], isMini: true);
+                  },
+                ),
               ),
+              SizedBox(height: 40,),
 
               //MENU
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
+                  tileColor: Colors.white,
+                  iconColor: Colors.black,
                   shape: RoundedRectangleBorder(
                     side: BorderSide(
                       color: Colors.teal.shade400,
@@ -255,6 +312,8 @@ class _EditProfilePage extends State<EditProfilePage> {
                 child: Opacity(
                   opacity: 0.5,
                   child: ListTile(
+                    tileColor: Colors.white,
+                    iconColor: Colors.black,
                     shape: RoundedRectangleBorder(
                       side: BorderSide(
                           color: Colors.teal.shade400.withOpacity(0.5),
@@ -302,8 +361,7 @@ class _EditProfilePage extends State<EditProfilePage> {
                     //     _contactController.text.replaceAll(" ", ""),
                     // );
                     // Navigator.pop(context);
-                    updateDetails(_image!, _usernameController.text,
-                        _contactController.text.replaceAll(" ", ""));
+                    updateDetails();
                     Navigator.pop(context);
                   },
                   child: _isLoading

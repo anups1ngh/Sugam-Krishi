@@ -86,7 +86,7 @@ class _MarketItemState extends State<MarketItem> {
   }
 
   Future<String> _fetchImageFromFirebase() async {
-    return Future.delayed(Duration(seconds: 2), () => widget.snap["postUrl"]);
+    return Future.delayed(Duration(seconds: 0), () => widget.snap["postUrl"]);
   }
 
   void showToastText(String text, Color color) {

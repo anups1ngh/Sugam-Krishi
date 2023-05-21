@@ -40,7 +40,6 @@ class AuthMethods {
   // Signing Up User
 
   Future<String> signUpUser({
-    required String token,
     required String email,
     required String password,
     required String username,
@@ -69,7 +68,6 @@ class AuthMethods {
           photoUrl: photoUrl,
           email: email,
           contact: contact,
-          token: token,
           accHolderName: "",
           accNumber: "",
           ifscCode: "",

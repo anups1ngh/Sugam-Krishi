@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.10.0"
+  awesome_select:
+    dependency: "direct main"
+    description:
+      name: awesome_select
+      sha256: b7ea3886c29f07db559688feca329961aa8115c97ecc0615b11db8b8705160c3
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.0.0"
   better_open_file:
     dependency: "direct main"
     description:
@@ -273,6 +281,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.1"
+  cool_dropdown:
+    dependency: "direct main"
+    description:
+      name: cool_dropdown
+      sha256: "24400f57740b4779407586121e014bef241699ad2a52c506a7e1e7616cb68653"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0"
   cross_file:
     dependency: transitive
     description:
@@ -756,10 +772,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: cb25f04595a88450970dbe727243ba8cd21b6f7e0d7d1fc5b789fc6f52e95494
+      sha256: "9978d3510af4e6a902e545ce19229b926e6de6a1828d6134d3aab2e129a4d270"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.7+1"
+    version: "0.8.7+5"
   image_picker_android:
     dependency: transitive
     description:
@@ -848,6 +864,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  loading_animation_widget:
+    dependency: "direct main"
+    description:
+      name: loading_animation_widget
+      sha256: "1901682600273a966c34cf44a85fc5355da92a8d08a8a43c11adc4e471993e3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0+4"
   location:
     dependency: "direct main"
     description:
@@ -1016,6 +1040,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.9"
+  palette_generator:
+    dependency: "direct main"
+    description:
+      name: palette_generator
+      sha256: "0e3cd6974e10b1434dcf4cf779efddb80e2696585e273a2dbede6af52f94568d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+2"
   path:
     dependency: transitive
     description:

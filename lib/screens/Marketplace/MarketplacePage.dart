@@ -39,8 +39,8 @@ class _MarketplacePageState extends State<MarketplacePage> {
   }
 
   List<String> tabs = [
-    "Sell",
-    "Rent",
+    "Crops for Sale",
+    "Items for Rent",
   ];
   int current = 0;
 
@@ -49,7 +49,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
       case 0:
         return 0;
       case 1:
-        return 50;
+        return 140;
       default:
         return 0;
     }

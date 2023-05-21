@@ -11,6 +11,37 @@ import 'package:uuid/uuid.dart';
 class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  Future<String> updateUserDetails(
+      {required Uint8List img,
+      required String username,
+      required String contact,
+      required String uid}) async {
+    // User currentUser = _auth.currentUser!;
+    String res = "Some error Occurred";
+    try {
+      String photoUrl = await StorageMethods()
+          .uploadImageToStorage('profilePics', img, false, false);
+      // model.User _user = model.User(
+      //   username: username,
+      //   uid: currentUser.uid,
+      //   photoUrl: photoUrl,
+      //   email: currentUser.email!,
+      //   contact: contact,
+      // );
+      await _firestore.collection("users").doc(uid).update({
+        "username": username,
+        "photoUrl": photoUrl,
+        "contact": contact,
+      });
+      // .set(_user.toJson());
+      //return _user;
+      res = "success";
+    } catch (e) {
+      return e.toString();
+    }
+    return res;
+  }
+
   // add CRUD methods here for cartItems
   Future<String> addCartItem(
       String sellerUid,
@@ -148,34 +179,6 @@ class FireStoreMethods {
     return res;
   }
 
-  Future<String> updateUserDetails(
-      Uint8List img, String username, String contact, String uid) async {
-    // User currentUser = _auth.currentUser!;
-    String res = "Some error Occurred";
-    try {
-      String photoUrl = await StorageMethods()
-          .uploadImageToStorage('profilePics', img, false, false);
-      // model.User _user = model.User(
-      //   username: username,
-      //   uid: currentUser.uid,
-      //   photoUrl: photoUrl,
-      //   email: currentUser.email!,
-      //   contact: contact,
-      // );
-      await _firestore.collection("users").doc(uid).update({
-        "username": username,
-        "photoUrl": photoUrl,
-        "contact": contact,
-      });
-      // .set(_user.toJson());
-      //return _user;
-      res = "success";
-    } catch (e) {
-      return e.toString();
-    }
-    return res;
-  }
-
   Future<String> uploadPost(String description, Uint8List? file, String uid,
       String username, String profImage, String location) async {
     // asking uid here because we dont want to make extra calls to firebase auth when we can just get from our state management
@@ -207,17 +210,17 @@ class FireStoreMethods {
   }
 
   Future<String> uploadMarketplaceItem(
-      String? description,
-      String uid,
-      String username,
-      String category,
+      {String? description,
+      required String uid,
+      required String username,
+      required String category,
       Uint8List? file,
-      String profImage,
-      String price,
-      String location,
-      String contact,
-      String itemName,
-      String? quantity) async {
+      required String profImage,
+      required String price,
+      required String location,
+      required String contact,
+      required String itemName,
+      String? quantity}) async {
     String res = "Some error occurred";
     try {
       String photoUrl = file == null

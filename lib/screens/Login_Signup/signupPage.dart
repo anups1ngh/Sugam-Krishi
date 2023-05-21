@@ -7,13 +7,17 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/screens/HomePage.dart';
 import 'package:sugam_krishi/screens/Login_Signup/loginPage.dart';
+import 'package:sugam_krishi/screens/Login_Signup/selectCropsPage.dart';
+import 'package:sugam_krishi/screens/Login_Signup/signupHandler.dart';
+
+import '../../myCropsHandler.dart';
+import '../../utils/utils.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -94,17 +98,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void signUpUser(String email, String password, String username,
-      String contact, Uint8List? image) async {
-    final ByteData bytes = await rootBundle.load('assets/farmer.png');
-    image = bytes.buffer.asUint8List();
-    // set loading to true
+      String contact, Uint8List image) async {
     setState(() {
       isLoading = true;
     });
 
-    // signup user using our authmethodds
+    // signup user using our auth methods
     String res = await AuthMethods().signUpUser(
-        token: mtoken!,
         email: email,
         password: password,
         username: username,
@@ -195,6 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         onSaved: (value) {
                           _username = value!;
+                          SignupHandler.username = value!;
                         },
                         decoration: InputDecoration(
                           labelText: 'Username',
@@ -225,6 +226,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         onSaved: (value) {
                           _email = value!;
+                          SignupHandler.email = value!;
                         },
                         decoration: InputDecoration(
                           labelText: 'Email',
@@ -254,6 +256,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         onSaved: (value) {
                           _password = value!;
+                          SignupHandler.password = value!;
                         },
                         obscureText: true,
                         obscuringCharacter: '*',
@@ -282,6 +285,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                         onSaved: (value) {
                           _contact = value!.completeNumber;
+                          SignupHandler.contact = value!.completeNumber;
                         },
                         showCountryFlag: false,
                         showDropdownIcon: false,
@@ -310,16 +314,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onTap: () {
                           if (_formKey.currentState!.validate()) {
                             _formKey.currentState!.save();
-                            setState(() {
-                              isLoading = true;
-                            });
-                            signUpUser(
-                                _email, _password, _username, _contact, _image);
-                            Future.delayed(Duration(seconds: 2), () {
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: ((context) => HomePage())));
-                            });
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: ((context) => SelectCropsPage()),
+                              ),
+                            );
                           }
                         },
                         child: Container(
@@ -381,17 +380,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
-    );
-  }
-
-  void showToastText(String text) {
-    Fluttertoast.showToast(
-      msg: text,
-      toastLength: Toast.LENGTH_SHORT,
-      timeInSecForIosWeb: 1,
-      backgroundColor: Colors.black,
-      textColor: Colors.white,
-      fontSize: 16.0,
     );
   }
 }
