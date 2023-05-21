@@ -7,7 +7,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/auth_methods.dart';
+import 'package:sugam_krishi/screens/Profile/AddBankDetails.dart';
 import 'package:sugam_krishi/screens/Profile/editProfilePage.dart';
+import 'package:sugam_krishi/screens/order_screen.dart';
 import 'package:sugam_krishi/utils/utils.dart';
 
 import '../../constants.dart';
@@ -106,14 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   fontSize: 22,
                 ),
               ),
-              //EMAIL-ID
-              // Text(
-              //   user.email,
-              //   style: GoogleFonts.poppins(
-              //     fontSize: 12,
-              //     fontWeight: FontWeight.w300,
-              //   ),
-              // ),
+
               SizedBox(
                 height: 10,
               ),
@@ -201,6 +196,90 @@ class _ProfilePageState extends State<ProfilePage> {
                     location,
                     style: GoogleFonts.poppins(
                       fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: GestureDetector(
+                  onTap: () async {
+                    // navigate to orders page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OrderScreen(currentUserUid: user.uid),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.teal.shade100,
+                      ),
+                      child: Icon(
+                        Icons.shopping_bag_outlined,
+                      ),
+                    ),
+                    title: Text(
+                      "Orders",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(18),
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return addBankDetails(
+                          userName: user.username,
+                          userPhoto: user.photoUrl,
+                          uid: user.uid,
+                        );
+                      },
+                    );
+                  },
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.teal.shade100,
+                      ),
+                      child: Icon(
+                        Icons.account_balance_outlined,
+                      ),
+                    ),
+                    title: Text(
+                      "Add Bank Details",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),

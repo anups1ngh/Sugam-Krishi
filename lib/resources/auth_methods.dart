@@ -18,9 +18,29 @@ class AuthMethods {
     return model.User.fromSnap(documentSnapshot);
   }
 
+  String getCurrentUserUid() {
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    final User? user = auth.currentUser;
+
+    if (user != null) {
+      return user.uid;
+    } else {
+      // User is not logged in or authentication failed
+      return '';
+    }
+  }
+
+  String getCurrentUserUsername() {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String? username = user?.displayName;
+
+    return username ?? '';
+  }
+
   // Signing Up User
 
   Future<String> signUpUser({
+    required String token,
     required String email,
     required String password,
     required String username,
@@ -49,6 +69,10 @@ class AuthMethods {
           photoUrl: photoUrl,
           email: email,
           contact: contact,
+          token: token,
+          accHolderName: "",
+          accNumber: "",
+          ifscCode: "",
         );
 
         // adding user in our database

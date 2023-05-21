@@ -4,6 +4,7 @@ import 'package:sugam_krishi/resources/auth_methods.dart';
 
 class UserProvider with ChangeNotifier {
   User _user = User(
+    token: "",
     username: "",
     uid: "-1",
     email: "",
