@@ -2,8 +2,7 @@ import 'package:flutter/services.dart';
 import '../../resources/auth_methods.dart';
 import '../../utils/utils.dart';
 
-
-class SignupHandler{
+class SignupHandler {
   static String email = "";
   static String password = "";
   static String username = "";

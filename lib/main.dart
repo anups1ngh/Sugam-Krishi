@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,18 +44,6 @@ Future<void> main() async {
   }
 
   WidgetsFlutterBinding.ensureInitialized();
-  // RenderErrorBox.backgroundColor = Color(0xffE0F2F1);
-  // ErrorWidget.builder = (error) =>
-  // Scaffold(
-  //   body: Center(
-  //     child: Column(
-  //       children: [
-  //         SpinKitCircle(),
-  //         Text("Loading APP"),
-  //       ],
-  //     ),
-  //   ),
-  // );
   SharedPreferences prefs = await SharedPreferences.getInstance();
   isviewed = prefs.getInt('onBoard');
   if (kIsWeb)
@@ -68,7 +57,7 @@ Future<void> main() async {
     await Firebase.initializeApp();
 
   HttpOverrides.global = MyHttpOverrides();
-  runApp(const MyApp());
+  runApp(const GetMaterialApp(home: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

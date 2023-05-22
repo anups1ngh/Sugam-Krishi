@@ -1,15 +1,21 @@
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:sugam_krishi/models/cartItem.dart';
 import 'package:sugam_krishi/models/marketplace.dart';
 import 'package:sugam_krishi/models/post.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/resources/storage_methods.dart';
 import 'package:uuid/uuid.dart';
 
 class FireStoreMethods {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<String> updateUserDetails({required Uint8List img, required String username, required String contact, required String uid}) async {
+  Future<String> updateUserDetails(
+      {required Uint8List img,
+      required String username,
+      required String contact,
+      required String uid}) async {
     // User currentUser = _auth.currentUser!;
     String res = "Some error Occurred";
     try {
@@ -29,6 +35,143 @@ class FireStoreMethods {
       });
       // .set(_user.toJson());
       //return _user;
+      res = "success";
+    } catch (e) {
+      return e.toString();
+    }
+    return res;
+  }
+
+  // add CRUD methods here for cartItems
+  Future<String> addCartItem(
+      String sellerUid,
+      String sellerUsername,
+      String postId,
+      String postUrl,
+      int cost,
+      String itemName,
+      int quantity,
+      String buyerName,
+      String buyerLocation,
+      String buyerUid,
+      int price) async {
+    String res = "Some error occurred";
+    try {
+      print("Inside addCartItem");
+      // create a new collection cart under collection = users and doc = buyerUid and insert these values there
+      CartItem cartItem = CartItem(
+        sellerUid: sellerUid,
+        sellerUsername: sellerUsername,
+        postId: postId,
+        postUrl: postUrl,
+        cost: cost,
+        itemName: itemName,
+        quantity: quantity,
+        buyerName: buyerName,
+        buyerLocation: buyerLocation,
+        buyerUid: buyerUid,
+        price: price,
+      );
+      final cartItemMap = cartItem.toJson();
+// create a new collection cart under collection = users and doc = buyerUid and insert these values there
+      final DocumentReference cartDocRef = FirebaseFirestore.instance
+          .collection('users')
+          .doc(buyerUid)
+          .collection('cart')
+          .doc(postId);
+
+      await cartDocRef.set(cartItemMap);
+
+      res = "success";
+    } catch (err) {
+      res = err.toString();
+    }
+    return res;
+  }
+
+  Future<void> incrementCartItemQuantity(
+      String buyerUid, String postId, int? quantity, int price) async {
+    final DocumentReference cartDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(buyerUid)
+        .collection('cart')
+        .doc(postId);
+
+    final DocumentSnapshot cartSnapshot = await cartDocRef.get();
+    if (!cartSnapshot.exists) {
+      // Cart item does not exist
+      return;
+    }
+
+    final Map<String, dynamic>? cartData =
+        cartSnapshot.data() as Map<String, dynamic>?;
+
+    if (cartData != null) {
+      final int existingQuantity = quantity!;
+      final int newQuantity = existingQuantity + 1;
+      final int existingPrice = price;
+      final int newCost = existingPrice * newQuantity;
+
+      await cartDocRef.update({
+        'quantity': newQuantity,
+        'cost': newCost,
+      });
+    }
+  }
+
+  Future<void> decrementCartItemQuantity(
+      String buyerUid, String postId, int? quantity, int price) async {
+    final DocumentReference cartDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(buyerUid)
+        .collection('cart')
+        .doc(postId);
+
+    final DocumentSnapshot cartSnapshot = await cartDocRef.get();
+    if (!cartSnapshot.exists) {
+      // Cart item does not exist
+      return;
+    }
+
+    final Map<String, dynamic>? cartData =
+        cartSnapshot.data() as Map<String, dynamic>?;
+
+    if (cartData != null) {
+      final int existingQuantity = quantity!;
+      if (existingQuantity > 0) {
+        final int newQuantity = existingQuantity - 1;
+        final int existingPrice = price;
+        final int newCost = existingPrice * newQuantity;
+
+        await cartDocRef.update({
+          'quantity': newQuantity,
+          'cost': newCost,
+        });
+      }
+    }
+  }
+
+  Future<void> removeCartItem(String buyerUid, String postId) async {
+    final DocumentReference cartDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(buyerUid)
+        .collection('cart')
+        .doc(postId);
+
+    await cartDocRef.delete();
+  }
+
+  Future<String> updateBankDetails(String accHolderName, String accNumber,
+      String ifscCode, String uid) async {
+    final usersCollection = FirebaseFirestore.instance.collection('users');
+    final userDoc = usersCollection.doc(uid);
+    String res = "Some error Occurred";
+    try {
+      await userDoc.update({
+        'accHolderName': accHolderName,
+        'accNumber': accNumber,
+        'ifscCode': ifscCode,
+      });
       res = "success";
     } catch (e) {
       return e.toString();

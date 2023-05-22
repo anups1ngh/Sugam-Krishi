@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -39,8 +41,59 @@ class _RegisterScreenState extends State<RegisterScreen> {
   double bottom = 0;
   String countryDial = "+91";
   bool isLoading = false;
+  String? mtoken = "";
+  late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Uint8List? _image;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    requestPermissions();
+    getToken();
+    initInfo();
+  }
+
+  void requestPermissions() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
+        alert: true,
+        announcement: false,
+        badge: true,
+        carPlay: false,
+        criticalAlert: false,
+        provisional: false,
+        sound: true);
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+      print("User granted permission");
+    } else if (settings.authorizationStatus ==
+        AuthorizationStatus.provisional) {
+      print("User granted provisional permission");
+    } else {
+      print("User declined or has not accepted permission");
+    }
+  }
+
+  void getToken() async {
+    await FirebaseMessaging.instance.getToken().then((token) {
+      setState(() {
+        mtoken = token;
+        print("My token is $mtoken");
+      });
+      // saveToken(token);
+    });
+  }
+
+  void initInfo() async {
+    var initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    var initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  }
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -52,14 +105,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     // signup user using our auth methods
     String res = await AuthMethods().signUpUser(
-        email: SignupHandler.email,
-        password: SignupHandler.password,
-        username: SignupHandler.username,
-        contact: SignupHandler.contact,
-        file: image
-    );
-
-    // if string returned is success, user has been created
+        email: email,
+        password: password,
+        username: username,
+        contact: contact,
+        file: image);
+    // if string returned is sucess, user has been created
     if (res == "success") {
       setState(() {
         isLoading = false;
@@ -81,9 +132,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    phoneController.dispose();
+    // isLoading.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     screenHeight = MediaQuery.of(context).size.height;

@@ -4,13 +4,21 @@ import 'package:cart_stepper/cart_stepper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sugam_krishi/providers/user_provider.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
+import 'package:sugam_krishi/resources/firestore_methods.dart';
 import 'package:sugam_krishi/screens/Community/postViewScreen.dart';
 import 'package:intl/intl.dart';
+import 'package:sugam_krishi/models/user.dart' as model;
+
 import '../../models/post.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +34,37 @@ class _MarketItemState extends State<MarketItem> {
   bool hasImage = true;
   int boughtValue = 1;
   bool startBuy = false;
+  int _quantity = 0;
+  bool _showStepper = false;
+  String currentUserUsername = '';
+  AuthMethods _authMethods = AuthMethods();
+
+  Future<String> getCurrentUserUsername() async {
+    String username = '';
+
+    try {
+      DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(AuthMethods().getCurrentUserUid())
+          .get();
+
+      if (snapshot.exists) {
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        username = data['username'];
+      }
+    } catch (e) {
+      print('Error getting current user username from Firestore: $e');
+    }
+
+    return username;
+  }
+
+  Future<void> loadCurrentUserUsername() async {
+    String username = await getCurrentUserUsername();
+    setState(() {
+      currentUserUsername = username;
+    });
+  }
 
   String formatItemPrice() {
     return widget.snap['category'] == "Rent"
@@ -38,6 +77,7 @@ class _MarketItemState extends State<MarketItem> {
     hasImage = widget.snap["postUrl"].toString() != "";
 
     super.initState();
+    loadCurrentUserUsername();
   }
 
   _callNumber(String phoneNumber) async {
@@ -49,8 +89,20 @@ class _MarketItemState extends State<MarketItem> {
     return Future.delayed(Duration(seconds: 0), () => widget.snap["postUrl"]);
   }
 
+  void showToastText(String text, Color color) {
+    Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: color,
+      fontSize: 16.0,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    model.User user = Provider.of<UserProvider>(context).getUser;
     return GestureDetector(
       onTap: () {},
       child: Column(
@@ -257,81 +309,201 @@ class _MarketItemState extends State<MarketItem> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Expanded(
-                  child: FilledButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        widget.snap['category'] == "Sell"
-                            ? Colors.green
-                            : Color.fromARGB(255, 239, 198, 80),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                          child: FaIcon(FontAwesomeIcons.cartShopping),
+          widget.snap['category'] == "Sell" && _showStepper == true
+              ? Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          children: [
+                            Text(
+                              'Quantity: $_quantity',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Stepper(
+                              steps: [
+                                Step(
+                                  title: Text(''),
+                                  content: SizedBox(),
+                                  isActive: true,
+                                ),
+                              ],
+                              controlsBuilder: (BuildContext context,
+                                  ControlsDetails controlsDetails) {
+                                return Row(
+                                  children: [
+                                    ElevatedButton(
+                                      onPressed: _quantity > 0
+                                          ? () {
+                                              print("add pressed");
+                                              setState(() {
+                                                _quantity++;
+                                              });
+                                              FireStoreMethods()
+                                                  .incrementCartItemQuantity(
+                                                      user.uid,
+                                                      widget.snap['postId'],
+                                                      _quantity,
+                                                      int.parse(widget
+                                                          .snap['price']));
+                                            }
+                                          : null,
+                                      child: Icon(Icons.add),
+                                    ),
+                                    SizedBox(width: 8),
+                                    ElevatedButton(
+                                      onPressed: _quantity > 0
+                                          ? () {
+                                              print("remove pressed");
+                                              setState(() {
+                                                if (_quantity > 0) {
+                                                  _quantity--;
+                                                }
+                                              });
+                                              FireStoreMethods()
+                                                  .decrementCartItemQuantity(
+                                                      user.uid,
+                                                      widget.snap['postId'],
+                                                      _quantity,
+                                                      int.parse(widget
+                                                          .snap['price']));
+                                            }
+                                          : null,
+                                      child: Icon(Icons.remove),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                        widget.snap['category'] == "Sell"
-                            ? const Text("Buy")
-                            : const Text("Rent"),
-                      ],
-                    ),
-                    onPressed: () {
-                      _callNumber(widget.snap['contact'].toString());
-                    },
+                      ),
+                    ],
+                  ),
+                )
+              : Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8.0, vertical: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Expanded(
+                        child: FilledButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                widget.snap['category'] == "Sell"
+                                    ? Colors.green
+                                    : Color.fromARGB(255, 239, 198, 80),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 10),
+                                  child: FaIcon(FontAwesomeIcons.cartShopping),
+                                ),
+                                widget.snap['category'] == "Sell"
+                                    ? const Text("Add to cart")
+                                    : const Text("Rent"),
+                              ],
+                            ),
+                            onPressed: widget.snap['category'] == "Sell"
+                                ? () async {
+                                    print("add to cart pressed");
+                                    final DocumentReference cartDocRef =
+                                        FirebaseFirestore.instance
+                                            .collection('users')
+                                            .doc(AuthMethods()
+                                                .getCurrentUserUid())
+                                            .collection('cart')
+                                            .doc(widget.snap['postId']);
+
+                                    final DocumentSnapshot cartSnapshot =
+                                        await cartDocRef.get();
+                                    if (!cartSnapshot.exists) {
+                                      FireStoreMethods().addCartItem(
+                                        widget.snap['uid'],
+                                        widget.snap['username'],
+                                        widget.snap['postId'],
+                                        widget.snap['postUrl'],
+                                        int.parse(widget.snap['price']),
+                                        widget.snap['itemName'],
+                                        1,
+                                        currentUserUsername,
+                                        "",
+                                        AuthMethods().getCurrentUserUid(),
+                                        int.parse(widget.snap['price']),
+                                      );
+
+                                      showToastText(
+                                          '${widget.snap['itemName']} is added to cart',
+                                          Colors.green);
+
+                                      setState(() {
+                                        _showStepper = true;
+                                        _quantity = 1;
+                                      });
+                                    } else {
+                                      showToastText(
+                                          '${widget.snap['itemName']} is already in cart',
+                                          Colors.red);
+                                    }
+                                    // Get.to(() => {},
+                                    //     transition: Transition.cupertino);
+                                  }
+                                : () {
+                                    _callNumber(
+                                        widget.snap['contact'].toString());
+                                  }),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Expanded(
+                        child: FilledButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                              widget.snap['category'] == "Sell"
+                                  ? Colors.green
+                                  : Color.fromARGB(255, 239, 198, 80),
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 10),
+                                child: FaIcon(FontAwesomeIcons.shareFromSquare),
+                              ),
+                              Text("Share"),
+                            ],
+                          ),
+                          onPressed: () async {
+                            final urlImg = widget.snap['postUrl'].toString();
+                            final url = Uri.parse(urlImg);
+                            final response = await http.get(url);
+                            final bytes = response.bodyBytes;
+
+                            final temp = await getTemporaryDirectory();
+                            final path = '${temp.path}/image.png';
+                            final file = File(path).writeAsBytesSync(bytes);
+
+                            await Share.shareFiles([path],
+                                text: widget.snap['category'] == "Sell"
+                                    ? '${widget.snap['itemName'].toString()}\n\n${widget.snap['quantity'].toString()}kg of ${widget.snap['itemName'].toString()} is available for sell at ${widget.snap['location'].toString()} for ₹${widget.snap['price'].toString()}.\nSeller: ${widget.snap['username'].toString()}\nSeller contact : ${widget.snap['contact'].toString()}\n\n Checkout Sugam Krishi App for more details.'
+                                    : '${widget.snap['itemName'].toString()}\n\nIt is available for rent at ${widget.snap['location'].toString()} for ₹${widget.snap['price'].toString()}.\nSeller: ${widget.snap['username'].toString()}\nSeller contact : ${widget.snap['contact'].toString()}\n\n Checkout Sugam Krishi App for more details.');
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(
-                  width: 5,
-                ),
-                Expanded(
-                  child: FilledButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                        widget.snap['category'] == "Sell"
-                            ? Colors.green
-                            : Color.fromARGB(255, 239, 198, 80),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                          child: FaIcon(FontAwesomeIcons.shareFromSquare),
-                        ),
-                        Text("Share"),
-                      ],
-                    ),
-                    onPressed: () async {
-                      final urlImg = widget.snap['postUrl'].toString();
-                      final url = Uri.parse(urlImg);
-                      final response = await http.get(url);
-                      final bytes = response.bodyBytes;
-
-                      final temp = await getTemporaryDirectory();
-                      final path = '${temp.path}/image.png';
-                      final file = File(path).writeAsBytesSync(bytes);
-
-                      await Share.shareFiles([path],
-                          text: widget.snap['category'] == "Sell"
-                              ? '${widget.snap['itemName'].toString()}\n\n${widget.snap['quantity'].toString()}kg of ${widget.snap['itemName'].toString()} is available for sell at ${widget.snap['location'].toString()} for ₹${widget.snap['price'].toString()}.\nSeller: ${widget.snap['username'].toString()}\nSeller contact : ${widget.snap['contact'].toString()}\n\n Checkout Sugam Krishi App for more details.'
-                              : '${widget.snap['itemName'].toString()}\n\nIt is available for rent at ${widget.snap['location'].toString()} for ₹${widget.snap['price'].toString()}.\nSeller: ${widget.snap['username'].toString()}\nSeller contact : ${widget.snap['contact'].toString()}\n\n Checkout Sugam Krishi App for more details.');
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

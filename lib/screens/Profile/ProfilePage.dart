@@ -8,8 +8,10 @@ import 'package:sugam_krishi/models/user.dart' as model;
 import 'package:sugam_krishi/myCropsHandler.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
 import 'package:sugam_krishi/resources/auth_methods.dart';
+import 'package:sugam_krishi/screens/Profile/AddBankDetails.dart';
 import 'package:sugam_krishi/screens/Login_Signup/selectCropsPage.dart';
 import 'package:sugam_krishi/screens/Profile/editProfilePage.dart';
+import 'package:sugam_krishi/screens/order_screen.dart';
 import 'package:sugam_krishi/utils/utils.dart';
 
 import '../../constants.dart';
@@ -80,7 +82,8 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               //USER-NAME
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 child: Text(
                   user.username,
                   style: GoogleFonts.poppins(
@@ -89,19 +92,20 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               //DESCRIPTION
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                child: Text(
-                  // user.description,
-                  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit risus, dapibus pretium rhoncus pharetra, faucibus non dolor.",
-                  style: GoogleFonts.poppins(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w200,
-                    height: 1.2,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+              // Padding(
+              //   padding:
+              //       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              //   child: Text(
+              //     // user.description,
+              //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit risus, dapibus pretium rhoncus pharetra, faucibus non dolor.",
+              //     style: GoogleFonts.poppins(
+              //       fontSize: 14,
+              //       fontWeight: FontWeight.w200,
+              //       height: 1.2,
+              //     ),
+              //     textAlign: TextAlign.center,
+              //   ),
+              // ),
               SizedBox(
                 height: 10,
               ),
@@ -114,10 +118,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   primary: false,
                   scrollDirection: Axis.horizontal,
                   itemCount: MyCropsHandler.myCrops.length,
-                  itemBuilder: (context, index){
-                    if(index == MyCropsHandler.myCrops.length){
+                  itemBuilder: (context, index) {
+                    if (index == MyCropsHandler.myCrops.length) {
                       return GestureDetector(
-                        onTap: (){
+                        onTap: () {
                           // Navigator.of(context).push(MaterialPageRoute(
                           //     builder: ((context) => SelectCropsPage())
                           // ),
@@ -137,8 +141,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       widthFactor: 0.5,
                       alignment: Alignment.centerLeft,
                       child: cropItemWidget(
-                          item: MyCropsHandler.myCrops[index],
-                          isMini: true,
+                        item: MyCropsHandler.myCrops[index],
+                        isMini: true,
                       ),
                     );
                   },
@@ -241,6 +245,90 @@ class _ProfilePageState extends State<ProfilePage> {
                     location,
                     style: GoogleFonts.poppins(
                       fontSize: 18,
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: GestureDetector(
+                  onTap: () async {
+                    // navigate to orders page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            OrderScreen(currentUserUid: user.uid),
+                      ),
+                    );
+                  },
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.teal.shade100,
+                      ),
+                      child: Icon(
+                        Icons.shopping_bag_outlined,
+                      ),
+                    ),
+                    title: Text(
+                      "Orders",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                child: GestureDetector(
+                  onTap: () {
+                    showModalBottomSheet<void>(
+                      isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(18),
+                        ),
+                      ),
+                      context: context,
+                      builder: (BuildContext context) {
+                        return addBankDetails(
+                          userName: user.username,
+                          userPhoto: user.photoUrl,
+                          uid: user.uid,
+                        );
+                      },
+                    );
+                  },
+                  child: ListTile(
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    leading: Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.teal.shade100,
+                      ),
+                      child: Icon(
+                        Icons.account_balance_outlined,
+                      ),
+                    ),
+                    title: Text(
+                      "Add Bank Details",
+                      style: GoogleFonts.poppins(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),

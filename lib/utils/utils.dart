@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sugam_krishi/models/cartItem.dart';
 
 
 void showToastText(String text) {
@@ -14,9 +15,10 @@ void showToastText(String text) {
   );
 }
 // for getting properly formatted Contact Number
-String formatContact(String contact){
+String formatContact(String contact) {
   return contact.substring(0, 3) + " " + contact.substring(3);
 }
+
 // for picking up image from gallery
 pickImage(ImageSource source) async {
   final ImagePicker _imagePicker = ImagePicker();
