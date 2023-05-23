@@ -301,7 +301,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     color: Colors.white,
                                   )
                                 : Text(
-                                    "SIGNUP",
+                                    "SAVE & NEXT",
                                     style: GoogleFonts.montserrat(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold,

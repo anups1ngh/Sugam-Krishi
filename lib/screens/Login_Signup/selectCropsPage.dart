@@ -35,6 +35,7 @@ class _SelectCropsPageState extends State<SelectCropsPage> {
       file: SignupHandler.image,
       crops: SignupHandler.crops,
     );
+    print(SignupHandler.crops);
     handleResult(res);
   }
 
@@ -138,7 +139,7 @@ class _SelectCropsPageState extends State<SelectCropsPage> {
                       color: Colors.white,
                     )
                   : Text(
-                      "Done",
+                      "SIGNUP",
                       style: GoogleFonts.openSans(
                         color: Colors.white,
                         fontSize: 16,
@@ -325,7 +326,7 @@ class _SelectCropsPageState extends State<SelectCropsPage> {
                           color: Colors.white,
                         )
                       : Text(
-                          "Done",
+                          "SIGNUP",
                           style: GoogleFonts.openSans(
                             color: Colors.white,
                             fontSize: 20,

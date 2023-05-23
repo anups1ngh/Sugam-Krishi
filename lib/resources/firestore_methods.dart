@@ -253,7 +253,8 @@ class FireStoreMethods {
       required String location,
       required String contact,
       required String itemName,
-      String? quantity}) async {
+      String? quantity,
+      required String unit}) async {
     String res = "Some error occurred";
     try {
       String photoUrl = file == null
@@ -275,6 +276,7 @@ class FireStoreMethods {
         contact: contact,
         itemName: itemName,
         quantity: quantity,
+        unit: unit,
       );
       _firestore
           .collection('marketplace')

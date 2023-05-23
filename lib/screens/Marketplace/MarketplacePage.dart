@@ -70,15 +70,17 @@ class _MarketplacePageState extends State<MarketplacePage> {
   }
 
   void getCartDetailsFromFirestore(String uid) async {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('cart')
-          .get();
+    QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore
+        .instance
+        .collection('users')
+        .doc(uid)
+        .collection('cart')
+        .get();
 
-      int snapshotLength = snapshot.docs.length;
-      print(snapshotLength);
+    int snapshotLength = snapshot.docs.length;
+    print(snapshotLength);
   }
+
   @override
   Widget build(BuildContext context) {
     model.User user = Provider.of<UserProvider>(context).getUser;
@@ -144,7 +146,10 @@ class _MarketplacePageState extends State<MarketplacePage> {
                     ),
                   ),
                   child: IconButton(
-                    icon: Icon(Icons.shopping_cart_rounded, color: Colors.greenAccent.shade700,),
+                    icon: Icon(
+                      Icons.shopping_cart_rounded,
+                      color: Colors.greenAccent.shade700,
+                    ),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -280,7 +285,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   print(
-                                      'Sell count : ${snapshot.data!.docs.length}');
+                                      'Rent count : ${snapshot.data!.docs.length}');
                                   return ListView.builder(
                                     padding: EdgeInsets.only(bottom: 100),
                                     controller: scrollController,
