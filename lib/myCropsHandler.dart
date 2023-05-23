@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
+import 'package:sugam_krishi/screens/Login_Signup/signupHandler.dart';
 
 class MyCropsHandler {
   static var allLoaded = false;
@@ -59,40 +62,39 @@ class MyCropsHandler {
 
   static List<PaletteColor> colors = [];
   static Future<void> collectPalette() async {
-    if(!allLoaded){
-      colors = [];
-      cropItemsList = [];
-      cropsMap = Map();
-      for (String imageName in allCrops) {
-        print(imageName);
-        final PaletteGenerator generator =
-        await PaletteGenerator.fromImageProvider(
-          AssetImage("assets/crops/$imageName.png"),
-          size: Size(200, 100),
-        );
-        PaletteColor thisColor = generator.lightVibrantColor ?? PaletteColor(Colors.teal.shade100, 2);
-        cropItem thisCropItem = cropItem(
-          name: imageName,
-          bgColor: thisColor.color,
-        );
-        colors.add(thisColor);
-        cropItemsList.add(thisCropItem);
-        cropsMap[imageName] = thisCropItem;
-      }
-      print("__________________________________________________\n");
-      print(cropItemsList.length);
-      print("__________________________________________________\n");
-      allLoaded = true;
+    colors = [];
+    cropItemsList = [];
+    for (String imageName in allCrops) {
+      print(imageName);
+      final PaletteGenerator generator =
+      await PaletteGenerator.fromImageProvider(
+        AssetImage("assets/crops/$imageName.png"),
+        size: Size(200, 100),
+      );
+      PaletteColor thisColor =
+          generator.lightVibrantColor ?? PaletteColor(Colors.teal.shade100, 2);
+      cropItem thisCropItem = cropItem(
+        name: imageName,
+        bgColor: thisColor.color,
+      );
+      colors.add(thisColor);
+      cropItemsList.add(thisCropItem);
+      cropsMap[imageName] = thisCropItem;
     }
+    print("______\n");
+    print(cropItemsList.length);
+    print("______\n");
+    allLoaded = true;
   }
 }
 
-class cropItem{
+class cropItem {
   final String name;
   final Color bgColor;
 
   cropItem({required this.name, required this.bgColor});
 }
+
 class cropItemWidget extends StatefulWidget {
   final bool isMini;
   final cropItem item;
@@ -110,16 +112,19 @@ class _cropItemWidgetState extends State<cropItemWidget> {
     currentSelected = MyCropsHandler.myCrops.contains(widget.item);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     String name = widget.item.name;
     Color bgColor = widget.item.bgColor.withOpacity(0.5);
     return widget.isMini
-    ? GestureDetector(
-      onTap: (){
+        ? GestureDetector(
+      onTap: () {
         setState(() {
           currentSelected = !currentSelected;
-          currentSelected ? MyCropsHandler.myCrops.add(widget.item) : MyCropsHandler.myCrops.remove(widget.item);
+          currentSelected
+              ? MyCropsHandler.myCrops.add(widget.item)
+              : MyCropsHandler.myCrops.remove(widget.item);
         });
       },
       child: Container(
@@ -130,24 +135,34 @@ class _cropItemWidgetState extends State<cropItemWidget> {
         decoration: BoxDecoration(
           color: widget.item.bgColor.withOpacity(0.9),
           borderRadius: BorderRadius.circular(100),
-          border: currentSelected ? Border.all(
+          border: currentSelected
+              ? Border.all(
             color: Colors.white,
             width: 2,
-          ) : Border.all(style: BorderStyle.none),
+          )
+              : Border.all(style: BorderStyle.none),
         ),
         child: (name == "+")
-            ? Icon(Icons.mode_edit_outline_rounded, color: Colors.white,)
-      : Image.asset(
+            ? Icon(
+          Icons.mode_edit_outline_rounded,
+          color: Colors.white,
+        )
+            : Image.asset(
           "assets/crops/$name.png",
           scale: 4,
         ),
       ),
     )
-    : GestureDetector(
-      onTap: (){
+        : GestureDetector(
+      onTap: () {
         setState(() {
           currentSelected = !currentSelected;
-          currentSelected ? MyCropsHandler.myCrops.add(widget.item) : MyCropsHandler.myCrops.remove(widget.item);
+          currentSelected
+              ? SignupHandler.crops.add(widget.item.name)
+              : SignupHandler.crops.remove(widget.item.name);
+          currentSelected
+              ? MyCropsHandler.myCrops.add(widget.item)
+              : MyCropsHandler.myCrops.remove(widget.item);
         });
       },
       child: Container(
@@ -157,10 +172,12 @@ class _cropItemWidgetState extends State<cropItemWidget> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: bgColor,
-          border: currentSelected ? Border.all(
+          border: currentSelected
+              ? Border.all(
             color: Colors.white,
             width: 5,
-          ) : Border.all(style: BorderStyle.none),
+          )
+              : Border.all(style: BorderStyle.none),
           // border: Border.all(width: 0.3),
         ),
         child: Center(
@@ -176,13 +193,13 @@ class _cropItemWidgetState extends State<cropItemWidget> {
                 ),
                 child: Image.asset(
                   "assets/crops/$name.png",
-                  scale: (name=="millets") ? 9 : 6,
+                  scale: (name == "millets") ? 9 : 6,
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(5),
                 child: Text(
-                  name[0].toUpperCase()+name.substring(1),
+                  name[0].toUpperCase() + name.substring(1),
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                   ),

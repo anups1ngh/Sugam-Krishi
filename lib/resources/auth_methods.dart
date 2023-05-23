@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sugam_krishi/myCropsHandler.dart';
 import 'package:sugam_krishi/resources/storage_methods.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
 
@@ -13,7 +14,7 @@ class AuthMethods {
     User currentUser = _auth.currentUser!;
 
     DocumentSnapshot documentSnapshot =
-        await _firestore.collection('users').doc(currentUser.uid).get();
+    await _firestore.collection('users').doc(currentUser.uid).get();
 
     return model.User.fromSnap(documentSnapshot);
   }
@@ -45,8 +46,11 @@ class AuthMethods {
     required String username,
     required String contact,
     required Uint8List file,
+    required List<String> crops,
   }) async {
     String res = "Some error Occurred";
+
+    print(crops);
     try {
       if (email.isNotEmpty ||
           password.isNotEmpty ||
@@ -71,6 +75,7 @@ class AuthMethods {
           accHolderName: "",
           accNumber: "",
           ifscCode: "",
+          crops: crops,
         );
 
         // adding user in our database

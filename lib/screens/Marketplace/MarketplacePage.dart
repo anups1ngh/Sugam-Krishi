@@ -12,8 +12,10 @@ import 'package:sugam_krishi/screens/CartScreen.dart';
 import 'package:sugam_krishi/screens/Marketplace/PostItemPage.dart';
 import 'package:sugam_krishi/models/user.dart' as model;
 import 'package:sugam_krishi/screens/Marketplace/marketItem.dart';
+import 'package:badges/badges.dart' as badges;
 
 import '../../providers/value_providers.dart';
+import '../../resources/auth_methods.dart';
 
 class MarketplacePage extends StatefulWidget {
   const MarketplacePage({Key? key}) : super(key: key);
@@ -24,6 +26,7 @@ class MarketplacePage extends StatefulWidget {
 
 class _MarketplacePageState extends State<MarketplacePage> {
   bool showFAB = true;
+  int cartLength = 0;
   ScrollController scrollController = ScrollController();
 
   @override
@@ -66,9 +69,20 @@ class _MarketplacePageState extends State<MarketplacePage> {
     }
   }
 
+  void getCartDetailsFromFirestore(String uid) async {
+      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .collection('cart')
+          .get();
+
+      int snapshotLength = snapshot.docs.length;
+      print(snapshotLength);
+  }
   @override
   Widget build(BuildContext context) {
     model.User user = Provider.of<UserProvider>(context).getUser;
+    getCartDetailsFromFirestore(user.uid);
     var size = MediaQuery.of(context).size;
     showFAB = Provider.of<ValueProviders>(context).shouldShowMarketplaceFAB;
     return ChangeNotifierProvider(
@@ -88,15 +102,60 @@ class _MarketplacePageState extends State<MarketplacePage> {
               ),
             ),
             actions: <Widget>[
-              IconButton(
-                icon: FaIcon(
-                  FontAwesomeIcons.cartShopping,
-                  color: Colors.blue[400],
+              // GestureDetector(
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => CartScreen(),
+              //       ),
+              //     );
+              //   },
+              //   child: Container(
+              //     margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              //     decoration: BoxDecoration(
+              //       borderRadius: BorderRadius.circular(100),
+              //       color: Colors.greenAccent.shade700,
+              //     ),
+              //     height: 20,
+              //     width: 60,
+              //     child: Stack(
+              //       alignment: Alignment.topRight,
+              //       clipBehavior: Clip.antiAlias,
+              //       children: [
+              //         Icon(Icons.shopping_cart_rounded, color: Colors.white,),
+              //         Text(
+              //           "2",
+              //           style: TextStyle(
+              //             color: Colors.red,
+              //           ),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              Padding(
+                padding: const EdgeInsets.only(right: 15, top: 10),
+                child: badges.Badge(
+                  badgeContent: Text(
+                    cartLength.toString(),
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  child: IconButton(
+                    icon: Icon(Icons.shopping_cart_rounded, color: Colors.greenAccent.shade700,),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => CartScreen(),
+                        ),
+                      );
+                    },
+                  ),
                 ),
-                onPressed: () {
-                  Get.to(CartScreen(), transition: Transition.cupertino);
-                },
-              )
+              ),
             ],
           ),
           body: RefreshIndicator(
@@ -180,7 +239,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                     SizedBox(
                       height: 20,
                     ),
-                    "${tabs[current]}" == "Sell"
+                    "${tabs[current]}" == "Crops for Sale"
                         ? Expanded(
                             child: StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance

@@ -9,6 +9,7 @@ class UserProvider with ChangeNotifier {
     email: "",
     photoUrl: "",
     contact: "",
+    crops: [],
   );
   final AuthMethods _authMethods = AuthMethods();
 

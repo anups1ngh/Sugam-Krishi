@@ -33,7 +33,7 @@ class _SelectCropsPageState extends State<SelectCropsPage> {
       username: SignupHandler.username,
       contact: SignupHandler.contact,
       file: SignupHandler.image,
-      // crops: SignupHandler.crops,
+      crops: SignupHandler.crops,
     );
     handleResult(res);
   }

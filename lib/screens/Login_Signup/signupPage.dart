@@ -97,40 +97,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  void signUpUser(String email, String password, String username,
-      String contact, Uint8List image) async {
-    setState(() {
-      isLoading = true;
-    });
-
-    // signup user using our auth methods
-    String res = await AuthMethods().signUpUser(
-        email: email,
-        password: password,
-        username: username,
-        contact: contact,
-        file: image);
-    // if string returned is sucess, user has been created
-    if (res == "success") {
-      setState(() {
-        isLoading = false;
-      });
-      showToastText("Account created successfully");
-      // navigate to the home screen
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
-    } else {
-      setState(() {
-        isLoading = false;
-      });
-      // show the error
-      showToastText(res);
-    }
-  }
-
   @override
   void dispose() {
     // TODO: implement dispose

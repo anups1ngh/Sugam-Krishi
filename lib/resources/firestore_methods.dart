@@ -89,6 +89,36 @@ class FireStoreMethods {
     return res;
   }
 
+  Future<void> updateCartItemQuantity(
+      String buyerUid, String postId, int quantity, int price) async {
+    final DocumentReference cartDocRef = FirebaseFirestore.instance
+        .collection('users')
+        .doc(buyerUid)
+        .collection('cart')
+        .doc(postId);
+
+    final DocumentSnapshot cartSnapshot = await cartDocRef.get();
+    if (!cartSnapshot.exists) {
+      // Cart item does not exist
+      return;
+    }
+
+    final Map<String, dynamic>? cartData =
+    cartSnapshot.data() as Map<String, dynamic>?;
+
+    if (cartData != null) {
+      final int existingQuantity = quantity;
+      final int newQuantity = existingQuantity;
+      final int existingPrice = price;
+      final int newCost = existingPrice * newQuantity;
+
+      await cartDocRef.update({
+        'quantity': newQuantity,
+        'cost': newCost,
+      });
+    }
+  }
+
   Future<void> incrementCartItemQuantity(
       String buyerUid, String postId, int? quantity, int price) async {
     final DocumentReference cartDocRef = FirebaseFirestore.instance
@@ -140,6 +170,9 @@ class FireStoreMethods {
       final int existingQuantity = quantity!;
       if (existingQuantity > 0) {
         final int newQuantity = existingQuantity - 1;
+        if(newQuantity == 0){
+
+        }
         final int existingPrice = price;
         final int newCost = existingPrice * newQuantity;
 

@@ -64,6 +64,8 @@ class _addBankDetailsState extends State<addBankDetails> {
     final UserProvider userProvider = Provider.of<UserProvider>(context);
     return SafeArea(
         child: SingleChildScrollView(
+            padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
             child: Container(
       decoration: BoxDecoration(
         color: Color(0xffE0F2F1),
@@ -119,9 +121,9 @@ class _addBankDetailsState extends State<addBankDetails> {
                     ),
                     onPressed: () async {
                       try {
-                        if (accHolderNameController.text.isEmpty &&
-                            accNumberController.text.isEmpty &&
-                            accIfscController.text.isEmpty) {
+                        if (accHolderNameController.text.isNotEmpty &&
+                            accNumberController.text.isNotEmpty &&
+                            accIfscController.text.isNotEmpty) {
                           setState(() {
                             isLoading = true;
                           });
@@ -168,7 +170,7 @@ class _addBankDetailsState extends State<addBankDetails> {
                             ),
                           )
                         : Text(
-                            "Post",
+                            "Save",
                             style: GoogleFonts.poppins(
                               fontWeight: FontWeight.w500,
                               fontSize: 16,

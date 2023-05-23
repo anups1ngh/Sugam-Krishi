@@ -10,6 +10,7 @@ class User {
   final String accHolderName;
   final String accNumber;
   final String ifscCode;
+  final List<String> crops;
 
   const User({
     required this.username,
@@ -17,6 +18,7 @@ class User {
     required this.photoUrl,
     required this.email,
     required this.contact,
+    required this.crops,
     this.accHolderName = "ACCOUNTHOLDERNAME",
     this.accNumber = "9999999999999",
     this.ifscCode = "VHDBVUS9278BDHIK",
@@ -34,6 +36,7 @@ class User {
       accHolderName: snapshot["accHolderName"] ?? "ACCOUNTHOLDERNAME",
       accNumber: snapshot["accNumber"] ?? "9999999999999",
       ifscCode: snapshot["ifscCode"] ?? "VHDBVUS9278BDHIK",
+      crops: snapshot["crops"] ?? [],
     );
   }
 
