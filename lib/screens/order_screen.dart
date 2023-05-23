@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:sugam_krishi/utils/orders_card.dart';
 
 class OrderScreen extends StatefulWidget {
@@ -15,8 +16,18 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xffE0F2F1),
       appBar: AppBar(
-        title: Text('My Orders'),
+        backgroundColor: Colors.white,
+        elevation: 1,
+        automaticallyImplyLeading: false,
+        title: Text(
+          "Orders",
+          textAlign: TextAlign.left,
+          style: GoogleFonts.openSans(
+            color: Colors.black,
+          ),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
         stream: FirebaseFirestore.instance
@@ -41,11 +52,14 @@ class _OrderScreenState extends State<OrderScreen> {
                       double cost = order['cost'].toDouble();
                       return OrderCard(
                         buyerName: order['buyerName'],
+                        buyerContact: "8637347958",
+                        buyerAddress: "Patia, Bhubaneswar",
                         cost: cost,
                         itemName: order['itemName'],
                         orderID: order['orderId'],
                         postURL: order['postUrl'],
                         quantity: order['quantity'],
+                        unit: "Kg",
                         uid: order['sellerUid'],
                       );
                     } else {

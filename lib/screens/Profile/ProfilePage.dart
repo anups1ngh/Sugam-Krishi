@@ -338,7 +338,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                     ),
                     title: Text(
-                      "Add Bank Details",
+                      "Update Bank Details",
                       style: GoogleFonts.poppins(
                         fontSize: 18,
                       ),
