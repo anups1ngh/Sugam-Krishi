@@ -91,21 +91,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ),
               ),
-              //DESCRIPTION
-              // Padding(
-              //   padding:
-              //       const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              //   child: Text(
-              //     // user.description,
-              //     "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed velit risus, dapibus pretium rhoncus pharetra, faucibus non dolor.",
-              //     style: GoogleFonts.poppins(
-              //       fontSize: 14,
-              //       fontWeight: FontWeight.w200,
-              //       height: 1.2,
-              //     ),
-              //     textAlign: TextAlign.center,
-              //   ),
-              // ),
               SizedBox(
                 height: 10,
               ),
@@ -113,52 +98,69 @@ class _ProfilePageState extends State<ProfilePage> {
               //CROPS SELECTED
               SizedBox(
                 height: 60,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  primary: false,
-                  scrollDirection: Axis.horizontal,
-                  itemCount: MyCropsHandler.myCrops.length,
-                  itemBuilder: (context, index) {
-                    if (index == MyCropsHandler.myCrops.length) {
-                      return GestureDetector(
-                        onTap: () {
-                          // Navigator.of(context).push(MaterialPageRoute(
-                          //     builder: ((context) => SelectCropsPage())
-                          // ),
-                          // );
-                        },
-                        child: Align(
+                child: FutureBuilder<void>(
+                  future: MyCropsHandler.fetchMyCrops(user.uid),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error occurred: ${snapshot.error}'),
+                      );
+                    }
+
+                    if (MyCropsHandler.myCrops.isEmpty) {
+                      return Center(
+                        child: Text('No crops selected.'),
+                      );
+                    }
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      primary: false,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: MyCropsHandler.myCrops.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == MyCropsHandler.myCrops.length) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => SelectCropsPage(),
+                                ),
+                              );
+                            },
+                            child: Align(
+                              widthFactor: 0.5,
+                              alignment: Alignment.centerLeft,
+                              child: cropItemWidget(
+                                item: cropItem(
+                                  name: "+",
+                                  bgColor: Colors.grey,
+                                ),
+                                isMini: true,
+                              ),
+                            ),
+                          );
+                        }
+                        return Align(
                           widthFactor: 0.5,
                           alignment: Alignment.centerLeft,
                           child: cropItemWidget(
-                            item: cropItem(name: "+", bgColor: Colors.grey),
+                            item: MyCropsHandler.myCrops[index],
                             isMini: true,
                           ),
-                        ),
-                      );
-                    }
-                    return Align(
-                      widthFactor: 0.5,
-                      alignment: Alignment.centerLeft,
-                      child: cropItemWidget(
-                        item: MyCropsHandler.myCrops[index],
-                        isMini: true,
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
               ),
 
-              //EMAIL-ID
-              // Text(
-              //   user.email,
-              //   style: GoogleFonts.poppins(
-              //     fontSize: 12,
-              //     fontWeight: FontWeight.w300,
-              //   ),
-              // ),
-
-              //EDIT BUTTON
               SizedBox(
                 height: 20,
               ),
@@ -201,7 +203,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                    side: BorderSide(
+                      color: Colors.teal.shade400,
+                      width: 0.4,
+                    ),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   leading: Container(
@@ -227,7 +232,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: ListTile(
                   shape: RoundedRectangleBorder(
-                    side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                    side: BorderSide(
+                      color: Colors.teal.shade400,
+                      width: 0.4,
+                    ),
                     borderRadius: BorderRadius.circular(100),
                   ),
                   leading: Container(
@@ -253,7 +261,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                 child: GestureDetector(
                   onTap: () async {
-                    // navigate to orders page
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -264,7 +271,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      side: BorderSide(
+                        color: Colors.teal.shade400,
+                        width: 0.4,
+                      ),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     leading: Container(
@@ -310,7 +320,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      side: BorderSide(
+                        color: Colors.teal.shade400,
+                        width: 0.4,
+                      ),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     leading: Container(
@@ -341,7 +354,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   },
                   child: ListTile(
                     shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.teal.shade400, width: 0.4),
+                      side: BorderSide(
+                        color: Colors.teal.shade400,
+                        width: 0.4,
+                      ),
                       borderRadius: BorderRadius.circular(100),
                     ),
                     leading: Container(

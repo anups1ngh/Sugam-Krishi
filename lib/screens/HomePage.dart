@@ -1,4 +1,5 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -9,7 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sugam_krishi/AllDataFetchHandler.dart';
 import 'package:sugam_krishi/providers/user_provider.dart';
+import 'package:sugam_krishi/resources/auth_methods.dart';
 import 'package:sugam_krishi/screens/Community/FeedPage.dart';
+import 'package:sugam_krishi/screens/Login_Signup/signupHandler.dart';
 import 'package:sugam_krishi/screens/Marketplace/MarketplacePage.dart';
 import 'package:sugam_krishi/screens/Profile/ProfilePage.dart';
 import 'package:sugam_krishi/screens/Utilities/UtilitiesPage.dart';
@@ -39,7 +42,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-
   final controller = ScrollController();
   void refreshPage() {
     setState(() {});
@@ -83,27 +85,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool weatherLoaded = false;
   bool locationLoaded = false;
   bool allDataLoaded = false;
-  bool cropsLoaded = true;
+  bool cropsLoaded = false;
+  List<String> interestCrops = [];
   @override
   void initState() {
     super.initState();
-    addData().then((value){
+    addData().then((value) {
       setState(() {
         userAdded = true;
       });
     });
 
-    LocationSystem.getPosition().then((value){
+    LocationSystem.getPosition().then((value) {
       setState(() {
         locationLoaded = true;
       });
     });
-    WeatherSystem.fetchWeatherData(LocationSystem.convertPositionToString(LocationSystem.currPos)).then((value){
+    WeatherSystem.fetchWeatherData(
+            LocationSystem.convertPositionToString(LocationSystem.currPos))
+        .then((value) {
       setState(() {
         weatherLoaded = true;
       });
     });
-    AllDataFetchHandler.fetchAllData().then((value){
+    AllDataFetchHandler.fetchAllData().then((value) {
       setState(() {
         allDataLoaded = true;
       });
@@ -113,6 +118,40 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     //     cropsLoaded = true;
     //   });
     // });
+
+    fetchAllCrops().then((value) {
+      setState(() {
+        SignupHandler.crops = value;
+        cropsLoaded = true;
+      });
+    });
+  }
+
+  Future<List<String>> fetchAllCrops() async {
+    try {
+      final DocumentSnapshot<Map<String, dynamic>> cropsSnapshot =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(AuthMethods().getCurrentUserUid())
+              .get();
+
+      List<String> cropsList = [];
+
+      if (cropsSnapshot.exists) {
+        final userData = cropsSnapshot.data();
+        if (userData != null && userData.containsKey('crops')) {
+          final cropsData = userData['crops'];
+          if (cropsData is List) {
+            cropsList.addAll(cropsData.map((crop) => crop.toString()));
+          }
+        }
+      }
+
+      return cropsList;
+    } catch (e) {
+      print("Error fetching all crops: $e");
+      return [];
+    }
   }
 
   Future<void> addData() async {
@@ -123,61 +162,65 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    bool allLoaded = userAdded && weatherLoaded && locationLoaded && allDataLoaded && cropsLoaded;
+    bool allLoaded = userAdded &&
+        weatherLoaded &&
+        locationLoaded &&
+        allDataLoaded &&
+        cropsLoaded;
     print(userAdded);
     print(weatherLoaded);
     print(locationLoaded);
     print(allDataLoaded);
     print(cropsLoaded);
     return allLoaded
-    ? Scaffold(
-      backgroundColor: Colors.white,
-      body: listItems[currentIndex],
-      bottomNavigationBar: BottomNavyBar(
-        selectedIndex: currentIndex,
-        onItemSelected: (index) {
-          setState(() {
-            currentIndex = index;
-          });
-        },
-        items: <BottomNavyBarItem>[
-          BottomNavyBarItem(
-            icon: Icon(
-              Icons.home,
-              size: 24,
+        ? Scaffold(
+            backgroundColor: Colors.white,
+            body: listItems[currentIndex],
+            bottomNavigationBar: BottomNavyBar(
+              selectedIndex: currentIndex,
+              onItemSelected: (index) {
+                setState(() {
+                  currentIndex = index;
+                });
+              },
+              items: <BottomNavyBarItem>[
+                BottomNavyBarItem(
+                  icon: Icon(
+                    Icons.home,
+                    size: 24,
+                  ),
+                  title: Text('Community'),
+                  activeColor: Colors.teal,
+                ),
+                BottomNavyBarItem(
+                  icon: Icon(
+                    FontAwesomeIcons.store,
+                    size: 20,
+                  ),
+                  title: Text('Marketplace'),
+                  activeColor: Colors.teal,
+                ),
+                BottomNavyBarItem(
+                  icon: Icon(Icons.agriculture, size: 24),
+                  title: Text('Utilities'),
+                  activeColor: Colors.teal,
+                ),
+                BottomNavyBarItem(
+                  icon: Icon(Icons.person, size: 24),
+                  title: Text('Profile'),
+                  activeColor: Colors.teal,
+                ),
+              ],
             ),
-            title: Text('Community'),
-            activeColor: Colors.teal,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(
-              FontAwesomeIcons.store,
-              size: 20,
+          )
+        : Scaffold(
+            body: Center(
+              child: LoadingAnimationWidget.prograssiveDots(
+                size: 60,
+                color: Colors.tealAccent.shade700,
+              ),
             ),
-            title: Text('Marketplace'),
-            activeColor: Colors.teal,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.agriculture, size: 24),
-            title: Text('Utilities'),
-            activeColor: Colors.teal,
-          ),
-          BottomNavyBarItem(
-            icon: Icon(Icons.person, size: 24),
-            title: Text('Profile'),
-            activeColor: Colors.teal,
-          ),
-        ],
-      ),
-    )
-    : Scaffold(
-      body: Center(
-        child: LoadingAnimationWidget.prograssiveDots(
-          size: 60,
-          color: Colors.tealAccent.shade700,
-        ),
-      ),
-    );
+          );
   }
 
   _modalBottomSheetMenu() {

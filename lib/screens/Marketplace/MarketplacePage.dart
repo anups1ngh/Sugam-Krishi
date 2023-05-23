@@ -39,7 +39,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
   }
 
   List<String> tabs = [
-    "Crops for Sale",
+    "Crops for Sell",
     "Items for Rent",
   ];
   int current = 0;
@@ -180,7 +180,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                     SizedBox(
                       height: 20,
                     ),
-                    "${tabs[current]}" == "Sell"
+                    "${tabs[current]}" == "Crops for Sell"
                         ? Expanded(
                             child: StreamBuilder<QuerySnapshot>(
                               stream: FirebaseFirestore.instance
@@ -221,7 +221,7 @@ class _MarketplacePageState extends State<MarketplacePage> {
                               builder: (context, snapshot) {
                                 if (snapshot.hasData) {
                                   print(
-                                      'Sell count : ${snapshot.data!.docs.length}');
+                                      'Rent count : ${snapshot.data!.docs.length}');
                                   return ListView.builder(
                                     padding: EdgeInsets.only(bottom: 100),
                                     controller: scrollController,

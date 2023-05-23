@@ -14,6 +14,7 @@ class MarketPlace {
   final String contact;
   final String itemName;
   String? quantity;
+  final String unit;
 
   MarketPlace({
     this.description,
@@ -29,6 +30,7 @@ class MarketPlace {
     required this.contact,
     required this.itemName,
     this.quantity,
+    required this.unit,
   });
 
   static MarketPlace fromSnap(DocumentSnapshot snap) {
@@ -48,22 +50,24 @@ class MarketPlace {
       contact: snapshot['contact'],
       itemName: snapshot['itemName'],
       quantity: snapshot['quantity'],
+      unit: snapshot['unit'],
     );
   }
 
   Map<String, dynamic> toJson() => {
-    "description": description,
-    "uid": uid,
-    "username": username,
-    "postId": postId,
-    "category": category,
-    "datePublished": datePublished,
-    'postUrl': postUrl,
-    'profImage': profImage,
-    'price': price,
-    'location': location,
-    'contact': contact,
-    'itemName': itemName,
-    'quantity': quantity,
-  };
+        "description": description,
+        "uid": uid,
+        "username": username,
+        "postId": postId,
+        "category": category,
+        "datePublished": datePublished,
+        'postUrl': postUrl,
+        'profImage': profImage,
+        'price': price,
+        'location': location,
+        'contact': contact,
+        'itemName': itemName,
+        'quantity': quantity,
+        'unit': unit,
+      };
 }

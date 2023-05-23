@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sugam_krishi/models/cartItem.dart';
+import 'package:sugam_krishi/myCropsHandler.dart';
 
 class User {
   final String email;
@@ -10,6 +11,7 @@ class User {
   final String accHolderName;
   final String accNumber;
   final String ifscCode;
+  final List<String> crops;
 
   const User({
     required this.username,
@@ -20,6 +22,7 @@ class User {
     this.accHolderName = "ACCOUNTHOLDERNAME",
     this.accNumber = "9999999999999",
     this.ifscCode = "VHDBVUS9278BDHIK",
+    required this.crops,
   });
 
   static User fromSnap(DocumentSnapshot snap) {
@@ -34,6 +37,7 @@ class User {
       accHolderName: snapshot["accHolderName"] ?? "ACCOUNTHOLDERNAME",
       accNumber: snapshot["accNumber"] ?? "9999999999999",
       ifscCode: snapshot["ifscCode"] ?? "VHDBVUS9278BDHIK",
+      crops: List<String>.from(snapshot["crops"]),
     );
   }
 
@@ -46,5 +50,6 @@ class User {
         "accHolderName": accHolderName,
         "accNumber": accNumber,
         "ifscCode": ifscCode,
+        "crops": crops,
       };
 }
